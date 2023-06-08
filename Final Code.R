@@ -1,0 +1,4835 @@
+#packages needed####
+install.packages("tidyverse")
+install.packages("tidyr")
+install.packages("dplyr")
+install.packages("psych")
+install.packages("MASS")
+install.packages(htmlwidgets)
+install.packages(plotly)
+install.packages(ggsci)
+install.packages(ggpubr)
+install.packages(ggpattern)
+install.packages(jtools)
+install.packages(moments)
+install.packages(car)
+
+library(psych)
+library(MASS)
+library(tidyr)
+library(tidyverse)
+library(dplyr)
+library(htmlwidgets)
+library(plotly)
+library(ggsci)
+library(ggpubr)
+library(ggpattern)
+library(jtools)
+library(moments)
+
+z.score <- function(data) {
+      new_data <- round(((data - mean(data, na.rm = TRUE))/sd(data, na.rm = TRUE)),1) 
+       return(new_data)}
+
+#import datafile (CHECK and RUNS)#### 
+wave1a <- read.csv("wave1A.csv", comment.char="#", stringsAsFactors=FALSE, 
+                   na.strings=c("","NA"))
+#get dimensions and name of the variables
+dim(wave1a)
+#[1] 448 271
+colnames(wave1a)
+
+#[1] "StartDate"             "EndDate"               "Status"               
+# [4] "IPAddress"             "Progress"              #"Duration..in.seconds."
+#  [7] "Finished"              "RecordedDate"          #"ResponseId"           
+# [10] "RecipientLastName"     "RecipientFirstName"    #"RecipientEmail"       
+#[13] "ExternalReference"     "LocationLatitude"      #"LocationLongitude"    
+#[16] "DistributionChannel"   "UserLanguage"          "Q1"                   
+#[19] "Q2"                    "Q3"                    "Q4"                   
+#[22] "Q5"                    "Q8"                    "Q9"                   
+#[25] "Q11"                   "Q12"                   "Q13"                  
+#[28] "Q14"                   "Q15"                   "Q16"                  
+#[31] "Q16_4_TEXT"            "Q17"                   "Q18"                  
+#[34] "Q18_4_TEXT"            "Q19"                   "Q19_5_TEXT"           
+#[37] "Q20"                   "Q21"                   "Q22"                  
+#[40] "Q23"                   "Q23_5_TEXT"            "Q24"                  
+#[43] "Q25"                   "Q26"                   "Q27"                  
+#[46] "Q28"                   "Q29"                   "Q30"                  
+#[49] "Q31"                   "Q32"                   "Q33"                  
+#[52] "Q34"                   "Q35"                   "Q36"                  
+#[55] "Q37"                   "Q38"                   "Q39"                  
+#[58] "Q40"                   "Q41"                   "Q42"                  
+#[61] "Q43"                   "Q44"                   "Q45"                  
+#[64] "Q46"                   "Q47"                   "Q48"                  
+#[67] "Q49_1"                 "Q49_2"                 "Q50"                  
+#[70] "Q51"                   "Q53"                   "Q54_1"                
+#[73] "Q54_2"                 "Q55"                   "Q55_0_TEXT"           
+#[76] "Q56_1"                 "Q56_2"                 "Q57"                  
+#[79] "Q58_1"                 "Q58_2"                 "Q59_1"                
+#[82] "Q59_2"                 "Q60"                   "Q61"                  
+#[85] "Q62"                   "Q217"                  "Q63"                  
+#[88] "Q64"                   "Q65"                   "Q66"                  
+#[91] "Q67"                   "Q68"                   "Q69"                  
+#[94] "Q70"                   "Q71"                   "Q72"                  
+#[97] "Q73"                   "Q74"                   "Q75_1"                
+#[100] "Q75_2"                 "Q75_3"                 "Q75_4"                
+#[103] "Q75_5"                 "Q75_6"                 "Q75_7"                
+#[106] "Q75_8"                 "Q76"                   "Q77"                  
+#[109] "Q78"                   "Q79"                   "Q80"                  
+#[112] "Q81"                   "Q218"                  "Q82"                  
+#[115] "Q83"                   "Q84"                   "Q85"                  
+#[118] "Q86"                   "Q87"                   "Q88"                  
+#[121] "Q89"                   "Q90"                   "Q91"                  
+#[124] "Q92"                   "Q93"                   "Q94"                  
+#[127] "Q95"                   "Q96"                   "Q97"                  
+#[130] "Q98"                   "Q99"                   "Q100"                 
+#[133] "Q101"                  "Q102"                  "Q103"                 
+#[136] "Q104"                  "Q105"                  "Q106"                 
+#139] "Q107"                  "Q108"                  "Q109"                 
+#142] "Q110"                  "Q111"                  "Q112"                 
+#145] "Q113"                  "Q114"                  "Q115"                 
+#148] "Q116"                  "Q117"                  "Q118"                 
+#151] "Q119"                  "Q120"                  "Q121"                 
+#154] "Q122"                  "Q123"                  "Q124"                 
+#157] "Q125"                  "Q126"                  "Q127"                 
+#160] "Q128"                  "Q129"                  "Q130"                 
+#163] "Q131"                  "Q131_4_TEXT"           "Q132_1"              
+#166] "Q132_2"                "Q132_3"                "Q132_4"             
+#169] "Q132_5"                "Q132_6"                "Q132_7"               
+#172] "Q133_1"                "Q133_2"                "Q133_3"               
+#175] "Q133_4"                "Q133_5"                "Q133_6"               
+#178] "Q133_7"                "Q133_8"                "Q133_9"               
+#181] "Q136"                  "Q137"                  "Q138"                 
+#184] "Q140_1"                "Q140_2"                "Q140_3"               
+#187] "Q140_4"                "Q140_5"                "Q140_6"               
+#190] "Q140_7"                "Q140_8"                "Q140_9"              
+#193] "Q140_10"               "Q140_11"               "Q140_12"              
+#196] "Q140_13"               "Q140_14"               "Q141"                 
+#199] "Q142"                  "Q143"                  "Q144"                 
+#202] "Q220"                  "Q145"                  "Q146"                 
+#205] "Q148"                  "Q149"                  "Q150"                 
+#208] "Q151"                  "Q152"                  "Q153"                 
+#211] "Q154"                  "Q155"                  "Q156"                 
+#214] "Q157_1"                "Q157_2"                "Q157_3"               
+#217] "Q157_4"                "Q157_5"                "Q157_6"               
+#220] "Q157_7"                "Q159"                  "Q160"                 
+#223] "Q161"                  "Q162"                  "Q163"                 
+#226] "Q164"                  "Q165"                  "Q166"                 
+#229] "Q167"                  "Q168"                  "Q169"                 
+#232] "Q221"                  "Q170"                  "Q171"                 
+#235] "Q172"                  "Q173"                  "Q174"                 
+#238] "Q175"                  "Q176"                  "Q178"                 
+#241] "Q179"                  "Q180"                  "Q181"                 
+#244] "Q182"                  "Q183"                  "Q184"                 
+#247] "Q185"                  "Q186"                  "Q187"                 
+#250] "Q188"                  "Q189"                  "Q190"                 
+#253] "Q191"                  "Q192"                  "Q193"                 
+#256 "Q194"                  "Q195"                  "Q196"                 
+#259] "Q197"                  "Q198"                  "Q199"                 
+#262] "Q200"                  "Q201"                  "Q202"                 
+#265] "Q203"                  "Q204"                  "Q207"                 
+#268] "Q209"                  "Q212"                  "Q214"                 
+#271] "Q216"  
+
+
+#remove the first four rows(string + two pilot participants)
+wave1 <- wave1a[-c(1,2,3,4),]
+
+#check for head and dimensions of the datafile
+
+head(wave1)
+
+
+dim(wave1)
+#[1] 444 271
+
+
+#remove k-number and emails for confidentiality
+
+wave1 <- within(wave1, rm(Q14, Q15))
+dim(wave1)
+#[1] 444 269
+
+# Creating the variables ####
+#first questions
+
+#Kings student?
+wave1$KCL <- recode(wave1$Q1, "1" = "yes", "2" = "no", "3" = "graduate")
+head(wave1$KCL)
+#1] "yes" "yes" "yes" "yes" "yes" "yes"
+
+#over 18?
+wave1$age18 <- recode(wave1$Q2, "1"="yes", "2"="no")
+head(wave1$age18)
+#1] "yes" "yes" "yes" "yes" "yes" "yes"
+
+#undergrad or postgrad? 
+wave1$UGPG <- recode(wave1$Q3, "1"="UG", "2"="PG")
+head(wave1$UGPG)
+#1] "PG" "PG" "UG" "PG" "UG" "UG"
+
+#year 
+
+wave1$year <- wave1$Q4
+head(wave1$year)
+#1] "4" "3" "1" "1" "1" "4"
+
+#faculty
+wave1$faculty <- recode(wave1$Q5, "1"="A&H", "2"="Dentistry", "3"="LSM", "4"="NMS", "5"="Nursing", "6"="IoPPN", "7"="Business", "8"="Law", "9"="SSPP")
+head(wave1$faculty)
+#1] "LSM"   "LSM"   "A&H"   "IoPPN" "IoPPN" "LSM"  
+
+#Demographics
+
+
+#gender 
+
+wave1$gender <- recode(wave1$Q16, "1"="male", "2"="female", "3"="non-binary", "4"="other", "5"="prefer not to say")
+head(wave1$gender)
+
+#[1] "female" "female" "female" "female" "female" "female"
+
+
+#transgender
+
+wave1$transgender <- recode(wave1$Q17, "1"="transgender", "2"="cisgender")
+head(wave1$transgender)
+
+#[1] "cisgender" "cisgender" "cisgender" "cisgender" "cisgender" "cisgender"
+
+
+#sexual orientation - NOTE this needs to be recoded in next version because we added some options
+
+wave1$orientation<- recode(wave1$Q18, "1"="heterosexual", "2"="mostly straight", "3"="bisexual", "6" = "mostly gay", "7"="gay/lesbian", "4" = "other", "5" ="prefer not to say")
+head(wave1$orientation)
+
+#[1] "heterosexual"      "heterosexual"      "mostly straight"   "bisexual"          "prefer not to say" "heterosexual"     
+
+
+#ethnicity
+
+wave1$ethnicity<- recode(wave1$Q19, "1"="White", "2"="Asian", "3"="Black", "4"="Mixed", "5"="Other", "6"="prefer not to say")
+head(wave1$ethnicity)
+
+#[1] "White" "White" "White" "White" "Mixed" "White"
+
+
+#student status
+
+wave1$student.status <- recode(wave1$Q21, "1"="home", "2"="EU", "3"="overseas")
+head(wave1$student.status)
+
+#[1] "EU"       "EU"       "home"     "overseas" "home"     "home"    
+
+
+#age
+
+wave1$age <- wave1$Q20
+
+
+#disability
+
+wave1$disability <- recode(wave1$Q22, "1"="disability", "2"="no disability", "3"="prefer not to say")
+head(wave1$disability)
+
+#[1] "no disability" "disability"    "no disability" "disability"    "no disability" "no disability"
+
+
+#learning disability - NOTE needs to be recoded to allow for multiple selections. Code as LD / no-LD?
+
+wave1$LD <- recode(wave1$Q23, "1"="dyslexia", "2"="dyspraxia", "3"="ADD/ADHD", "4"="ASD", "5"="other", "6"="none")
+head(wave1$LD)
+
+#[1] "none" "none" "none" NA     "none" "none"
+
+#-	Accommodation Q24 - column 42
+# grepl return whether x-value is in the cells of a specified column
+
+wave1$accomodation <- recode(wave1$Q24, "1"="halls", "2"="rented", "3"="family", "4"="own", "5"="other" )
+head(wave1$accomodation)
+
+wave1$hm_KCL <- grepl("1", wave1$Q25)
+wave1$hm_students <- grepl("2", wave1$Q25)
+wave1$hm_friends <- grepl("3", wave1$Q25)
+wave1$hm_family <- grepl("4", wave1$Q25)
+wave1$hm_partner <- grepl("5", wave1$Q25)
+wave1$hm_alone <- grepl("6", wave1$Q25)
+wave1$hm_other <- grepl("7", wave1$Q25)
+
+head(wave1$hm_other)
+#[1]  TRUE FALSE FALSE FALSE FALSE FALSE
+
+
+#commute - Q27
+
+
+wave1$commute <- recode(wave1$Q27, "1"="15", "2"="30", "3"="45", "4"="60", 
+                        "5"="75", "6"="90","7"="105", "8"="120+")
+head(wave1$commute)
+#[1] "30"  "30"  "105" "15"  "15"  "30" 
+
+
+#-Job - Q29
+
+wave1$employed <- recode(wave1$Q29, "1"="yes", "2"="no")
+head(wave1$employed)
+#[1] "no"  "no"  "no"  "no"  "no"  "yes"
+
+wave1$Q31 <- recode(wave1$Q31, "1"="no interference", "2"="some interference", "3"="interference")
+head(wave1$Q31)
+
+#[1] NA                NA                NA                NA                NA                "no interference"
+
+#Past mental health - Q83 = past mental distress? column number 111
+
+wave1$Q83<- recode(wave1$Q83, "1"="yes", "2"="no", "3"="prefer not to say")
+head(wave1$Q83)
+
+#[1] "no"  "yes" "yes" "yes" "yes" "yes"
+
+#Q84 - past help-seeking. Column number 112
+wave1$Q84<- recode(wave1$Q84, "1"="yes", "2"="no", "3"="prefer not to say")
+head(wave1$Q84)
+#[1] "no"  "yes" "yes" "yes" "yes" "yes"
+
+#make new column for each diagnosis with true / false if that diagnosis is selected
+#did not wrote the code that wasn’t working for Lauren
+
+wave1$diag_depression <- grepl("1", wave1$Q85)
+wave1$diag_mania <- grepl("2", wave1$Q85)
+wave1$diag_GAD <- grepl("3", wave1$Q85)
+wave1$diag_socialanx <- grepl("4", wave1$Q85)
+wave1$diag_agoraphobia <- grepl("5", wave1$Q85)
+wave1$diag_panic <- grepl("6", wave1$Q85)
+wave1$diag_OCD <- grepl("7", wave1$Q85)
+wave1$diag_anorexia <- grepl("8", wave1$Q85)
+wave1$diag_bulimia <- grepl("9", wave1$Q85)
+wave1$diag_binge <- grepl("10", wave1$Q85)
+wave1$diag_schizophrenia <- grepl("11", wave1$Q85)
+wave1$diag_psychosis <- grepl("12", wave1$Q85)
+wave1$diag_PD <- grepl("13", wave1$Q85)
+wave1$diag_autism <- grepl("14", wave1$Q85)
+wave1$diag_ADHD <- grepl("15", wave1$Q85)
+
+#making a binary variable of past diagnosis
+
+#recoding past mental health diagnoses - columns 302 - 316
+
+wave1$past.diagnosis <- FALSE
+wave1$past.diagnosis[wave1$diag_depression == TRUE] <- TRUE
+wave1$past.diagnosis[wave1$diag_mania == TRUE] <- TRUE
+wave1$past.diagnosis[wave1$diag_GAD == TRUE] <- TRUE
+wave1$past.diagnosis[wave1$diag_socialanx == TRUE] <- TRUE
+wave1$past.diagnosis[wave1$diag_agoraphobia == TRUE] <- TRUE
+wave1$past.diagnosis[wave1$diag_panic == TRUE] <- TRUE
+wave1$past.diagnosis[wave1$diag_OCD == TRUE] <- TRUE
+wave1$past.diagnosis[wave1$diag_anorexia == TRUE] <- TRUE
+wave1$past.diagnosis[wave1$diag_bulimia == TRUE] <- TRUE
+wave1$past.diagnosis[wave1$diag_binge == TRUE] <- TRUE
+wave1$past.diagnosis[wave1$diag_schizophrenia == TRUE] <- TRUE
+wave1$past.diagnosis[wave1$diag_psychosis == TRUE] <- TRUE
+wave1$past.diagnosis[wave1$diag_PD == TRUE]<- TRUE
+wave1$past.diagnosis[wave1$diag_autism == TRUE] <- TRUE
+wave1$past.diagnosis[wave1$diag_ADHD == TRUE] <- TRUE
+head(wave1$past.diagnosis)
+#[1] FALSE FALSE FALSE FALSE  TRUE FALSE
+
+View(wave1)
+
+#-	Age and relation to uni 
+wave1$Q87<- recode(wave1$Q87, "1"="before", "2"="after")
+head(wave1$Q87)
+#[1] NA       "after"  "before" NA       NA       NA
+
+
+wave1$Q88<- recode(wave1$Q88, "1"="improved", "2"="same", "3"="worse")
+head(wave1$Q88)
+#[1] NA      "worse" "worse" NA      NA      NA     
+
+
+wave1$Q90<- recode(wave1$Q90, "1"="before", "2"="after")
+head(wave1$Q90)
+#[1] NA       NA       "before" NA       NA       NA      
+
+
+wave1$Q91<- recode(wave1$Q91, "1"="improved", "2"="same", "3"="worse")
+head(wave1$Q91)
+#[1] NA      NA      "worse" NA      NA      NA     
+
+wave1$Q93<- recode(wave1$Q93, "1"="before", "2"="after")
+head(wave1$Q93)
+#[1] NA       "after"  "before" "before" "before" NA
+
+wave1$Q94<- recode(wave1$Q94, "1"="improved", "2"="same", "3"="worse")
+head(wave1$Q94)
+#[1] NA      "worse" "worse" "worse" "same"  NA      
+
+wave1$Q96<- recode(wave1$Q96, "1"="before", "2"="after")
+head(wave1$Q96)
+#[1] NA       NA       "before" "before" NA       NA
+
+wave1$Q97<- recode(wave1$Q97, "1"="improved", "2"="same", "3"="worse")
+head(wave1$Q97)
+#[1] NA     NA     "same" "same" NA     NA   
+
+wave1$Q99<- recode(wave1$Q99, "1"="before", "2"="after")
+head(wave1$Q99)
+#[1] NA NA NA NA NA NA
+
+wave1$Q100<- recode(wave1$Q100, "1"="improved", "2"="same", "3"="worse")
+head(wave1$Q100)
+#[1] NA NA NA NA NA NA
+
+wave1$Q102<- recode(wave1$Q102, "1"="before", "2"="after")
+head(wave1$Q102)
+#[1] NA       NA       "before" "before" NA       NA     
+
+wave1$Q103<- recode(wave1$Q103, "1"="improved", "2"="same", "3"="worse")
+head(wave1$Q103)
+#[1] NA     NA     "same" "same" NA     NA    
+
+wave1$Q105<- recode(wave1$Q105, "1"="before", "2"="after")
+head(wave1$Q105)
+#[1] NA NA NA NA NA NA
+
+wave1$Q106<- recode(wave1$Q106, "1"="improved", "2"="same", "3"="worse")
+head(wave1$Q106)
+#[1] NA NA NA NA NA NA
+
+
+wave1$Q108<- recode(wave1$Q108, "1"="before", "2"="after")
+head(wave1$Q108)
+#[1] NA NA NA NA NA NA
+
+wave1$Q109<- recode(wave1$Q109, "1"="improved", "2"="same", "3"="worse")
+head(wave1$Q109)
+#[1] NA NA NA NA NA NA
+
+
+wave1$Q111<- recode(wave1$Q111, "1"="before", "2"="after")
+head(wave1$Q111)
+#[1] NA       NA       "before" NA       NA       NA    
+wave1$Q112<- recode(wave1$Q112, "1"="improved", "2"="same", "3"="worse")
+head(wave1$Q112)
+#[1] NA         NA         "improved" NA         NA         NA      
+
+wave1$Q114<- recode(wave1$Q114, "1"="before", "2"="after")
+head(wave1$Q114)
+#[1] NA       NA       "before" NA       NA       NA    
+
+wave1$Q115<- recode(wave1$Q115, "1"="improved", "2"="same", "3"="worse")
+head(wave1$Q115)
+#[1] NA         NA         "improved" NA         NA         NA   
+
+wave1$Q117<- recode(wave1$Q117, "1"="before", "2"="after")
+head(wave1$Q117)
+#[1] NA NA NA NA NA NA
+
+wave1$Q118<- recode(wave1$Q118, "1"="improved", "2"="same", "3"="worse")
+head(wave1$Q118)
+#[1] NA NA NA NA NA NA
+
+wave1$Q120<- recode(wave1$Q120, "1"="before", "2"="after")
+head(wave1$Q120)
+#[1] NA NA NA NA NA NA
+
+wave1$Q121<- recode(wave1$Q121, "1"="improved", "2"="same", "3"="worse")
+head(wave1$Q121)
+#[1] NA NA NA NA NA NA
+
+wave1$Q123<- recode(wave1$Q123, "1"="before", "2"="after")
+head(wave1$Q123)
+#[1] NA NA NA NA NA NA
+wave1$Q124<- recode(wave1$Q124, "1"="improved", "2"="same", "3"="worse")
+head(wave1$Q124)
+#[1] NA NA NA NA NA NA
+
+wave1$Q126<- recode(wave1$Q126, "1"="before", "2"="after")
+head(wave1$Q126)
+#[1] NA NA NA NA NA NA
+
+wave1$Q127<- recode(wave1$Q127, "1"="improved", "2"="same", "3"="worse")
+head(wave1$Q127)
+#[1] NA NA NA NA NA NA
+
+wave1$Q129<- recode(wave1$Q129, "1"="before", "2"="after")
+head(wave1$Q129)
+#[1] NA NA NA NA NA NA
+
+wave1$Q130<- recode(wave1$Q130, "1"="improved", "2"="same", "3"="worse")
+head(wave1$Q130)
+#[1] NA NA NA NA NA NA
+
+#Treatment Q131
+wave1$tx_medication <- grepl("1", wave1$Q131)
+wave1$tx_therapy <- grepl("2", wave1$Q131)
+wave1$tx_admission <- grepl("3", wave1$Q131)
+wave1$tx_other <- grepl("4", wave1$Q131)
+wave1$tx_none <- grepl("5", wave1$Q131)
+#-Placement - Q32
+
+wave1$placement <- recode(wave1$Q32, "1"="yes", "2"="no")
+head(wave1$placement)
+
+#[1] "no" "no" "no" "no" "no" "no"
+
+
+#Social life before uni 
+
+wave1$relocation <- recode(wave1$Q34, "1"="relocated UK", "2"="relocated London", "3"="relocated international", "4"="no",)
+head(wave1$relocation)
+
+#[1] "relocated international" "relocated international" "no"                      "relocated international" "relocated international"
+#[6] "relocated UK"           
+
+wave1$Q35 <- recode(wave1$Q35, "1"="once a day", "2"="few times a week", "3"="once a week", "4"="few times a month", "5"="once a month or less")
+head(wave1$Q35)
+
+# [1] "once a week"      "once a day"       NA                 "once a day"       "few times a week" "once a day"
+
+
+#-	UCLA loneliness scale Q36, Q37, Q38
+
+#control the names pf the columns 
+colnames(wave1)
+#  [1] "StartDate"             "EndDate"               "Status"                "IPAddress"             "Progress"              "Duration..in.seconds."
+#  [7] "Finished"              "RecordedDate"          "ResponseId"            "RecipientLastName"     "RecipientFirstName"    "RecipientEmail"       
+# [13] "ExternalReference"     "LocationLatitude"      "LocationLongitude"     "DistributionChannel"   "UserLanguage"          "Q1"                   
+# [19] "Q2"                    "Q3"                    "Q4"                    "Q5"                    "Q8"                    "Q9"                   
+# [25] "Q11"                   "Q12"                   "Q13"                   "Q16"                   "Q16_4_TEXT"            "Q17"                  
+# [31] "Q18"                   "Q18_4_TEXT"            "Q19"                   "Q19_5_TEXT"            "Q20"                   "Q21"                  
+# [37] "Q22"                   "Q23"                   "Q23_5_TEXT"            "Q24"                   "Q25"                   "Q26"                  
+# [43] "Q27"                   "Q28"                   "Q29"                   "Q30"                   "Q31"                   "Q32"                  
+# [49] "Q33"                   "Q34"                   "Q35"                   "Q36"                   "Q37"                   "Q38"                  
+# [55] "Q39"                   "Q40"                   "Q41"                   "Q42"                   "Q43"                   "Q44"                  
+# [61] "Q45"                   "Q46"                   "Q47"                   "Q48"                   "Q49_1"                 "Q49_2"                
+# [67] "Q50"                   "Q51"                   "Q53"                   "Q54_1"                 "Q54_2"                 "Q55"                  
+# [73] "Q55_0_TEXT"            "Q56_1"                 "Q56_2"                 "Q57"                   "Q58_1"                 "Q58_2"                
+# [79] "Q59_1"                 "Q59_2"                 "Q60"                   "Q61"                   "Q62"                   "Q217"                 
+# [85] "Q63"                   "Q64"                   "Q65"                   "Q66"                   "Q67"                   "Q68"                  
+# [91] "Q69"                   "Q70"                   "Q71"                   "Q72"                   "Q73"                   "Q74"                  
+# [97] "Q75_1"                 "Q75_2"                 "Q75_3"                 "Q75_4"                 "Q75_5"                 "Q75_6"                
+#[103] "Q75_7"                 "Q75_8"                 "Q76"                   "Q77"                   "Q78"                   "Q79"                  
+#[109] "Q80"                   "Q81"                   "Q218"                  "Q82"                   "Q83"                   "Q84"                  
+#[115] "Q85"                   "Q86"                   "Q87"                   "Q88"                   "Q89"                   "Q90"                  
+#[121] "Q91"                   "Q92"                   "Q93"                   "Q94"                   "Q95"                   "Q96"                  
+#[127] "Q97"                   "Q98"                   "Q99"                   "Q100"                  "Q101"                  "Q102"                 
+#[133] "Q103"                  "Q104"                  "Q105"                  "Q106"                  "Q107"                  "Q108"                 
+#[139] "Q109"                  "Q110"                  "Q111"                  "Q112"                  "Q113"                  "Q114"                 
+#[145] "Q115"                  "Q116"                  "Q117"                  "Q118"                  "Q119"                  "Q120"                 
+#[151] "Q121"                  "Q122"                  "Q123"                  "Q124"                  "Q125"                  "Q126"                 
+#[157] "Q127"                  "Q128"                  "Q129"                  "Q130"                  "Q131"                  "Q131_4_TEXT"          
+#[163] "Q132_1"                "Q132_2"                "Q132_3"                "Q132_4"                "Q132_5"                "Q132_6"               
+#[169] "Q132_7"                "Q133_1"                "Q133_2"                "Q133_3"                "Q133_4"                "Q133_5"               
+#[175] "Q133_6"                "Q133_7"                "Q133_8"                "Q133_9"                "Q136"                  "Q137"                 
+#[181] "Q138"                  "Q140_1"                "Q140_2"                "Q140_3"                "Q140_4"                "Q140_5"               
+#[187] "Q140_6"                "Q140_7"                "Q140_8"                "Q140_9"                "Q140_10"               "Q140_11"              
+#[193] "Q140_12"               "Q140_13"               "Q140_14"               "Q141"                  "Q142"                  "Q143"                 
+#[199] "Q144"                  "Q220"                  "Q145"                  "Q146"                  "Q148"                  "Q149"                 
+#[205] "Q150"                  "Q151"                  "Q152"                  "Q153"                  "Q154"                  "Q155"                 
+#[211] "Q156"                  "Q157_1"                "Q157_2"                "Q157_3"                "Q157_4"                "Q157_5"               
+#[217] "Q157_6"                "Q157_7"                "Q159"                  "Q160"                  "Q161"                  "Q162"                 
+#[223] "Q163"                  "Q164"                  "Q165"                  "Q166"                  "Q167"                  "Q168"                 
+#[229] "Q169"                  "Q221"                  "Q170"                  "Q171"                  "Q172"                  "Q173"                 
+#[235] "Q174"                  "Q175"                  "Q176"                  "Q178"                  "Q179"                  "Q180"                 
+#[241] "Q181"                  "Q182"                  "Q183"                  "Q184"                  "Q185"                  "Q186"                 
+#[247] "Q187"                  "Q188"                  "Q189"                  "Q190"                  "Q191"                  "Q192"                 
+#[253] "Q193"                  "Q194"                  "Q195"                  "Q196"                  "Q197"                  "Q198"                 
+#[259] "Q199"                  "Q200"                  "Q201"                  "Q202"                  "Q203"                  "Q204"                 
+#[265] "Q207"                  "Q209"                  "Q212"                  "Q214"                  "Q216"                  "KCL"                  
+#[271] "age18"                 "UGPG"                  "year"                  "faculty"               "gender"                "transgender"          
+#[277] "orientation"           "ethnicity"             "student.status"        "age"                   "disability"            "LD"                   
+#[283] "accomodation"          "hm_KCL"                "hm_students"           "hm_friends"            "hm_family"             "hm_partner"           
+#[289] "hm_alone"              "hm_other"              "commute"               "employed"              "placement"             "relocation"        
+
+#Modified number of columns (-2)
+
+#To use the sapply() function in R, you have to define the List or Vector you want to iterate on the first parameter and the function you want to apply to each vector element in the second argument.
+wave1[, c(52:54)] <- sapply(wave1[, c(52:54)], as.numeric, is.na=NA)
+
+str(wave1$Q36)
+#chr [1:444] "1" "2" "3" "2" "2" "1" "3" "2" "1" "2" "2" "1" "3" "1" "2" "2" "3" "3" "2" "1" "2" "2" "3" "1" "2" "1" "2" "2" "3" "1" "1" "1" "1" "2" ...
+head(wave1$Q36)
+#[1]  7 10  6 10 12 12
+
+#The rowSums() is a built-in R function used to calculate the sum of rows of a matrix or an array. The rowSums() method takes an R Object-like matrix or array and returns the sum of rows.
+
+wave1$pre.loneliness<- rowSums(wave1[,c(52:54)], na.rm = TRUE)*NA^!rowSums(!is.na(wave1[,c(52:54)]))
+
+str(wave1$pre.loneliness)
+#num [1:444] 3 6 9 6 6 5 9 4 3 6 ...
+head(wave1$pre.loneliness)
+#[1] 3 6 9 6 6 5
+
+#Social life at uni 
+#-	Questions 
+
+wave1$Q39 <- recode(wave1$Q39, "5"="more than once a day", "4"="once a day", "3"="3-6 times per week", "2"="1-2 times per week", "1"="less than once a week")
+head(wave1$Q39)
+#[1] "3-6 times per week"    "3-6 times per week"    "less than once a week" "1-2 times per week"    "once a day"            "3-6 times per week"   
+
+wave1$Q40 <- recode(wave1$Q40,"7"="more than 10 times a day", "6"="6-10 times a day", "5"="2-5 times a day", "4"="once a day", "3"="3-6 times per week", "2"="1-2 times per week", "1"="less than once a week")
+head(wave1$Q40)
+#[1] "3-6 times per week"       "2-5 times a day"          "1-2 times per week"       "6-10 times a day"         "6-10 times a day"        
+#[6] "more than 10 times a day"
+
+wave1$Q41 <- recode(wave1$Q41, "10"="10+")
+head(wave1$Q41)
+#[1] "3" "1" "0" "1" "2" "0"
+
+#what about42 and 43??
+#-	UCLA loneliness scale
+#recode column (q45-q47,-2)
+
+wave1[, c(61:63)] <- sapply(wave1[, c(61:63)], as.numeric, is.na=NA)
+
+wave1$uni.loneliness<- rowSums(wave1[,c(61:63)], na.rm = TRUE)*NA^!rowSums(!is.na(wave1[,c(61:63)]))
+
+
+#Relationships Q48-Q51
+
+wave1$Q48B <- recode(wave1$Q48, "1"="single", "2"="dating non-exclusively", "3"="exclusive relationship", "4"="co-habitating", "5"="married", "6"="widowed", "7"="separated", "8"="divorced")
+head(wave1$Q48B)
+#[1] "co-habitating"          "single"                 "co-habitating"          "exclusive relationship" "single"                 "exclusive relationship"
+
+wave1$relationship.status <- recode(wave1$Q48, "1"="no", "2"="yes", "3"="yes", "4"="yes", "5"="yes", "6"= "no", "7" = "no", "8" ="no")
+head(wave1$relationship.status)
+
+#[1] "yes" "no"  "yes" "yes" "no"  "yes"
+
+
+wave1$Q49_1 <- as.numeric(wave1$Q49_1)
+
+wave1$Q49_2 <- as.numeric(wave1$Q49_2)
+
+wave1$relationship.months <- (wave1$Q49_1*12)+wave1$Q49_2
+head(wave1$relationship.months)
+#[1] 26 NA 25 NA NA 13
+
+wave1$Q50 <- recode(wave1$Q50, "1"="before", "2"="after")
+head(wave1$Q50)
+#[1] "after"  NA       "before" "before" NA       "after"
+
+
+wave1$Q51 <- recode(wave1$Q51, "1"="LDR", "2"="non-LDR")
+head(wave1$Q51)
+#[1] NA        NA        NA        "LDR"     NA        "non-LDR"
+
+
+#Physical activity Q53-Q59_2 (69:80)
+
+#vigorous activity Q53-Q54_2- first calculate time in minutes, then multiply by days
+
+wave1[, c(69:71)] <- sapply(wave1[, c(69:71)], as.numeric, is.na=NA)
+
+wave1$v.mins <- (wave1$Q54_1*60) + wave1$Q54_2
+head(wave1$v.mins)
+#[1] 60 30 NA NA  0 40
+
+wave1$ipaq.v <- wave1$v.mins*wave1$Q53
+head(wave1$ipaq.v)
+#[1]  60  60  NA  NA   0 120
+
+#moderate activity Q55 - Q56_2 (col 73 empty)
+
+wave1[, c(72, 74, 75)] <- sapply(wave1[, c(72, 74, 75)], as.numeric, is.na=NA)
+
+wave1$m.mins <- (wave1$Q56_1*60) + wave1$Q56_2
+head(wave1$m.mins)
+#[1] 120  30  NA  NA   0   0
+
+wave1$ipaq.m <- wave1$m.mins*wave1$Q55
+head(wave1$ipaq.m)
+#[1] 360  60  NA  NA   0   0
+
+#walking Q57 - Q58_2
+
+wave1[, c(76:78)] <- sapply(wave1[, c(76:78)], as.numeric, is.na=NA)
+
+wave1$w.mins <- (wave1$Q58_1*60) + wave1$Q58_2
+head(wave1$w.mins)
+#[1] 60 30 NA NA 30 60
+wave1$ipaq.walk <- wave1$w.mins*wave1$Q55
+head(wave1$ipaq.walk)
+#[1] 180  60  NA  NA   0   0
+
+#sitting (per day instead of per week)
+
+wave1[, c(79, 80)] <- sapply(wave1[, c(79, 80)], as.numeric, is.na=NA)
+
+wave1$ipaq.sit <- (wave1$Q59_1*60) + wave1$Q59_2
+head(wave1$ipaq.sit)
+#[1] 420 420  NA  NA  NA 300
+
+
+#Academic
+#-	Questions 
+
+#attendance - Q64 
+
+wave1$Q64 <- recode(wave1$Q64, "0"="0", "1"="10", "2"="20", "3"="30", "4"="40", "5"="50",
+                    "6"="60", "7"="70", "8"="80", "9"="90", "10"="100")
+head(wave1$Q64)
+#[1] "100" "10"  "90"  "100" "100" "100"
+
+
+#--NOTE---
+#quality control item Q217 appears at column 84
+#-	Procrastination - Q65 - Q70, column numbers: 87-92
+
+wave1[, c(87:92)] <- sapply(wave1[, c(87:92)], as.numeric, is.na=NA)
+#There were 42 warnings (use warnings() to see them)
+wave1$procrastination<- rowSums(wave1[,c(87:92)], na.rm = TRUE)*NA^!rowSums(!is.na(wave1[,c(87:92)]))
+
+str(wave1$procrastination)
+#num [1:444] 3079 2180 1846 2348 1664 ..
+head(wave1$procrastination)
+#[1] 3079.423 2180.423 1846.423 2348.423 1664.423 2107.266
+
+#Accommodation 
+#Finances 
+#-	Funding
+
+
+wave1$Q75_1 <- recode(wave1$Q75_1, "1"="none", "2"="less than half", "3"="half", "4"="more than half", "5"="all")
+head(wave1$Q75_1)
+#[1] "none" "none" "all"  NA     "none" "none"
+wave1$Q75_2 <- recode(wave1$Q75_2, "1"="none", "2"="less than half", "3"="half", "4"="more than half", "5"="all")
+head(wave1$Q75_2)
+#[1] "more than half" "none"           "none"           NA               "none"           "none"  
+wave1$Q75_3 <- recode(wave1$Q75_3, "1"="none", "2"="less than half", "3"="half", "4"="more than half", "5"="all")
+head(wave1$Q75_3)
+#[1] "none" "all"  "none" NA     "all"  "none"
+wave1$Q75_4 <- recode(wave1$Q75_4, "1"="none", "2"="less than half", "3"="half", "4"="more than half", "5"="all")
+head(wave1$Q75_4)
+#[1] "less than half" NA               "less than half" "less than half" "less than half" "less than half"
+
+wave1$Q75_5 <- recode(wave1$Q75_5, "1"="none", "2"="less than half", "3"="half", "4"="more than half", "5"="all")
+head(wave1$Q75_5)
+#[1] "half"           "less than half" "none"           "more than half" "none"           "more than half"
+
+wave1$Q75_6 <- recode(wave1$Q75_6, "1"="none", "2"="less than half", "3"="half", "4"="more than half", "5"="all")
+head(wave1$Q75_6)
+#[1] "less than half" "none"           "less than half" NA               "none"           "none"  
+
+wave1$Q75_7 <- recode(wave1$Q75_7, "1"="none", "2"="less than half", "3"="half", "4"="more than half", "5"="all")
+head(wave1$Q75_7)
+#[1] "none" "none" "none" NA     "none" "none"
+
+wave1$Q75_8 <- recode(wave1$Q75_8, "1"="none", "2"="less than half", "3"="half", "4"="more than half", "5"="all")
+head(wave1$Q75_8)
+#[1] "none"           "none"           "none"           NA               "none"           "less than half"
+
+wave1$Q76 <- recode(wave1$Q76, "1"="none", "2"="less £10k", "3"="£10k-£30k", "4"="£30k-£50k", "5"="£50k+")
+head(wave1$Q76)
+#[1] "less £10k" "none"      "£30k-£50k" "none"      "none"      "£10k-£30k"
+
+wave1$Q77 <- recode(wave1$Q77, "1"="not stressed", "2"="a little stressed", "3"="quite stressed", "4"="very stressed")
+head(wave1$Q77)
+
+#[1] "not stressed" NA             "not stressed" NA             NA             "not stressed"
+
+wave1$Q78 <- recode(wave1$Q78, "1"="yes", "2"="no")
+head(wave1$Q78)
+#[1] "no" "no" "no" "no" "no" "no"
+
+wave1$Q79 <- recode(wave1$Q79, "1"="yes", "2"="no")
+head(wave1$Q79)
+#[1] "no" "no" "no" "no" "no" "no"
+
+
+#-	Perceptions 
+
+
+#GAD-7 - scoring, severity and above clinical cut-off - Q132_1 - Q132_7, columns 163 - 169
+
+wave1$Q132_1[wave1$Q132_1 == ""] <- "NA"
+wave1$Q132_2[wave1$Q132_2 == ""] <- "NA"
+wave1$Q132_3[wave1$Q132_3 == ""] <- "NA"
+wave1$Q132_4[wave1$Q132_4 == ""] <- "NA"
+wave1$Q132_5[wave1$Q132_5 == ""] <- "NA"
+wave1$Q132_6[wave1$Q132_6 == ""] <- "NA"
+wave1$Q132_7[wave1$Q132_7 == ""] <- "NA"
+
+wave1[, c(163:169)] <- sapply(wave1[, c(163:169)], as.numeric, is.na=NA)
+#There were 40 warnings (use warnings() to see them)
+
+wave1$GAD<- rowSums(wave1[,c(163:169)], na.rm = TRUE)*NA^!rowSums(!is.na(wave1[,c(163:169)]))
+str(wave1$GAD)
+# num [1:444] 5157 3648 2676 3185 2527 ...
+
+head(wave1$GAD)
+#[1] 5156.847 3647.847 2675.847 3184.847 2526.847 3429.532
+
+wave1$GADseverity <- 'NA'
+wave1$GADseverity[wave1$GAD==0] <- 'none'
+wave1$GADseverity[wave1$GAD>0] <- 'none'
+wave1$GADseverity[wave1$GAD>4] <- 'mild'
+wave1$GADseverity[wave1$GAD>9] <- 'moderate'
+wave1$GADseverity[wave1$GAD>14] <- 'severe'
+head(wave1$GADseverity)  
+#[1] "severe" "severe" "severe" "severe" "severe" "severe"
+
+wave1$GADseverity <- as.factor(wave1$GADseverity)
+str(wave1$GADseverity)
+#Factor w/ 1 level "severe": 1 1 1 1 1 1 1 1 1 1 ...
+
+#GAD above clinical cut-off (=8)
+
+wave1$GADclinical <- 'NA'
+wave1$GADclinical[wave1$GAD==0] <- 'non-clinical'
+wave1$GADclinical[wave1$GAD<8] <- 'non-clinical'
+wave1$GADclinical[wave1$GAD>7] <- 'clinical'
+
+head(wave1$GADclinical)
+#[1] "clinical" "clinical" "clinical" "clinical" "clinical" "clinical"
+wave1$GADclinical <- as.factor(wave1$GADclinical)
+str(wave1$GADclinical)
+# Factor w/ 1 level "clinical": 1 1 1 1 1 1 1 1 1 1 ...
+
+#PHQ-9 - questions Q133_1 to Q133_9, colnames = 170 - 178
+
+wave1$Q133_1[wave1$Q133_1 == ""] <- "NA"
+wave1$Q133_2[wave1$Q133_2 == ""] <- "NA"
+wave1$Q133_3[wave1$Q133_3 == ""] <- "NA"
+wave1$Q133_4[wave1$Q133_4 == ""] <- "NA"
+wave1$Q133_5[wave1$Q133_5 == ""] <- "NA"
+wave1$Q133_6[wave1$Q133_6 == ""] <- "NA"
+wave1$Q133_7[wave1$Q133_7 == ""] <- "NA"
+wave1$Q133_8[wave1$Q133_8 == ""] <- "NA"
+wave1$Q133_9[wave1$Q133_9 == ""] <- "NA"
+
+wave1[, c(170:178)] <- sapply(wave1[, c(170:178)], as.numeric, is.na=NA)
+
+wave1$PHQ<- rowSums(wave1[,c(170:178)], na.rm = TRUE)*NA^!rowSums(!is.na(wave1[,c(170:178)]))
+str(wave1$PHQ)
+# num [1:444] 11317 8034 6215 7935 5915 ...
+head(wave1$PHQ)
+#[1] 11316.694  8033.694  6214.694  7934.694  5914.694  7655.064
+wave1$PHQseverity <- 'NA'
+wave1$PHQseverity[wave1$PHQ==0] <- 'none'
+wave1$PHQseverity[wave1$PHQ>0] <- 'none'
+wave1$PHQseverity[wave1$PHQ>4] <- 'mild'
+wave1$PHQseverity[wave1$PHQ>9] <- 'moderate'
+wave1$PHQseverity[wave1$PHQ>14] <- 'moderately severe'
+wave1$PHQseverity[wave1$PHQ>19] <- 'severe'
+
+head(wave1$PHQseverity) 
+#[1] "severe" "severe" "severe" "severe" "severe" "severe"
+wave1$PHQseverity <- as.factor(wave1$PHQseverity)
+str(wave1$PHQseverity)
+#Factor w/ 1 level "severe": 1 1 1 1 1 1 1 1 1 1 ...
+
+#PHQ above clinical cut-off (=10)
+
+wave1$PHQclinical <- 'NA'
+wave1$PHQclinical[wave1$PHQ==0] <- 'non-clinical'
+wave1$PHQclinical[wave1$PHQ<10] <- 'non-clinical'
+wave1$PHQclinical[wave1$PHQ>=10] <- 'clinical'
+
+head(wave1$PHQclinical)
+#[1] "clinical" "clinical" "clinical" "clinical" "clinical" "clinical"
+wave1$PHQclinical <- as.factor(wave1$PHQclinical)
+str(wave1$PHQclinical)
+#Factor w/ 1 level "clinical": 1 1 1 1 1 1 1 1 1 1 ...
+
+#SPIN Q136, Q137, Q138  - NOTE: recoded to 0-4 in the real thing. Columns 181 - 183
+
+wave1[, c(179:181)] <- sapply(wave1[, c(179:181)], as.numeric, is.na=NA)
+
+wave1$social.anxiety = rowSums(wave1[,c(179:181)], na.rm=TRUE)*NA^!rowSums(!is.na(wave1[,c(179:181)]))
+
+str(wave1$social.anxiety)
+# num [1:444] 2 5 7 7 10 2 8 2 5 0 ...
+head(wave1$social.anxiety)
+#[1]  2  5  7  7 10  2
+
+#Brief Self-Control Scale - questions 2, 3, 4, 5, 7, 9, 10, 12 & 13 need to be reverse-scored
+#question numbers:  Q140_1 - Q140_13
+#column numbers: 182 - 194
+
+wave1$Q140_2 <- recode(wave1$Q140_2, "1"="5", "2"="4", "3"="3", "4"="2", "5"="1")
+head(wave1$Q140_2)
+#[1] "2" "1" "3" "2" "2" "2"
+
+wave1$Q140_3 <- recode(wave1$Q140_3, "1"="5", "2"="4", "3"="3", "4"="2", "5"="1")
+head(wave1$Q140_3)
+#[1] "5" "2" "5" "2" "4" "2"
+
+wave1$Q140_4 <- recode(wave1$Q140_4, "1"="5", "2"="4", "3"="3", "4"="2", "5"="1")
+head(wave1$Q140_4)
+#[1] "5" "3" "3" "4" "5" "3"
+
+wave1$Q140_5 <- recode(wave1$Q140_5, "1"="5", "2"="4", "3"="3", "4"="2", "5"="1")
+head(wave1$Q140_5)
+#[1] "5" "5" "3" "4" "4" "4"
+
+wave1$Q140_7 <- recode(wave1$Q140_7, "1"="5", "2"="4", "3"="3", "4"="2", "5"="1")
+head(wave1$Q140_7)
+#[1] "4" "1" "4" "1" "1" "2"
+
+wave1$Q140_9 <- recode(wave1$Q140_9, "1"="5", "2"="4", "3"="3", "4"="2", "5"="1")
+head(wave1$Q140_9)
+#[1] "2" "2" "2" "2" "2" "2"
+
+wave1$Q140_10 <- recode(wave1$Q140_10, "1"="5", "2"="4", "3"="3", "4"="2", "5"="1")
+head(wave1$Q140_10)
+#[1] "4" "4" "5" "2" "3" "3"
+
+wave1$Q140_12 <- recode(wave1$Q140_12, "1"="5", "2"="4", "3"="3", "4"="2", "5"="1")
+head(wave1$Q140_12)
+#[1] "1" "4" "2" "2" "2" "2"
+
+wave1$Q140_13 <- recode(wave1$Q140_13, "1"="5", "2"="4", "3"="3", "4"="2", "5"="1")
+head(wave1$Q140_13)
+#[1] "5" "2" "4" "3" "4" "4"
+
+wave1[, c(182:194)] <- sapply(wave1[, c(182:194)], as.numeric, is.na=NA)
+
+wave1$self.control = rowSums(wave1[,c(184:194)], na.rm=TRUE)*NA^!rowSums(!is.na(wave1[,c(184:194)]))
+
+str(wave1$self.control)
+# num [1:444] 45 34 41 36 39 36 29 35 41 44 ...
+
+#AUDIT - unsure re. cut-off point. Work out total of AUDIT-5, plus the added item re. binge-drinking that we included
+#Q141 - Q146
+#columns 196 - 202
+#----------------------NOTE: Quality control item Q220 is column number 200
+
+wave1$Q141[wave1$Q141 == ""] <- "NA"
+wave1$Q142[wave1$Q142 == ""] <- "NA"
+wave1$Q143[wave1$Q143 == ""] <- "NA"
+wave1$Q144[wave1$Q144 == ""] <- "NA"
+wave1$Q145[wave1$Q145 == ""] <- "NA"
+wave1$Q146[wave1$Q146 == ""] <- "NA"
+
+wave1[, c(196:202)] <- sapply(wave1[, c(196:202)], as.numeric, is.na=NA)
+
+#total - excluding item Q143 because not in the original AUDIT-5
+#excluding column 200 because it is a quality control item
+wave1$AUDIT = rowSums(wave1[,c(196, 197, 199, 201, 202)], na.rm=TRUE)*NA^!rowSums(!is.na(wave1[,c(196, 197, 199, 201, 202)]))
+
+head(wave1$AUDIT)
+#[1] 1 0 4 3 5 5
+
+#according to Kim et al (2013) cut-offs are: >2 = problem drinking, >6 = possible alcohol use disorder, >10 = possible alcohol dependence
+
+wave1$alcohol.screening <- 'NA'
+wave1$alcohol.screening[wave1$AUDIT==0] <- 'negative'
+wave1$alcohol.screening[wave1$AUDIT > 0] <- 'negative'
+wave1$alcohol.screening[wave1$AUDIT > 2] <- 'problem drinking'
+wave1$alcohol.screening[wave1$AUDIT > 6] <- 'alcohol use disorder'
+wave1$alcohol.screening[wave1$AUDIT > 10] <- 'alcohol dependence'
+
+head(wave1$alcohol.screening)
+
+#[1] "negative"         "negative"         "problem drinking" "problem drinking" "problem drinking"
+#[6] "problem drinking"
+
+#CUDIT - screener = Q148, rest = Q149-Q155; columns 204 - 210
+
+wave1$Q148[wave1$Q148 == ""] <- "NA"
+wave1$Q149[wave1$Q149 == ""] <- "NA"
+wave1$Q150[wave1$Q150 == ""] <- "NA"
+wave1$Q151[wave1$Q151 == ""] <- "NA"
+wave1$Q152[wave1$Q152 == ""] <- "NA"
+wave1$Q153[wave1$Q153 == ""] <- "NA"
+wave1$Q154[wave1$Q154 == ""] <- "NA"
+wave1$Q155[wave1$Q155 == ""] <- "NA"
+
+wave1[, c(204:210)] <- sapply(wave1[, c(204:210)], as.numeric, is.na=NA)
+
+wave1$CUDIT = rowSums(wave1[,c(204:210)], na.rm=TRUE)*NA^!rowSums(!is.na(wave1[,c(204:210)]))
+
+head(wave1$CUDIT)
+#[1]  0 NA NA  2 NA NA
+
+#cut-off: 8 or more = hazardous cannabis use, 12 or more indicate possible cannabis use disorder
+
+wave1$cannabis.screening <- 'NA'
+wave1$cannabis.screening[wave1$CUDIT==0] <- 'negative'
+wave1$cannabis.screening[wave1$CUDIT > 0] <- 'negative'
+wave1$cannabis.screening[wave1$CUDIT > 7] <- 'hazardous'
+wave1$cannabis.screening[wave1$CUDIT > 11] <- 'cannabis use disorder'
+
+head(wave1$cannabis.screening)
+#[1] "negative" "NA"       "NA"       "negative" "NA"       "NA"
+
+
+#Substance use Q156 - Q157_7
+
+wave1$Q156 <- recode(wave1$Q156, "1"="yes", "2"="no")
+head(wave1$Q156)
+#[1] "no"  "no"  "yes" "no"  "no"  "no"
+
+wave1$Q157_1 <- recode(wave1$Q157_1, "0"="no", "1"="once", "2"="2-5 times", "3"="6-10 times", "4"="10+ times")
+head(wave1$Q157_1)
+#[1] NA          NA          "10+ times" NA          NA          NA     
+
+wave1$Q157_2 <- recode(wave1$Q157_2, "0"="no", "1"="once", "2"="2-5 times", "3"="6-10 times", "4"="10+ times")
+head(wave1$Q157_2)
+#[1] NA   NA   "no" NA   NA   NA  
+
+wave1$Q157_3 <- recode(wave1$Q157_3, "0"="no", "1"="once", "2"="2-5 times", "3"="6-10 times", "4"="10+ times")
+head(wave1$Q157_3)
+#[1] NA   NA   "no" NA   NA   NA  
+
+wave1$Q157_4 <- recode(wave1$Q157_4, "0"="no", "1"="once", "2"="2-5 times", "3"="6-10 times", "4"="10+ times")
+head(wave1$Q157_4)
+#[1] NA     NA     "once" NA     NA     NA
+
+wave1$Q157_5 <- recode(wave1$Q157_5, "0"="no", "1"="once", "2"="2-5 times", "3"="6-10 times", "4"="10+ times")
+head(wave1$Q157_5)
+#[1] NA   NA   "no" NA   NA   NA  
+
+wave1$Q157_6 <- recode(wave1$Q157_6, "0"="no", "1"="once", "2"="2-5 times", "3"="6-10 times", "4"="10+ times")
+head(wave1$Q157_6)
+#[1] NA   NA   "no" NA   NA   NA  
+
+wave1$Q157_7 <- recode(wave1$Q157_7, "0"="no", "1"="once", "2"="2-5 times", "3"="6-10 times", "4"="10+ times")
+head(wave1$Q157_7)
+#[1] NA   NA   "no" NA   NA   NA  
+#Stress - Q159 - Q162, columns: 219 - 222
+
+wave1[, c(219:222)] <- sapply(wave1[, c(219:222)], as.numeric, is.na=NA)
+
+wave1$perceived.stress = rowSums(wave1[,c(219:222)], na.rm=TRUE)*NA^!rowSums(!is.na(wave1[,c(219:222)]))
+
+str(wave1$perceived.stress)
+# num [1:444] 1 11 9 9 5 5 12 4 10 1 ...
+head(wave1$perceived.stress)
+#[1]  1 11  9  9  5  5
+
+#Wellbeing Q163 - Q176, columns 223 - 237
+#NOTE: Q221 is a quality control item and is column number 230
+
+wave1[, c(223:229, 231:237)][wave1[, c(223:229, 231:237)] == ""] <- "NA"
+
+wave1[, c(223:229, 231:237)] <- sapply(wave1[, c(223:229, 231:237)], as.numeric, is.na=NA)
+
+wave1$wellbeing<- rowSums(wave1[,c(223:229, 231:237)], na.rm = TRUE)*NA^!rowSums(!is.na(wave1[,c(223:229, 231:237)]))
+
+str(wave1$wellbeing)
+# num [1:444] 67 35 48 34 52 56 44 52 48 56 ...
+head(wave1$wellbeing)
+#[1] 67 35 48 34 52 56
+
+#Sleep
+#-	Sleep Hygiene Q178 - Q188. (238:248)
+
+wave1$Q178 <- recode(wave1$Q178, "1"="00:00", "2"="00:30", "3"="01:00", "4"="01:30", "5"="02:00", 
+                     "6"="02:30", "7"="03:00", "8"="03:30", "9"="04:00", "10"="04:30", 
+                     "11"="05:00", "12"="05:30", "13"="06:00", "14"="06:30", "15"="07:00", 
+                     "16"="07:30", "17"="08:00", "18"="08:30", "19"="09:00", "20"="09:30",
+                     "21"="10:00", "22"="10:30", "23"="11:00", "24"="11:30", "25"="12:00",
+                     "26"="12:30", "27"="13:00", "28"="13:30", "29"="14:00", "30"="14:30",
+                     "31"="15:00", "32"="15:30", "33"="16:00", "34"="16:30", "35"="17:00",
+                     "36"="17:30", "37"="18:00", "38"="18:30", "39"="19:00", "40"="19:30", 
+                     "41"="20:00", "42"="20:30", "43"="21:00", "44"="21:30", "45"="22:00", 
+                     "46"="22:30", "47"="23:00", "48"="23:30")
+head(wave1$Q178)
+#[1] "09:00" "08:30" "06:00" "09:30" "09:30" "08:30"
+wave1$Q179 <- recode(wave1$Q179, "1"="00:00", "2"="00:30", "3"="01:00", "4"="01:30", "5"="02:00", 
+                     "6"="02:30", "7"="03:00", "8"="03:30", "9"="04:00", "10"="04:30", 
+                     "11"="05:00", "12"="05:30", "13"="06:00", "14"="06:30", "15"="07:00", 
+                     "16"="07:30", "17"="08:00", "18"="08:30", "19"="09:00", "20"="09:30",
+                     "21"="10:00", "22"="10:30", "23"="11:00", "24"="11:30", "25"="12:00",
+                     "26"="12:30", "27"="13:00", "28"="13:30", "29"="14:00", "30"="14:30",
+                     "31"="15:00", "32"="15:30", "33"="16:00", "34"="16:30", "35"="17:00",
+                     "36"="17:30", "37"="18:00", "38"="18:30", "39"="19:00", "40"="19:30", 
+                     "41"="20:00", "42"="20:30", "43"="21:00", "44"="21:30", "45"="22:00", 
+                     "46"="22:30", "47"="23:00", "48"="23:30")
+#Warning message:
+#Unreplaced values treated as NA as `.x` is not compatible.
+#Please specify replacements exhaustively or supply `.default`.
+
+head(wave1$Q179)
+#[1] "23:30" "23:30" "22:00" "03:00" "22:30" "23:30"
+
+wave1$Q180 <- recode(wave1$Q180, "1"="00:00", "2"="00:30", "3"="01:00", "4"="01:30", "5"="02:00", 
+                     "6"="02:30", "7"="03:00", "8"="03:30", "9"="04:00", "10"="04:30", 
+                     "11"="05:00", "12"="05:30", "13"="06:00", "14"="06:30", "15"="07:00", 
+                     "16"="07:30", "17"="08:00", "18"="08:30", "19"="09:00", "20"="09:30",
+                     "21"="10:00", "22"="10:30", "23"="11:00", "24"="11:30", "25"="12:00",
+                     "26"="12:30", "27"="13:00", "28"="13:30", "29"="14:00", "30"="14:30",
+                     "31"="15:00", "32"="15:30", "33"="16:00", "34"="16:30", "35"="17:00",
+                     "36"="17:30", "37"="18:00", "38"="18:30", "39"="19:00", "40"="19:30", 
+                     "41"="20:00", "42"="20:30", "43"="21:00", "44"="21:30", "45"="22:00", 
+                     "46"="22:30", "47"="23:00", "48"="23:30")
+head(wave1$Q180)
+#[1] "10:00" "09:30" "08:00" "14:00" "09:30" "10:00"
+
+wave1$Q181 <- recode(wave1$Q181, "1"="00:00", "2"="00:30", "3"="01:00", "4"="01:30", "5"="02:00", 
+                     "6"="02:30", "7"="03:00", "8"="03:30", "9"="04:00", "10"="04:30", 
+                     "11"="05:00", "12"="05:30", "13"="06:00", "14"="06:30", "15"="07:00", 
+                     "16"="07:30", "17"="08:00", "18"="08:30", "19"="09:00", "20"="09:30",
+                     "21"="10:00", "22"="10:30", "23"="11:00", "24"="11:30", "25"="12:00",
+                     "26"="12:30", "27"="13:00", "28"="13:30", "29"="14:00", "30"="14:30",
+                     "31"="15:00", "32"="15:30", "33"="16:00", "34"="16:30", "35"="17:00",
+                     "36"="17:30", "37"="18:00", "38"="18:30", "39"="19:00", "40"="19:30", 
+                     "41"="20:00", "42"="20:30", "43"="21:00", "44"="21:30", "45"="22:00", 
+                     "46"="22:30", "47"="23:00", "48"="23:30")
+#Warning message:
+#Unreplaced values treated as NA as `.x` is not compatible.
+#Please specify replacements exhaustively or supply `.default`.
+head(wave1$Q181)
+#[1] NA      "00:00" "23:00" "04:00" "22:30" "01:00"
+
+wave1$Q182 <- recode(wave1$Q182, "10"="10+")
+#Warning message:
+#Unreplaced values treated as NA as `.x` is not compatible.
+#Please specify replacements exhaustively or supply `.default`.
+head(wave1$Q182)
+#[1] NA NA NA NA NA NA
+
+#-	Sleep condition indicator Q189 - Q196; columns 249 - 256 
+
+wave1$Q189[wave1$Q189 == ""] <- "NA"
+wave1$Q190[wave1$Q190 == ""] <- "NA"
+wave1$Q191[wave1$Q191 == ""] <- "NA"
+wave1$Q192[wave1$Q192 == ""] <- "NA"
+wave1$Q193[wave1$Q193 == ""] <- "NA"
+wave1$Q194[wave1$Q194 == ""] <- "NA"
+wave1$Q195[wave1$Q195 == ""] <- "NA"
+wave1$Q196[wave1$Q196 == ""] <- "NA"
+
+
+
+wave1[, c(249:256)] <- sapply(wave1[, c(249:256)], as.numeric, is.na=NA)
+
+wave1$SCI = rowSums(wave1[,c(249:256)], na.rm=TRUE)
+
+wave1$SCI = rowSums(wave1[,c(249:256)], na.rm=TRUE)*NA^!rowSums(!is.na(wave1[,c(251:258)]))
+
+head(wave1$SCI)
+#[1] 31  6 19 18 11 29
+
+#sleep condition indicators cut-off - probable insomnia disorder = score of less than or equal to 16
+
+wave1$insomnia.screening <- 'NA'
+wave1$insomnia.screening[wave1$SCI==0] <- 'negative'
+wave1$insomnia.screening[wave1$SCI > 0] <- 'negative'
+wave1$insomnia.screening[wave1$SCI < 17] <- 'positive'
+
+head(wave1$insomnia.screening)
+#[1] "negative" "positive" "negative" "negative" "positive" "negative"
+
+#Perfectionism Q197 - Q204, columns 257-264
+
+wave1[, c(257:264)] <- sapply(wave1[, c(257:264)], as.numeric, is.na=NA)
+
+wave1$perfectionism = rowSums(wave1[,c(257:264)], na.rm=TRUE)*NA^!rowSums(!is.na(wave1[,c(257:264)]))
+str(wave1$perfectionism)
+# num [1:444] 23 20 40 31 33 17 33 28 30 40 ...
+head(wave1$perfectionism)
+#[1] 23 20 40 31 33 17
+
+#custom items - Student Experience Questions
+#subscale 1 = Academic - Q60, Q61, Q62 and Q63. Columns 81, 82, 83 and 85 (84 is a quality control item)
+
+str(wave1$Q60)
+#num [1:444] 5 4 5 2 5 4 4 5 4 5
+
+wave1[, c(81:83, 85)] <- sapply(wave1[, c(81:83, 85)], as.numeric, is.na=NA)
+
+wave1$SE.academic<- rowSums(wave1[,c(81:83, 85)], na.rm = TRUE)*NA^!rowSums(!is.na(wave1[,c(81:83, 85)]))
+str(wave1$SE.academic)
+# num [1:444] 19 10 19 14 16 17 15 17 14 17 ...
+head(wave1$SE.academic)
+#[1] 19 10 19 14 16 17
+
+#subscale 2 = finances - Q80, Q81, Q82. Columns 109, 110, 112 (111 is a quality control item)
+
+wave1[, c(109, 110, 112)] <- sapply(wave1[, c(109, 110, 112)], as.numeric, is.na=NA)
+
+wave1$SE.finances<- rowSums(wave1[,c(109, 110, 112)], na.rm = TRUE)*NA^!rowSums(!is.na(wave1[,c(109, 110, 112)]))
+str(wave1$SE.finances)
+#num [1:444] 15 10 7 12 13 11 9 10 9 7 ...
+head(wave1$SE.finances)
+#[1] 15 10  7 12 13 11
+
+#subscale 3 = accomodation -    Q71, Q72, Q73, Q74. Columns 93:96
+
+wave1[, c(93:96)] <- sapply(wave1[, c(93:96)], as.numeric, is.na=NA)
+
+wave1$SE.accom<- rowSums(wave1[,c(93:96)], na.rm = TRUE)*NA^!rowSums(!is.na(wave1[,c(95:98)]))
+str(wave1$SE.accom)
+#num [1:444] 18 20 12 15 13 16 19 19 16 20 ...
+head(wave1$SE.accom)
+#[1] 18 20 12 15 13 16
+
+#subscale 4 = friendship, Q42, Q43. Columns 58 & 59
+
+wave1[, c(58, 59)] <- sapply(wave1[, c(58, 59)], as.numeric, is.na=NA)
+
+wave1$SE.friends<- rowSums(wave1[,c(58, 59)], na.rm = TRUE)*NA^!rowSums(!is.na(wave1[,c(58, 59)]))
+str(wave1$SE.friends)
+#num [1:444] 8 5 5 4 4 7 6 6 4 10 ...
+head(wave1$SE.friends)
+#[1] 8 5 5 4 4 7
+
+#subscale 5 = community, Q26 & Q44, columns 42 & 60
+
+wave1[, c(42, 60)] <- sapply(wave1[, c(42, 60)], as.numeric, is.na=NA)
+
+wave1$SE.community<- rowSums(wave1[,c(42, 60)], na.rm = TRUE)*NA^!rowSums(!is.na(wave1[,c(42, 60)]))
+str(wave1$SE.community)
+#num [1:444] 10 5 5 6 7 4 10 5 4 5 ...
+head(wave1$SE.community)
+#[1] 10  5  5  6  7  4
+
+
+#Completors #### 
+
+#completors and non-completors
+
+str(wave1$Progress)
+# chr [1:444] "100" "100" "100" "100" "100" "100" "100" "100" "100" "100" "100" "100" "100" ...
+
+wave1$Progress <- as.numeric(wave1$Progress)
+
+hist(wave1$Progress)
+
+describe(wave1$Progress)
+
+# vars   n mean    sd median trimmed mad min max range  skew kurtosis   se
+#X1    1 444 61.3 45.13    100   63.76   0   0 100   100 -0.37     -1.8 2.14
+
+#coding completors and non-completors
+
+wave1$Progress <- as.numeric(wave1$Progress)
+
+wave1$cut.off <- 'pass'
+wave1$cut.off[wave1$Progress < 10] <- 'fail'
+head(wave1$cut.off)
+#[1] "pass" "pass" "pass" "pass" "pass" "pass"
+
+table(wave1$cut.off)
+#fail pass 
+# 144  300
+#PASS####
+pass <- filter(wave1, cut.off == "pass")
+#quality check####
+quality <- pass[, c(9,84,111,200,230)]
+
+quality[, c(2:5)] <- sapply(quality[, c(2:5)], as.numeric, is.na=NA)
+quality$tot <- rowSums(quality[2:5])
+
+quality$exc <- ifelse(quality$tot == 28, "keep", "exclude")
+
+table(quality$exc)
+#exclude    keep 
+#50     189 
+
+quality$tot[is.na(quality$tot)]<- 1
+quality$exc <- ifelse(quality$tot == 28, "keep", "exclude")
+
+table(quality$exc)
+# exclude    keep 
+#    111     189 
+
+
+quality$Q220[is.na(quality$Q220)]<- 0
+quality$Q217[is.na(quality$Q217)]<- 0
+quality$Q218[is.na(quality$Q218)]<- 0
+quality$Q221[is.na(quality$Q221)]<- 0
+
+table(quality$Q217) #35 NA; 8 within one; 20 completely wrong
+table(quality$Q218) #44 NA; 24 within one; 2 completely wrong
+table(quality$Q220) #56 NA; 1 within one; 
+table(quality$Q221) #60 NA; 2 within one;
+table(quality$Q217,quality$Q218)
+
+####  0   8   9  11  12
+#0   34   0   0   0   1
+#9    0   0   0   0  20
+#10   0   0   0   0   3
+#11  10   1   1  24 201
+#12   0   0   0   0   5
+
+
+table(quality$Q217,quality$Q220)
+
+###   0   1   2
+#0   34   0   1
+#9    2   0  18
+#10   0   0   3
+#11  20   0 217
+#12   0   1   4
+
+table(quality$Q217,quality$Q221)
+
+###   0   3   4
+#0   34   1   0
+#9    2  18   0
+#10   0   3   0
+#11  24 211   2
+#12   0   5   0
+
+
+
+quality$Q217n <- ifelse(quality$Q217 == 11, 1, 0)
+quality$Q218n <- ifelse(quality$Q218 == 12, 1, 0)
+quality$Q220n <- ifelse(quality$Q220 == 2, 1, 0)
+quality$Q221n <- ifelse(quality$Q221 == 3, 1, 0)
+quality$totyn <- rowSums(quality[8:11])
+
+table(quality$totyn) 
+# 2+ = 252
+# 3+ = 242
+# 4  = 188
+
+quality$Two_plus <- ifelse(quality$totyn>= 2, 1,0)
+quality$Three_plus <- ifelse(quality$totyn>= 3, 1,0)
+quality$Four <- ifelse(quality$totyn>= 4, 1,0)
+
+table(quality$Two_plus) 
+table(quality$Three_plus)
+table(quality$Four)
+
+quality <- quality[,c(1,13:15)]
+
+pass <- right_join(pass, quality)
+pass <- filter(pass, Three_plus==1) 
+
+pass <- filter(pass, Three_plus==1) 
+
+#Creating new divisions for scales without cut off and with cut off WORKS####
+
+#Perfectionism
+
+pass$perfectionism.screening <- 'NA'
+pass$perfectionism.screening[pass$perfectionism >= 8] <- 'Low Perfectionism'
+pass$perfectionism.screening[pass$perfectionism >= 16] <- 'Moderate Perfectionism'
+pass$perfectionism.screening[pass$perfectionism >= 32] <- 'High Perfectionism'
+table(pass$perfectionism.screening)
+
+#    High Perfectionism      Low Perfectionism Moderate Perfectionism                     NA 
+#                   81                      6                    149                      6 
+head(pass$perfectionism)
+#[1] 23 20 40 31 33 17
+head(pass$perfectionism.screening)
+#[1] "Moderate Perfectionism" "Moderate Perfectionism" "High Perfectionism"     "Moderate Perfectionism"
+#[5] "High Perfectionism"     "Moderate Perfectionism"
+
+
+#Social Anxiety (actual cut off)
+
+head(pass$social.anxiety)
+#[1]  2  5  7  7 10  2
+pass$socialanxiety.clin<- 'NA'
+pass$socialanxiety.clin[pass$social.anxiety < 6] <- 'Non-clinical'
+pass$socialanxiety.clin[pass$social.anxiety >= 6] <- 'Clinical'
+head(pass$socialanxiety.clin)
+#[1] "Non-clinical" "Non-clinical" "Clinical"     "Clinical"     "Clinical"     "Non-clinical"
+table(pass$socialanxiety.clin)
+#  Clinical Non-clinical 
+#     88          154 
+
+#CUTOFF 
+
+pass$procrastination.screening<-'NA'
+pass$procrastination.screening[pass$procrastination >= 6]<-'Low Procrastination'
+pass$procrastination.screening[pass$procrastination >= 18]<-'Moderate Procrastination'
+pass$procrastination.screening[pass$procrastination >= 24]<-'High Procrastination'
+
+table(pass$procrastination.screening)
+
+#    High Procrastination      Low Procrastination Moderate Procrastination                       NA 
+#                      48                      108                       85                        1 
+
+#UCLA loneliness scale(pre and post uni start)(cut-off = 6)
+
+pass$uni.loneliness.screening <-'NA'
+pass$uni.loneliness.screening[pass$uni.loneliness>= 6]<-'Lonely'
+pass$uni.loneliness.screening[pass$uni.loneliness<6]<-'Not Lonely'
+
+
+table(pass$uni.loneliness.screening)
+
+#  Lonely         NA Not Lonely 
+#       161         24        115
+
+
+pass$pre.loneliness.screening <-'NA'
+pass$pre.loneliness.screening[pass$pre.loneliness<6]<-'Not Lonely'
+pass$pre.loneliness.screening[pass$pre.loneliness>= 6]<-'Lonely'
+table(pass$pre.loneliness.screening)
+
+#    Lonely         NA Not Lonely 
+#       152         17        131 
+
+
+#Self control
+
+pass$self.control.screening <-'NA'
+pass$self.control.screening[pass$self.control >=13]<-'Not Controlled'
+pass$self.control.screening[pass$self.control >= 26]<-'Slightly Controlled'
+pass$self.control.screening[pass$self.control >= 39]<-'Moderately Controlled'
+pass$self.control.screening[pass$self.control >= 52]<-'Controlled'
+
+
+table(pass$self.control.screening)
+
+#Moderately Controlled                    NA        Not Controlled   Slightly Controlled 
+#                  115                    56                     2                   127
+
+
+#Social anxiety
+
+pass$social.anxiety.screening <-'NA'
+pass$social.anxiety.screening [pass$social.anxiety <6]<-'Not Anxious'
+pass$social.anxiety.screening [pass$social.anxiety >= 6]<-'Anxious'
+
+table(pass$social.anxiety.screening)
+prop.table(table(pass$social.anxiety.screening))
+#Anxious          NA Not Anxious 
+#        89          52         159
+
+#AUDIT
+table(pass$alcohol.screening)
+#alcohol dependence       alcohol use disorder             negative          problem drinking 
+#9                                15                          113                  105 
+prop.table(table(pass$alcohol.screening))
+
+#CUDIT
+table(pass$cannabis.screening)
+prop.table(table(pass$cannabis.screening))
+
+#cannabis use disorder             hazardous                   NA              negative 
+#                   4                     9                   129                   100 
+
+#Perceived Stress
+
+pass$perceived.stress.screening <-'NA'
+pass$perceived.stress.screening[pass$perceived.stress >= 0]<-'Little to no perceived stress'
+pass$perceived.stress.screening[pass$perceived.stress>= 4]<-'Slightly perceived stress'
+pass$perceived.stress.screening[pass$perceived.stress>= 8]<-'moderate perceived stress'
+pass$perceived.stress.screening[pass$perceived.stress>= 12]<-'Highly perceived stress'
+table(pass$perceived.stress.screening)
+
+
+#   Highly perceived stress Little to no perceived stress     moderate perceived stress 
+#            26                            24                            89 
+#    NA     Slightly perceived stress 
+#     4                            99 
+
+#wellbeing
+describe(pass$wellbeing)
+pass$wellbeing.screening <- ifelse(pass$wellbeing>=35, "above", "below")
+table(pass$wellbeing.screening)
+#above below 
+# 213    25 
+prop.table(table(pass$wellbeing.screening))
+
+#insomnia
+table(pass$insomnia.screening)
+prop.table(table(pass$insomnia.screening))
+# NA negative positive 
+# 6      179       57 
+
+
+#Sleep Hygiene (higher scores = lower sleep hygiene)
+
+pass[, c(244:249)] <- sapply(pass[, c(244:249)], as.numeric, is.na=NA)
+pass$sleephygiene<- rowSums(pass[,c(244:249)], na.rm = TRUE)*NA^!rowSums(!is.na(pass[,c(244:249)]))
+table(pass$sleephygiene)
+
+# 3  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 21 22 
+# 1  7  8  4 20 34 26 25 27 24 23 15 13  3  2  2  1  
+
+
+
+
+test <- t.test(pass$uni.loneliness, pass$pre.loneliness, paired = TRUE, conf.level = 0.95)
+
+#       Paired t-test
+
+#data:  pass$uni.loneliness and pass$pre.loneliness
+#t = 2.3338, df = 241, p-value = 0.02043
+#alternative hypothesis: true mean difference is not equal to 0
+#95 percent confidence interval:
+#  0.04896928 0.57912990
+#sample estimates:
+#  mean difference 
+#    0.3140496 
+
+effectsize::cohens_d(pass$uni.loneliness, pass$pre.loneliness, paired = TRUE)
+#Cohen's d |       95% CI
+#0.15      | [0.02, 0.28]
+
+
+#People drinking and not drinking
+pass$drinking <- "NA"
+pass$drinking[pass$Q141 == 0] <- "Not drinking"
+pass$drinking[pass$Q141 >= 1] <- "regular to problematic"
+
+table(pass$drinking)
+
+# Not drinking regular to problematic 
+#    41                    201 
+
+drinkingtable <- table(pass$drinking)
+prop.table(drinkingtable)
+
+# Not drinking      regular to problematic
+#   0.1721311    0.8278689
+
+#People consuming cannabis and not 
+
+pass$smoking <- "NA"
+pass$smoking[pass$Q149 == 0] <- "Not smoking cannabis"
+pass$smoking[pass$Q141 == 1] <- "regular to problematic"
+
+table(pass$smoking)
+
+#    NA   Not smoking cannabis regular to problematic 
+#   141                     48                     53 
+
+prop.table(table(pass$smoking))
+#  Not smoking cannabis regular to problematic 
+# 0.4752475              0.5247525 
+
+##recoding insomnia####
+
+pass$Q189 <- dplyr::recode(pass$Q189,"0" = "4", "1" ="3", "2"="2", "3"="1", "4"="0")
+pass$Q190 <- dplyr::recode(pass$Q190,"0" = "4", "1" ="3", "2"="2", "3"="1", "4"="0")
+pass$Q191 <- dplyr::recode(pass$Q191,"0" = "4", "1" ="3", "2"="2", "3"="1", "4"="0")
+pass$Q192 <- dplyr::recode(pass$Q192,"0" = "4", "1" ="3", "2"="2", "3"="1", "4"="0")
+pass$Q193 <- dplyr::recode(pass$Q193,"0" = "4", "1" ="3", "2"="2", "3"="1", "4"="0")
+pass$Q194 <- dplyr::recode(pass$Q194,"0" = "4", "1" ="3", "2"="2", "3"="1", "4"="0")
+pass$Q195 <- dplyr::recode(pass$Q195,"0" = "4", "1" ="3", "2"="2", "3"="1", "4"="0")
+pass$Q196 <- dplyr::recode(pass$Q196,"0" = "4", "1" ="3", "2"="2", "3"="1", "4"="0")
+
+pass$Q189 <- as.numeric(pass$Q189)
+pass$Q190 <- as.numeric(pass$Q190)
+pass$Q191 <- as.numeric(pass$Q191)
+pass$Q192 <- as.numeric(pass$Q192)
+pass$Q193 <- as.numeric(pass$Q193)
+pass$Q194 <- as.numeric(pass$Q194)
+pass$Q195 <- as.numeric(pass$Q195)
+pass$Q196 <- as.numeric(pass$Q196)
+
+pass$SCIn <- rowSums(pass[,c(251:258)], na.rm = TRUE)*NA^!rowSums(!is.na(pass[,c(251:258)]))
+
+hist(pass$SCIn)
+
+# demographics Graph ####
+describe(as.numeric(pass$age))
+
+pass$disability[pass$disability== "disability"] <- "Disability"
+pass$disability[pass$disability== "no disability"] <- "No Disability"
+pass$disability[pass$disability== "prefer not to say"] <- "Unknown"
+Table.disability <- as.data.frame(round(prop.table(table(pass$disability))*100,1))
+
+
+pass$gender[pass$gender=="other"|pass$gender=="non-binary"] <- "Gender Minority"
+pass$gender[pass$gender=="male"] <- "Men"
+pass$gender[pass$gender=="female"] <- "Women"
+Table.gender <- as.data.frame(round(prop.table(table(pass$gender))*100,1))
+
+
+pass$nethnicity[pass$ethnicity=="Black"|
+                  pass$ethnicity=="Asian"|pass$ethnicity=="Mixed"|
+                  pass$ethnicity=="Other"] <- "Ethnic Minority"
+pass$nethnicity[pass$ethnicity=="White"] <- "White"
+pass$nethnicity[pass$ethnicity=="prefer not to say"] <- "Unknown"
+Table.ethnicity <- as.data.frame(round(prop.table(table(pass$nethnicity))*100,1))
+
+pass$orientation[pass$orientation== "heterosexual"] <- "Heterosexual"
+pass$orientation[pass$orientation== "prefer not to say"] <- "Unknown"
+pass$orientation[pass$orientation== "gay/lesbian"|pass$orientation== "mostly straight"|pass$orientation== "bisexual"|pass$orientation== "other"] <- "Sexual Minority"
+Table.sexualorientation <- as.data.frame(round(prop.table(table(pass$orientation))*100,1))
+
+pass$year[pass$year=="1"] <- "Year 1"
+pass$year[pass$year=="2"] <- "Year 2"
+pass$year[pass$year=="3"] <- "Year 3"
+pass$year[pass$year=="4"| pass$year == "5"] <- "Year 4+"
+Table.year <- as.data.frame(round(prop.table(table(pass$year))*100,1))
+
+pass$UGPG[pass$UGPG=="UG"] <- "Undergraduate"
+pass$UGPG[pass$UGPG=="PG"] <- "Postgraduate"
+Table.UGPG <- as.data.frame(round(prop.table(table(pass$UGPG))*100,1))
+
+pass$transgender[pass$transgender=="transgender"] <- "Transgender"
+pass$transgender[pass$transgender=="cisgender"] <- "Cisgender"
+Table.transgender <- as.data.frame(round(prop.table(table(pass$transgender))*100,1))
+
+pass$student.status[pass$student.status=="home"] <- "Home"
+pass$student.status[pass$student.status=="overseas"] <- "Overseas"
+Table.studentstatus <- as.data.frame(round(prop.table(table(pass$student.status))*100,1))
+
+colnames(Table.transgender)[1]<- "Sex"
+colnames(Table.sexualorientation)[1]<- "Sexual Orientation"
+colnames(Table.disability)[1] <- "Disability"
+colnames(Table.year)[1] <- "Year"
+colnames(Table.gender)[1] <- "Gender"
+colnames(Table.ethnicity)[1] <- "Ethnicity"
+colnames(Table.UGPG)[1] <- "Course Level"
+colnames(Table.studentstatus)[1] <- "Student Status"
+
+colnames(Table.transgender)[2]<- "%"
+colnames(Table.sexualorientation)[2]<- "%"
+colnames(Table.disability)[2] <- "%"
+colnames(Table.year)[2] <- "%"
+colnames(Table.gender)[2] <- "%"
+colnames(Table.ethnicity)[2] <- "%"
+colnames(Table.UGPG)[2] <- "%"
+colnames(Table.studentstatus)[2] <- "%"
+
+
+Table.transgender$Source <- "Uni-WiSE"
+Table.sexualorientation$Source <- "Uni-WiSE"
+Table.disability$Source <- "Uni-WiSE"
+Table.year$Source <- "Uni-WiSE"
+Table.gender$Source <- "Uni-WiSE"
+Table.ethnicity$Source <- "Uni-WiSE"
+Table.UGPG$Source <- "Uni-WiSE"
+Table.studentstatus$Source <- "Uni-WiSE"
+
+Kings.transgender <- data.frame(Sex = c("Transgender", "Cisgender"),
+                                P = c(1.4, 98.6),
+                                Source= c("KCL","KCL")
+)
+
+Kings.UGPG <- data.frame(Course = c("Undergraduate", "Postgraduate"),
+                         P = c(61.7, 38.3),
+                         Source= c("KCL","KCL")
+)
+
+Kings.year <- data.frame(Year = c("Year 1", "Year 2","Year 3","Year 4+"),
+                         P = c(52.2, 21.1,18.6,8.1),
+                         Source= c("KCL","KCL","KCL","KCL")
+)
+
+Kings.sexualorientation <- data.frame(`Sexual Orientation` = c("Heterosexual", "Sexual Minority","Unknown"),
+                                      P = c(84, 7,9),
+                                      Source= c("KCL","KCL","KCL")
+)
+
+Kings.gender <- data.frame(Gender = c("Men", "Women","Gender Minority"),
+                           P = c(63, 37,1),
+                           Source= c("KCL","KCL","KCL")
+)
+
+Kings.studentstatus <- data.frame(StudentStatus = c("Home", "EU","Overseas"),
+                                  P = c(61.3, 19.9,18.8),
+                                  Source= c("KCL","KCL","KCL")
+)
+
+
+Kings.ethnicity <- data.frame(Ethnicity = c("White", "Ethnic Minority", "Unknown"),
+                              P = c(57, 41, 2),
+                              Source= c("KCL","KCL","KCL")
+)
+
+Kings.disability <- data.frame(Disability = c("No Disability", "Disability", "Unknown"),
+                               P = c(88.4,11.6, 0),
+                               Source= c("KCL","KCL","KCL")
+)
+
+colnames(Kings.sexualorientation)[1]<- "Sexual Orientation"
+colnames(Kings.studentstatus)[1]<- "Student Status"
+colnames(Kings.UGPG)[1] <- "Course Level"
+colnames(Kings.transgender)[2]<- "%"
+colnames(Kings.sexualorientation)[2]<- "%"
+colnames(Kings.disability)[2] <- "%"
+colnames(Kings.year)[2] <- "%"
+colnames(Kings.gender)[2] <- "%"
+colnames(Kings.ethnicity)[2] <- "%"
+colnames(Kings.UGPG)[2] <- "%"
+colnames(Kings.studentstatus)[2] <- "%"
+
+transgender <- rbind(Table.transgender,Kings.transgender)
+ethnicity <- rbind(Table.ethnicity,Kings.ethnicity)
+gender<- rbind(Table.gender,Kings.gender)
+sexualorientation <- rbind(Table.sexualorientation,Kings.sexualorientation)
+studentstatus<- rbind(Table.studentstatus,Kings.studentstatus)
+disability <- rbind(Table.disability,Kings.disability)
+UGPG<- rbind(Table.UGPG,Kings.UGPG)
+year <- rbind(Table.year,Kings.year)
+
+transgender$Sex <- factor(transgender$Sex, levels = c("Cisgender", "Transgender"))
+UGPG$`Course Level` <- factor(UGPG$`Course Level`, levels = c("Undergraduate", "Postgraduate"))
+studentstatus$`Student Status` <- factor(studentstatus$`Student Status`, levels = c("Overseas", "EU","Home"))
+
+##Pattern ####
+a<- studentstatus%>%
+  ggplot(aes(x=Source, y=`%`, fill = `Student Status`)) + 
+  geom_bar_pattern(aes(pattern =`Student Status`, pattern_angle = `Student Status`, pattern_spacing=`Student Status`), 
+                   stat="identity", colour  = 'black', width = 0.5, position = "stack",
+                   fill = 'white',
+                   pattern_density = 0.45, 
+                   pattern_fill="black",
+                   pattern_colour  = 'black')+
+  theme_classic()+
+  theme(axis.line.y.left=element_line(colour ="white"),axis.title.y = element_blank(),
+        axis.title.x = element_text(face = "bold", colour = "black") ,
+        axis.text = element_text(face="bold", colour="black"), 
+        axis.line.x.bottom=element_line(colour="white"), 
+        axis.text.y = element_text(angle = 90, vjust = 0.5, hjust=0.6), 
+        axis.ticks = element_blank(),axis.text.x=element_blank(),legend.title=element_blank(),
+        legend.key.size = unit(0.5, 'cm'),legend.key.height = unit(0.5, 'cm'),
+        legend.key.width = unit(0.5, 'cm'), legend.text = element_text(size=10), 
+        legend.position = "bottom", legend.direction = "horizontal")+
+  coord_flip()
+
+b<- UGPG%>%
+  ggplot(aes(x=Source, y=`%`, fill = `Course Level`)) + 
+  geom_bar_pattern(aes(pattern =`Course Level`, pattern_angle = `Course Level`, pattern_spacing=`Course Level`), 
+                   stat="identity", colour  = 'black', width = 0.5, position = "stack",
+                   fill = 'white',
+                   pattern_density = 0.45, 
+                   pattern_fill="black",
+                   pattern_colour  = 'black')+
+  theme_classic()+
+  theme(axis.line.y.left=element_line(colour ="white"),axis.title.y = element_blank(),
+        axis.title.x = element_text(face = "bold", colour = "black") ,
+        axis.text = element_text(face="bold", colour="black"), 
+        axis.line.x.bottom=element_line(colour="white"), 
+        axis.text.y = element_text(angle = 90, vjust = 0.5, hjust=0.6), 
+        axis.ticks = element_blank(),axis.text.x=element_blank(),legend.title=element_blank(),
+        legend.key.size = unit(0.5, 'cm'),legend.key.height = unit(0.5, 'cm'),
+        legend.key.width = unit(0.5, 'cm'), legend.text = element_text(size=10), 
+        legend.position = "bottom", legend.direction = "horizontal")+
+  coord_flip() 
+
+c<- disability%>%
+  ggplot( aes(x=Source, y=`%`, fill = Disability)) + 
+  geom_bar_pattern(aes(pattern =Disability, pattern_angle = Disability, pattern_spacing=Disability), 
+                   stat="identity", colour  = 'black', width = 0.5, position = "stack",
+                   fill = 'white',
+                   pattern_density = 0.45, 
+                   pattern_fill="black",
+                   pattern_colour  = 'black')+
+  theme_classic()+
+  theme(axis.line.y.left=element_line(colour ="white"),axis.title.y = element_blank(),
+        axis.title.x = element_text(face = "bold", colour = "black") ,
+        axis.text = element_text(face="bold", colour="black"), 
+        axis.line.x.bottom=element_line(colour="white"), 
+        axis.text.y = element_text(angle = 90, vjust = 0.5, hjust=0.6), 
+        axis.ticks = element_blank(),axis.text.x=element_blank(),legend.title=element_blank(),
+        legend.key.size = unit(0.5, 'cm'),legend.key.height = unit(0.5, 'cm'),
+        legend.key.width = unit(0.5, 'cm'), legend.text = element_text(size=10), 
+        legend.position = "bottom", legend.direction = "horizontal")+
+  coord_flip() 
+
+d<- transgender%>% 
+  ggplot(aes(x=Source, y=`%`, fill = Sex)) + 
+  geom_bar_pattern(aes(pattern =Sex, pattern_angle = Sex, pattern_spacing=Sex), 
+                   stat="identity", colour  = 'black', width = 0.5, position = "stack",
+                   fill = 'white',
+                   pattern_density = 0.45, 
+                   pattern_fill="black",
+                   pattern_colour  = 'black')+
+  theme_classic()+
+  theme(axis.line.y.left=element_line(colour ="white"),axis.title.y = element_blank(),
+        axis.title.x = element_text(face = "bold", colour = "black") ,
+        axis.text = element_text(face="bold", colour="black"), 
+        axis.line.x.bottom=element_line(colour="white"), 
+        axis.text.y = element_text(angle = 90, vjust = 0.5, hjust=0.6), 
+        axis.ticks = element_blank(),axis.text.x=element_blank(),legend.title=element_blank(),
+        legend.key.size = unit(0.5, 'cm'),legend.key.height = unit(0.5, 'cm'),
+        legend.key.width = unit(0.5, 'cm'), legend.text = element_text(size=10), 
+        legend.position = "bottom", legend.direction = "horizontal")+
+  coord_flip() 
+
+e<- sexualorientation%>%
+  ggplot(aes(x=Source, y=`%`, fill = `Sexual Orientation`)) + 
+  geom_bar_pattern(aes(pattern =`Sexual Orientation`, pattern_angle = `Sexual Orientation`, pattern_spacing=`Sexual Orientation`), 
+                   stat="identity", colour  = 'black', width = 0.5, position = "stack",
+                   fill = 'white',
+                   pattern_density = 0.45, 
+                   pattern_fill="black",
+                   pattern_colour  = 'black')+
+  scale_pattern_spacing_discrete(range = c(0.01, 0.05))+ theme_classic()+
+  theme(axis.line.y.left=element_line(colour ="white"),axis.title.y = element_blank(),
+        axis.title.x = element_text(face = "bold", colour = "black") ,
+        axis.text = element_text(face="bold", colour="black"), 
+        axis.line.x.bottom=element_line(colour="white"), 
+        axis.text.y = element_text(angle = 90, vjust = 0.5, hjust=0.6), 
+        axis.ticks = element_blank(),axis.text.x=element_blank(),legend.title=element_blank(),
+        legend.key.size = unit(0.5, 'cm'),legend.key.height = unit(0.5, 'cm'),
+        legend.key.width = unit(0.5, 'cm'), legend.text = element_text(size=10), 
+        legend.position = "bottom", legend.direction = "horizontal")+
+  coord_flip() 
+
+
+f<- ethnicity%>%
+  ggplot(aes(x=Source, y=`%`, fill = Ethnicity)) + 
+  geom_bar_pattern(aes(pattern =Ethnicity, pattern_angle = Ethnicity, pattern_spacing=Ethnicity), 
+                   stat="identity", colour  = 'black', width = 0.5, position = "stack",
+                   fill = 'white',
+                   pattern_density = 0.3, 
+                   pattern_fill="black",
+                   pattern_colour  = 'black')+
+  theme_classic()+
+  theme(axis.line.y.left=element_line(colour ="white"),axis.title.y = element_blank(),
+        axis.title.x = element_text(face = "bold", colour = "black") ,
+        axis.text = element_text(face="bold", colour="black"), 
+        axis.line.x.bottom=element_line(colour="white"), 
+        axis.text.y = element_text(angle = 90, vjust = 0.5, hjust=0.6), 
+        axis.ticks = element_blank(),axis.text.x=element_blank(),legend.title=element_blank(),
+        legend.key.size = unit(0.5, 'cm'),legend.key.height = unit(0.5, 'cm'),
+        legend.key.width = unit(0.5, 'cm'), legend.text = element_text(size=10), 
+        legend.position = "bottom", legend.direction = "horizontal")+
+  coord_flip() 
+
+
+g<- gender%>%
+  ggplot(aes(x=Source, y=`%`, fill = Gender)) + 
+  geom_bar_pattern(aes(pattern =Gender, pattern_angle = Gender, pattern_spacing=Gender), 
+                   stat="identity", colour  = 'black', width = 0.5, position = "stack",
+                   fill = 'white',
+                   pattern_density = 0.45, 
+                   pattern_fill="black",
+                   pattern_colour  = 'black')+
+  theme_classic()+
+  theme(axis.line.y.left=element_line(colour ="white"),axis.title.y = element_blank(),
+        axis.title.x = element_text(face = "bold", colour = "black") ,
+        axis.text = element_text(face="bold", colour="black"), 
+        axis.line.x.bottom=element_line(colour="white"), 
+        axis.text.y = element_text(angle = 90, vjust = 0.5, hjust=0.6), 
+        axis.ticks = element_blank(),axis.text.x=element_blank(),legend.title=element_blank(),
+        legend.key.size = unit(0.5, 'cm'),legend.key.height = unit(0.5, 'cm'),
+        legend.key.width = unit(0.5, 'cm'), legend.text = element_text(size=10), 
+        legend.position = "bottom", legend.direction = "horizontal")+
+  coord_flip() 
+
+h<- year%>%
+  ggplot(aes(x=Source, y=`%`, fill = Year)) + 
+  geom_bar_pattern(aes(pattern =Year, pattern_angle = Year, pattern_spacing=Year), 
+                   stat="identity", colour  = 'black', width = 0.5, position = "stack",
+                   fill = 'white',
+                   pattern_density = 0.3, 
+                   pattern_fill="black",
+                   pattern_colour  = 'black')+ 
+  scale_pattern_spacing_discrete(range = c(0.01, 0.05))+
+  theme_classic()+
+  theme(axis.line.y.left=element_line(colour ="white"),axis.title.y = element_blank(),
+        axis.title.x = element_text(face = "bold", colour = "black") ,
+        axis.text = element_text(face="bold", colour="black"), 
+        axis.line.x.bottom=element_line(colour="white"), 
+        axis.text.y = element_text(angle = 90, vjust = 0.5, hjust=0.6), 
+        axis.ticks = element_blank(),axis.text.x=element_blank(),legend.title=element_blank(),
+        legend.key.size = unit(0.5, 'cm'),legend.key.height = unit(0.5, 'cm'),
+        legend.key.width = unit(0.5, 'cm'), legend.text = element_text(size=10), 
+        legend.position = "bottom", legend.direction = "horizontal")+
+  coord_flip() 
+
+arr<- ggpubr::ggarrange(a,b,c,d,e,f,g,h)
+
+##Colour####
+cared <- "#AD0505"
+  cbblue <- "#005AB5" 
+    cbyellow <- "#FFEC5A"
+      cbazz <- "#648FFF"
+        mycols<- c(cared,cbblue,cbyellow,cbazz)
+        cvi_colours = list(
+          cvi_purples = c("#381532", "#4b1b42", "#5d2252", "#702963",
+                                   "#833074", "#953784", "#a83e95"),
+                                   mycols= c("#AD0505", "#005AB5", "#FFEC5A", "#648FFF"))
+        
+        Chloe_palette = function(name, n, all_palettes = cvi_colours, type = c("discrete", "continuous")) {
+          palette = all_palettes[[name]]
+          if (missing(n)) {
+            n = length(palette)
+          }
+          type = match.arg(type)
+          out = switch(type,
+                       continuous = grDevices::colorRampPalette(palette)(n),
+                       discrete = palette[1:n]
+          )
+          structure(out, name = name, class = "palette")
+        }
+        
+        a2<- studentstatus%>%
+          ggplot(aes(x=Source, y=`%`, fill = `Student Status`)) + 
+          geom_bar(stat="identity", colour  = "black", width = 0.5, position = "stack")+
+          theme_classic()+ scale_fill_manual(values=Chloe_palette("mycols", type="discrete"))+
+          theme(axis.line.y.left=element_line(colour ="white"),axis.title.y = element_blank(),
+                axis.title.x = element_text(face = "bold", colour = "black") ,
+                axis.text = element_text(face="bold", colour="black"), 
+                axis.line.x.bottom=element_line(colour="white"), 
+                axis.text.y = element_text(angle = 90, vjust = 0.5, hjust=0.6), 
+                axis.ticks = element_blank(),axis.text.x=element_blank(),legend.title=element_blank(),
+                legend.key.size = unit(0.5, 'cm'),legend.key.height = unit(0.5, 'cm'),
+                legend.key.width = unit(0.5, 'cm'), legend.text = element_text(size=10), 
+                legend.position = "bottom", legend.direction = "horizontal")+
+          coord_flip()
+        
+        b2<- UGPG%>%
+          ggplot(aes(x=Source, y=`%`, fill = `Course Level`)) + 
+          geom_bar(stat="identity", colour  = 'black', width = 0.5, position = "stack")+
+          theme_classic()+ scale_fill_manual(values=Chloe_palette("mycols", type="discrete"))+
+          theme(axis.line.y.left=element_line(colour ="white"),axis.title.y = element_blank(),
+                axis.title.x = element_text(face = "bold", colour = "black") ,
+                axis.text = element_text(face="bold", colour="black"), 
+                axis.line.x.bottom=element_line(colour="white"), 
+                axis.text.y = element_text(angle = 90, vjust = 0.5, hjust=0.6), 
+                axis.ticks = element_blank(),axis.text.x=element_blank(),legend.title=element_blank(),
+                legend.key.size = unit(0.5, 'cm'),legend.key.height = unit(0.5, 'cm'),
+                legend.key.width = unit(0.5, 'cm'), legend.text = element_text(size=10), 
+                legend.position = "bottom", legend.direction = "horizontal")+
+          coord_flip() 
+        
+        c2<- disability%>%
+          ggplot( aes(x=Source, y=`%`, fill = Disability)) + 
+          geom_bar(stat="identity", colour  = 'black', width = 0.5, position = "stack")+
+          theme_classic()+ scale_fill_manual(values=Chloe_palette("mycols", type="discrete"))+
+          theme(axis.line.y.left=element_line(colour ="white"),axis.title.y = element_blank(),
+                axis.title.x = element_text(face = "bold", colour = "black") ,
+                axis.text = element_text(face="bold", colour="black"), 
+                axis.line.x.bottom=element_line(colour="white"), 
+                axis.text.y = element_text(angle = 90, vjust = 0.5, hjust=0.6), 
+                axis.ticks = element_blank(),axis.text.x=element_blank(),legend.title=element_blank(),
+                legend.key.size = unit(0.5, 'cm'),legend.key.height = unit(0.5, 'cm'),
+                legend.key.width = unit(0.5, 'cm'), legend.text = element_text(size=10), 
+                legend.position = "bottom", legend.direction = "horizontal")+
+          coord_flip() 
+        
+        d2<- transgender%>% 
+          ggplot(aes(x=Source, y=`%`, fill = Sex)) + 
+          geom_bar(stat="identity", colour  = 'black', width = 0.5, position = "stack")+
+          theme_classic()+ scale_fill_manual(values=Chloe_palette("mycols", type="discrete"))+
+          theme(axis.line.y.left=element_line(colour ="white"),axis.title.y = element_blank(),
+                axis.title.x = element_text(face = "bold", colour = "black") ,
+                axis.text = element_text(face="bold", colour="black"), 
+                axis.line.x.bottom=element_line(colour="white"), 
+                axis.text.y = element_text(angle = 90, vjust = 0.5, hjust=0.6), 
+                axis.ticks = element_blank(),axis.text.x=element_blank(),legend.title=element_blank(),
+                legend.key.size = unit(0.5, 'cm'),legend.key.height = unit(0.5, 'cm'),
+                legend.key.width = unit(0.5, 'cm'), legend.text = element_text(size=10), 
+                legend.position = "bottom", legend.direction = "horizontal")+
+          coord_flip() 
+        
+        e2<- sexualorientation%>%
+          ggplot(aes(x=Source, y=`%`, fill = `Sexual Orientation`)) + 
+          geom_bar(stat="identity", colour  = 'black', width = 0.5, position = "stack")+
+          theme_classic()+ scale_fill_manual(values=Chloe_palette("mycols", type="discrete"))+
+          theme(axis.line.y.left=element_line(colour ="white"),axis.title.y = element_blank(),
+                axis.title.x = element_text(face = "bold", colour = "black") ,
+                axis.text = element_text(face="bold", colour="black"), 
+                axis.line.x.bottom=element_line(colour="white"), 
+                axis.text.y = element_text(angle = 90, vjust = 0.5, hjust=0.6), 
+                axis.ticks = element_blank(),axis.text.x=element_blank(),legend.title=element_blank(),
+                legend.key.size = unit(0.5, 'cm'),legend.key.height = unit(0.5, 'cm'),
+                legend.key.width = unit(0.5, 'cm'), legend.text = element_text(size=10), 
+                legend.position = "bottom", legend.direction = "horizontal")+
+          coord_flip() 
+        
+        
+        f2<- ethnicity%>%
+          ggplot(aes(x=Source, y=`%`, fill = Ethnicity)) + 
+          geom_bar(stat="identity", colour  = 'black', width = 0.5, position = "stack")+
+          theme_classic()+ scale_fill_manual(values=Chloe_palette("mycols", type="discrete"))+
+          theme(axis.line.y.left=element_line(colour ="white"),axis.title.y = element_blank(),
+                axis.title.x = element_text(face = "bold", colour = "black") ,
+                axis.text = element_text(face="bold", colour="black"), 
+                axis.line.x.bottom=element_line(colour="white"), 
+                axis.text.y = element_text(angle = 90, vjust = 0.5, hjust=0.6), 
+                axis.ticks = element_blank(),axis.text.x=element_blank(),legend.title=element_blank(),
+                legend.key.size = unit(0.5, 'cm'),legend.key.height = unit(0.5, 'cm'),
+                legend.key.width = unit(0.5, 'cm'), legend.text = element_text(size=10), 
+                legend.position = "bottom", legend.direction = "horizontal")+
+          coord_flip() 
+        
+        
+        g2<- gender%>%
+          ggplot(aes(x=Source, y=`%`, fill = Gender)) + 
+          geom_bar(stat="identity", colour  = 'black', width = 0.5, position = "stack")+
+          theme_classic()+ scale_fill_manual(values=Chloe_palette("mycols", type="discrete"))+
+          theme(axis.line.y.left=element_line(colour ="white"),axis.title.y = element_blank(),
+                axis.title.x = element_text(face = "bold", colour = "black") ,
+                axis.text = element_text(face="bold", colour="black"), 
+                axis.line.x.bottom=element_line(colour="white"), 
+                axis.text.y = element_text(angle = 90, vjust = 0.5, hjust=0.6), 
+                axis.ticks = element_blank(),axis.text.x=element_blank(),legend.title=element_blank(),
+                legend.key.size = unit(0.5, 'cm'),legend.key.height = unit(0.5, 'cm'),
+                legend.key.width = unit(0.5, 'cm'), legend.text = element_text(size=10), 
+                legend.position = "bottom", legend.direction = "horizontal")+
+          coord_flip() 
+        
+        h2<- year%>%
+          ggplot(aes(x=Source, y=`%`, fill = Year)) + 
+          geom_bar(stat="identity", colour  = 'black', width = 0.5, position = "stack")+
+          theme_classic()+ scale_fill_manual(values=Chloe_palette("mycols", type="discrete"))+
+          theme(axis.line.y.left=element_line(colour ="white"),axis.title.y = element_blank(),
+                axis.title.x = element_text(face = "bold", colour = "black") ,
+                axis.text = element_text(face="bold", colour="black"), 
+                axis.line.x.bottom=element_line(colour="white"), 
+                axis.text.y = element_text(angle = 90, vjust = 0.5, hjust=0.6), 
+                axis.ticks = element_blank(),axis.text.x=element_blank(),legend.title=element_blank(),
+                legend.key.size = unit(0.5, 'cm'),legend.key.height = unit(0.5, 'cm'),
+                legend.key.width = unit(0.5, 'cm'), legend.text = element_text(size=10), 
+                legend.position = "bottom", legend.direction = "horizontal")+
+          coord_flip() 
+        
+        arr2<- ggpubr::ggarrange(a2,b2,c2,d2,e2,f2,g2,h2)
+        
+##Black and white####
+        a3<- studentstatus%>%
+          ggplot(aes(x=Source, y=`%`, fill = `Student Status`)) + 
+          geom_bar(stat="identity", colour  = "black", width = 0.5, position = "stack")+
+          theme_classic()+ scale_fill_manual(values=grey.colors(3, start = 0, end = 1, gamma = 2.5))+
+          theme(axis.line.y.left=element_line(colour ="white"),axis.title.y = element_blank(),
+                axis.title.x = element_text(face = "bold", colour = "black") ,
+                axis.text = element_text(face="bold", colour="black"), 
+                axis.line.x.bottom=element_line(colour="white"), 
+                axis.text.y = element_text(angle = 90, vjust = 0.5, hjust=0.6), 
+                axis.ticks = element_blank(),axis.text.x=element_blank(),legend.title=element_blank(),
+                legend.key.size = unit(0.5, 'cm'),legend.key.height = unit(0.5, 'cm'),
+                legend.key.width = unit(0.5, 'cm'), legend.text = element_text(size=10), 
+                legend.position = "bottom", legend.direction = "horizontal")+
+          coord_flip()
+        
+        b3<- UGPG%>%
+          ggplot(aes(x=Source, y=`%`, fill = `Course Level`)) + 
+          geom_bar(stat="identity", colour  = 'black', width = 0.5, position = "stack")+
+          theme_classic()+ scale_fill_manual(values=grey.colors(2, start = 0, end = 1, gamma = 2.5))+
+          theme(axis.line.y.left=element_line(colour ="white"),axis.title.y = element_blank(),
+                axis.title.x = element_text(face = "bold", colour = "black") ,
+                axis.text = element_text(face="bold", colour="black"), 
+                axis.line.x.bottom=element_line(colour="white"), 
+                axis.text.y = element_text(angle = 90, vjust = 0.5, hjust=0.6), 
+                axis.ticks = element_blank(),axis.text.x=element_blank(),legend.title=element_blank(),
+                legend.key.size = unit(0.5, 'cm'),legend.key.height = unit(0.5, 'cm'),
+                legend.key.width = unit(0.5, 'cm'), legend.text = element_text(size=10), 
+                legend.position = "bottom", legend.direction = "horizontal")+
+          coord_flip() 
+        
+        c3<- disability%>%
+          ggplot( aes(x=Source, y=`%`, fill = Disability)) + 
+          geom_bar(stat="identity", colour  = 'black', width = 0.5, position = "stack")+
+          theme_classic()+ scale_fill_manual(values=grey.colors(3, start = 0, end = 1, gamma = 2.5))+
+          theme(axis.line.y.left=element_line(colour ="white"),axis.title.y = element_blank(),
+                axis.title.x = element_text(face = "bold", colour = "black") ,
+                axis.text = element_text(face="bold", colour="black"), 
+                axis.line.x.bottom=element_line(colour="white"), 
+                axis.text.y = element_text(angle = 90, vjust = 0.5, hjust=0.6), 
+                axis.ticks = element_blank(),axis.text.x=element_blank(),legend.title=element_blank(),
+                legend.key.size = unit(0.5, 'cm'),legend.key.height = unit(0.5, 'cm'),
+                legend.key.width = unit(0.5, 'cm'), legend.text = element_text(size=10), 
+                legend.position = "bottom", legend.direction = "horizontal")+
+          coord_flip() 
+        
+        d3<- transgender%>% 
+          ggplot(aes(x=Source, y=`%`, fill = Sex)) + 
+          geom_bar(stat="identity", colour  = 'black', width = 0.5, position = "stack")+
+          theme_classic()+ scale_fill_manual(values=grey.colors(2, start = 0, end = 1, gamma = 2.5))+
+          theme(axis.line.y.left=element_line(colour ="white"),axis.title.y = element_blank(),
+                axis.title.x = element_text(face = "bold", colour = "black") ,
+                axis.text = element_text(face="bold", colour="black"), 
+                axis.line.x.bottom=element_line(colour="white"), 
+                axis.text.y = element_text(angle = 90, vjust = 0.5, hjust=0.6), 
+                axis.ticks = element_blank(),axis.text.x=element_blank(),legend.title=element_blank(),
+                legend.key.size = unit(0.5, 'cm'),legend.key.height = unit(0.5, 'cm'),
+                legend.key.width = unit(0.5, 'cm'), legend.text = element_text(size=10), 
+                legend.position = "bottom", legend.direction = "horizontal")+
+          coord_flip() 
+        
+        e3<- sexualorientation%>%
+          ggplot(aes(x=Source, y=`%`, fill = `Sexual Orientation`)) + 
+          geom_bar(stat="identity", colour  = 'black', width = 0.5, position = "stack")+
+          theme_classic()+ scale_fill_manual(values=grey.colors(3, start = 0, end = 1, gamma = 2.5))+
+          theme(axis.line.y.left=element_line(colour ="white"),axis.title.y = element_blank(),
+                axis.title.x = element_text(face = "bold", colour = "black") ,
+                axis.text = element_text(face="bold", colour="black"), 
+                axis.line.x.bottom=element_line(colour="white"), 
+                axis.text.y = element_text(angle = 90, vjust = 0.5, hjust=0.6), 
+                axis.ticks = element_blank(),axis.text.x=element_blank(),legend.title=element_blank(),
+                legend.key.size = unit(0.5, 'cm'),legend.key.height = unit(0.5, 'cm'),
+                legend.key.width = unit(0.5, 'cm'), legend.text = element_text(size=10), 
+                legend.position = "bottom", legend.direction = "horizontal")+
+          coord_flip() 
+        
+        
+        f3<- ethnicity%>%
+          ggplot(aes(x=Source, y=`%`, fill = Ethnicity)) + 
+          geom_bar(stat="identity", colour  = 'black', width = 0.5, position = "stack")+
+          theme_classic()+ scale_fill_manual(values=grey.colors(3, start = 0, end = 1, gamma = 2.5))+
+          theme(axis.line.y.left=element_line(colour ="white"),axis.title.y = element_blank(),
+                axis.title.x = element_text(face = "bold", colour = "black") ,
+                axis.text = element_text(face="bold", colour="black"), 
+                axis.line.x.bottom=element_line(colour="white"), 
+                axis.text.y = element_text(angle = 90, vjust = 0.5, hjust=0.6), 
+                axis.ticks = element_blank(),axis.text.x=element_blank(),legend.title=element_blank(),
+                legend.key.size = unit(0.5, 'cm'),legend.key.height = unit(0.5, 'cm'),
+                legend.key.width = unit(0.5, 'cm'), legend.text = element_text(size=10), 
+                legend.position = "bottom", legend.direction = "horizontal")+
+          coord_flip() 
+        
+        
+        g3<- gender%>%
+          ggplot(aes(x=Source, y=`%`, fill = Gender)) + 
+          geom_bar(stat="identity", colour  = 'black', width = 0.5, position = "stack")+
+          theme_classic()+scale_fill_manual(values=grey.colors(3, start = 0, end = 1, gamma = 2.5))+
+          theme(axis.line.y.left=element_line(colour ="white"),axis.title.y = element_blank(),
+                axis.title.x = element_text(face = "bold", colour = "black") ,
+                axis.text = element_text(face="bold", colour="black"), 
+                axis.line.x.bottom=element_line(colour="white"), 
+                axis.text.y = element_text(angle = 90, vjust = 0.5, hjust=0.6), 
+                axis.ticks = element_blank(),axis.text.x=element_blank(),legend.title=element_blank(),
+                legend.key.size = unit(0.5, 'cm'),legend.key.height = unit(0.5, 'cm'),
+                legend.key.width = unit(0.5, 'cm'), legend.text = element_text(size=10), 
+                legend.position = "bottom", legend.direction = "horizontal")+
+          coord_flip() 
+        
+        h3<- year%>%
+          ggplot(aes(x=Source, y=`%`, fill = Year)) + 
+          geom_bar(stat="identity", colour  = 'black', width = 0.5, position = "stack")+
+          theme_classic()+ scale_fill_manual(values=grey.colors(4, start = 0, end = 1, gamma = 2.5))+
+          theme(axis.line.y.left=element_line(colour ="white"),axis.title.y = element_blank(),
+                axis.title.x = element_text(face = "bold", colour = "black") ,
+                axis.text = element_text(face="bold", colour="black"), 
+                axis.line.x.bottom=element_line(colour="white"), 
+                axis.text.y = element_text(angle = 90, vjust = 0.5, hjust=0.6), 
+                axis.ticks = element_blank(),axis.text.x=element_blank(),legend.title=element_blank(),
+                legend.key.size = unit(0.5, 'cm'),legend.key.height = unit(0.5, 'cm'),
+                legend.key.width = unit(0.5, 'cm'), legend.text = element_text(size=10), 
+                legend.position = "bottom", legend.direction = "horizontal")+
+          coord_flip() 
+        
+        
+        arr3<- ggpubr::ggarrange(a3,b3,c3,d3,e3,f3,g3,h3)
+#Table 1 (Diagnosis) ####
+Depression <- as.data.frame(table(pass$diag_depression))
+Depression2<- as.data.frame(round(prop.table(table(pass$diag_depression)),3)*100)
+colnames(Depression2) <- c("Var1", "%")
+Depression$diagnosis <- c("Depression")
+Depression <- right_join(Depression, Depression2)
+Depression <- Depression[,c(3,2,4,1)]
+
+Mania<- as.data.frame(table(pass$diag_mania))
+Mania2<- as.data.frame(round(prop.table(table(pass$diag_mania)),3)*100)
+colnames(Mania2) <- c("Var1", "%")
+Mania$diagnosis <- c("Mania")
+Mania <- right_join(Mania, Mania2)
+Mania <- Mania[,c(3,2,4,1)]
+
+Anxiety <- as.data.frame(table(pass$diag_GAD))
+Anxiety2<- as.data.frame(round(prop.table(table(pass$diag_GAD)),3)*100)
+colnames(Anxiety2) <- c("Var1", "%")
+Anxiety$diagnosis <- c("Anxiety")
+Anxiety <- right_join(Anxiety, Anxiety2)
+Anxiety <- Anxiety[,c(3,2,4,1)]
+
+socialanx <- as.data.frame(table(pass$diag_socialanx))
+socialanx2 <- as.data.frame(round(prop.table(table(pass$diag_socialanx)),3)*100)
+colnames(socialanx2) <- c("Var1", "%")
+socialanx$diagnosis <- c("Social Anxiety")
+socialanx <- right_join(socialanx, socialanx2)
+socialanx <- socialanx[,c(3,2,4,1)]
+
+
+Agoraphobia <- as.data.frame(table(pass$diag_agoraphobia))
+Agoraphobia2<- as.data.frame(round(prop.table(table(pass$diag_agoraphobia)),3)*100)
+colnames(Agoraphobia2) <- c("Var1", "%")
+Agoraphobia$diagnosis <- c("Agoraphobia")
+Agoraphobia <- right_join(Agoraphobia, Agoraphobia2)
+Agoraphobia <- Agoraphobia[,c(3,2,4,1)]
+
+
+PanicAttacks <- as.data.frame(table(pass$diag_panic))
+PanicAttacks2<- as.data.frame(round(prop.table(table(pass$diag_panic)),3)*100)
+colnames(PanicAttacks2) <- c("Var1", "%")
+PanicAttacks$diagnosis <- c("Panic Attacks")
+PanicAttacks <- right_join(PanicAttacks, PanicAttacks2)
+PanicAttacks <- PanicAttacks[,c(3,2,4,1)]
+
+
+OCD <- as.data.frame(table(pass$diag_OCD))
+OCD2<- as.data.frame(round(prop.table(table(pass$diag_OCD)),3)*100)
+colnames(OCD2) <- c("Var1", "%")
+OCD$diagnosis <- c("Obsessive Compulsive Disorder")
+OCD <- right_join(OCD, OCD2)
+OCD <- OCD[,c(3,2,4,1)]
+
+Anorexia<- as.data.frame(table(pass$diag_anorexia))
+Anorexia2<- as.data.frame(round(prop.table(table(pass$diag_anorexia)),3)*100)
+colnames(Anorexia2) <- c("Var1", "%")
+Anorexia$diagnosis <- c("Anorexia")
+Anorexia <- right_join(Anorexia, Anorexia2)
+Anorexia <- Anorexia[,c(3,2,4,1)]
+
+Bulimia<- as.data.frame(table(pass$diag_bulimia))
+Bulimia2<- as.data.frame(round(prop.table(table(pass$diag_bulimia)),3)*100)
+colnames(Bulimia2) <- c("Var1", "%")
+Bulimia$diagnosis <- c("Bulimia")
+Bulimia <- right_join(Bulimia, Bulimia2)
+Bulimia <- Bulimia[,c(3,2,4,1)]
+
+BingeEating<- as.data.frame(table(pass$diag_binge))
+BingeEating2<- as.data.frame(round(prop.table(table(pass$diag_binge)),3)*100)
+colnames(BingeEating2) <- c("Var1", "%")
+BingeEating$diagnosis <- c("Binge Eating")
+BingeEating <- right_join(BingeEating, BingeEating2)
+BingeEating <- BingeEating[,c(3,2,4,1)]
+
+Schizophrenia<- as.data.frame(table(pass$diag_schizophrenia))
+Schizophrenia2<- as.data.frame(round(prop.table(table(pass$diag_schizophrenia)),3)*100)
+colnames(Schizophrenia2) <- c("Var1", "%")
+Schizophrenia$diagnosis <- c("Schizophrenia")
+Schizophrenia <- right_join(Schizophrenia, Schizophrenia2)
+Schizophrenia <- Schizophrenia[,c(3,2,4,1)]
+
+Psychosis<- as.data.frame(table(pass$diag_psychosis))
+Psychosis2<- as.data.frame(round(prop.table(table(pass$diag_psychosis)),3)*100)
+colnames(Psychosis2) <- c("Var1", "%")
+Psychosis$diagnosis <- c("Psychosis")
+Psychosis <- right_join(Psychosis, Psychosis2)
+Psychosis <- Psychosis[,c(3,2,4,1)]
+
+
+PersonalityDisorder<- as.data.frame(table(pass$diag_psychosis))
+PersonalityDisorder2<- as.data.frame(round(prop.table(table(pass$diag_psychosis)),3)*100)
+colnames(PersonalityDisorder2) <- c("Var1", "%")
+PersonalityDisorder$diagnosis <- c("Personality Disorder")
+PersonalityDisorder <- right_join(PersonalityDisorder, PersonalityDisorder2)
+PersonalityDisorder <- PersonalityDisorder[,c(3,2,4,1)]
+
+
+ASD<- as.data.frame(table(pass$diag_autism))
+ASD2<- as.data.frame(round(prop.table(table(pass$diag_autism)),3)*100)
+colnames(ASD2) <- c("Var1", "%")
+ASD$diagnosis <- c("Autsim Spectrum Disorder")
+ASD<- right_join(ASD, ASD2)
+ASD <- ASD[,c(3,2,4,1)]
+
+ADHD<- as.data.frame(table(pass$diag_ADHD))
+ADHD2<- as.data.frame(round(prop.table(table(pass$diag_ADHD)),3)*100)
+colnames(ADHD2) <- c("Var1", "%")
+ADHD$diagnosis <- c("Attentiobn Deficit Hyperactivity Disorder")
+ADHD<- right_join(ADHD, ADHD2)
+ADHD <- ADHD[,c(3,2,4,1)]
+
+MH <- pass[,c(293:313)]
+MH[, c(1:15)] <- sapply(MH[, c(1:15)], as.numeric, is.na=NA)
+MH$total_disorders = rowSums(MH[,c(1:15)], na.rm=TRUE)*NA^!rowSums(!is.na(MH[,c(1:15)]))
+MH$multiple_disorders <- ifelse(MH$total_disorders>1, "More than one", "one")
+table(MH$multiple_disorders)
+
+
+
+
+MH <- filter(MH, MH$total_disorders > 0)
+dim(MH)
+table(MH$multiple_disorders)
+
+table1 <- rbind(Depression, Mania, Anxiety, socialanx, Agoraphobia, PanicAttacks, OCD, Anorexia,
+                Bulimia, BingeEating, Schizophrenia, Psychosis, PersonalityDisorder, ASD, ADHD)
+
+#Table 2 (scales descriptives)####
+
+
+GAD <- as.data.frame(psych::describe(pass$GAD))
+GAD <- GAD[,c(1:4, 8:9, 13)]
+GAD$vars[GAD$vars==1] <- "GAD"
+PHQ <- as.data.frame(psych::describe(pass$PHQ))
+PHQ<- PHQ[,c(1:4, 8:9, 13)]
+PHQ$vars[PHQ$vars==1] <- "PHQ"
+AUDIT <- as.data.frame(psych::describe(pass$AUDIT))
+AUDIT <- AUDIT[,c(1:4, 8:9, 13)]
+AUDIT$vars[AUDIT$vars==1] <- "AUDIT"
+CUDIT <- as.data.frame(psych::describe(pass$CUDIT))
+CUDIT<- CUDIT[,c(1:4, 8:9, 13)]
+CUDIT$vars[CUDIT$vars==1] <- "CUDIT"
+soc_anx <- as.data.frame(psych::describe(pass$social.anxiety))
+soc_anx <- soc_anx[,c(1:4, 8:9, 13)]
+soc_anx$vars[soc_anx$vars==1] <- "Social Anxiety"
+SCI <- as.data.frame(psych::describe(pass$SCIn))
+SCI <- SCI[,c(1:4, 8:9, 13)]
+SCI$vars[SCI$vars==1] <- "Sleep Condition Indicator"
+blank2 <-  data.frame(c("UCLA Loneliness Scale"),
+                      c(""),
+                      c(""), 
+                      c(""), 
+                      c(""),
+                      c(""),
+                      c(""))
+colnames(blank2) <- c("vars","n", "mean", "sd", "min", "max", "se")
+pre_loneliness <- as.data.frame(psych::describe(pass$pre.loneliness))
+pre_loneliness <- pre_loneliness[,c(1:4, 8:9, 13)]
+pre_loneliness$vars[pre_loneliness$vars==1] <- "Pre-University"
+uni_loneliness <- as.data.frame(psych::describe(pass$uni.loneliness))
+uni_loneliness <- uni_loneliness[,c(1:4, 8:9, 13)]
+uni_loneliness$vars[uni_loneliness$vars==1] <- "Post-University"
+blank1 <-  data.frame(c("Psychological Phenotypes"),
+                      c(""), 
+                      c(""),
+                      c(""), 
+                      c(""),
+                      c(""),
+                      c(""))
+colnames(blank1) <- c("vars","n", "mean", "sd", "min", "max", "se")
+wellbeing <- as.data.frame(psych::describe(pass$wellbeing))
+wellbeing <- wellbeing[,c(1:4, 8:9, 13)]
+wellbeing$vars[wellbeing$vars==1] <- "Warwick-Edinburgh Mental
+Wellbeing Scale"
+SC <- as.data.frame(psych::describe(pass$self.control))
+SC <- SC[,c(1:4, 8:9, 13)]
+SC$vars[SC$vars==1] <- "Brief Self-Control Scale"
+perfectionism <- as.data.frame(psych::describe(pass$perfectionism))
+perfectionism <- perfectionism[,c(1:4, 8:9, 13)]
+perfectionism$vars[perfectionism$vars==1] <- "Brief Frost-Multidimensional Perfectionism Scale"
+perceived_stress <- as.data.frame(psych::describe(pass$perceived.stress))
+perceived_stress <- perceived_stress[,c(1:4, 8:9, 13)]
+perceived_stress$vars[perceived_stress$vars==1] <- "Brief Perceived Stress Scale"
+procrastination <- as.data.frame(psych::describe(pass$procrastination)) 
+procrastination <- procrastination[,c(1:4, 8:9, 13)]
+procrastination$vars[procrastination$vars==1] <- "Procrastination Scale"
+SHL <- as.data.frame(psych::describe(pass$sleephygiene))
+SHL <- SHL[,c(1:4, 8:9, 13)]
+SHL$vars[SHL$vars==1] <- "Sleep Hygiene"
+
+Table2 <- rbind(GAD,PHQ, AUDIT, CUDIT,soc_anx, SCI, SC, blank1, wellbeing, perfectionism, 
+                blank2, pre_loneliness, uni_loneliness, perceived_stress, procrastination,
+                SHL)
+write_csv(Table2, "table2.csv")
+
+#Table 3 ####
+table(pass$diag_GAD, pass$diag_depression)
+
+pass$DIAG <- ifelse(pass$diag_depression =="TRUE"|pass$diag_GAD =="TRUE", "Diagnosed","Not Diagnosed")
+pass$DIAG[pass$diag_depression=="TRUE"&pass$diag_GAD=="FALSE"]<- "Depression"
+pass$DIAG[pass$diag_depression=="FALSE"&pass$diag_GAD=="TRUE"]<- "Anxiety"
+pass$DIAG[pass$diag_depression=="TRUE"&pass$diag_GAD=="TRUE"]<- "Both"
+
+pass$CLIN <- ifelse(pass$GADclinical =="clinical"|pass$PHQclinical =="clinical", "Clinical","Non-Clinical")
+pass$CLIN[pass$PHQclinical =="clinical"&pass$GADclinical =="non-clinical"]<- "Clinical Depression"
+pass$CLIN[pass$GADclinical =="clinical"&pass$PHQclinical =="non-clinical"]<- "Clinical Anxiety"
+pass$CLIN[pass$GADclinical =="clinical"&pass$PHQclinical =="clinical"]<- "Both Thresholds met"
+
+
+table3 <-as.data.frame(table(pass$CLIN, pass$DIAG))
+
+round(prop.table(table(pass$CLIN, pass$DIAG)), 3)*100
+# supplementary table Therapy ####
+mh <- pass[,c(116:162, 293:313)]
+mh[, c(64:67)] <- sapply(mh[, c(64:67)], as.numeric, is.na=NA)
+
+mh$total_medications <- rowSums(mh[,c(64:67)], na.rm=TRUE)*NA^!rowSums(!is.na(mh[,c(64:67)]))
+mh$total_medications_f <- ifelse(mh$past.diagnosis=="TRUE", mh$total_medications, 0)
+hist(mh$total_medications_f)
+table(mh$total_medications_f)
+prop.table(table(mh$total_medications_f))
+table(mh$past.diagnosis)
+
+medication1 <- as.data.frame(table(mh$tx_medication))
+medication1$Var1<- ifelse(medication1$Var1==0,"No Medication", "Medication")
+medication1$treatment <- "medication"
+medication_p <-  as.data.frame(round(prop.table(table(mh$tx_medication)),3)*100)
+medication_p$Var1<- ifelse(medication_p$Var1==0,"No Medication", "Medication")
+colnames(medication_p)<- c("Var1", "%")
+medication <- right_join(medication1,medication_p)
+medication<- medication[,c(3,1,2,4)]
+
+therapy1 <- as.data.frame(table(mh$tx_therapy))
+therapy1$Var1<- ifelse(therapy1$Var1==0,"No Therapy", "Therapy")
+therapy1$treatment <- "Therapy"
+therapy_p <-  as.data.frame(round(prop.table(table(mh$tx_therapy)),3)*100)
+therapy_p$Var1<- ifelse(therapy_p$Var1==0,"No Therapy", "Therapy")
+colnames(therapy_p)<- c("Var1", "%")
+therapy <- right_join(therapy1,therapy_p)
+therapy <- therapy[,c(3,1,2,4)]
+
+admission1 <- as.data.frame(table(mh$tx_admission))
+admission1$Var1<- ifelse(admission1$Var1==0,"No Admission", "Admission")
+admission1$treatment <- "Admission"
+admission_p <-  as.data.frame(round(prop.table(table(mh$tx_admission)),3)*100)
+admission_p$Var1<- ifelse(admission_p$Var1==0,"No Admission", "Admission")
+colnames(admission_p)<- c("Var1", "%")
+admission <- right_join(admission1,admission_p)
+admission <- admission[,c(3,1,2,4)]
+
+other1 <- as.data.frame(table(mh$tx_other))
+other1$Var1<- ifelse(other1$Var1==0,"No Other", "Other")
+other1$treatment <- "Other"
+other_p <-  as.data.frame(round(prop.table(table(mh$tx_other)),3)*100)
+other_p$Var1<- ifelse(other_p$Var1==0, "No Other", "Other")
+colnames(other_p)<- c("Var1", "%")
+other <- right_join(other1, other_p)
+other <- other[,c(3,1,2,4)]
+
+none1 <- as.data.frame(table(mh$tx_none))
+none1$Var1<- ifelse(none1$Var1==FALSE,"Undetermined", "None")
+none1$treatment <- "None"
+none_p <-  as.data.frame(round(prop.table(table(mh$tx_none)),3)*100)
+none_p$Var1<- ifelse(none_p$Var1==FALSE,"Undetermined", "None")
+colnames(none_p)<- c("Var1", "%")
+none <- right_join(none1, none_p)
+none <- none[,c(3,1,2,4)]
+
+Supplementary_table1 <- rbind(medication, therapy, admission, other, none)
+
+table(mh$total_medications>0)
+table(mh$total_medications>1)
+prop.table(table(mh$total_medications>1))
+table(pass$Q131_4_TEXT)
+#Supplementary table Age and time of onset #####
+
+#Depression
+
+mh$Q86 <- ifelse(mh$Q86 >=21, "21+", mh$Q86)
+mh$Q86 <- ifelse(mh$Q86 <=15, "Below 15", mh$Q86)
+depression_c <- as.data.frame(table(mh$Q86))
+depression_c$condition <- "Depression"
+depression_d <-  as.data.frame(round(prop.table(table(mh$Q86)),3)*100)
+colnames(depression_d)<- c("Var1", "%")
+depression_age <- right_join(depression_c, depression_d)
+depression_age <- depression_age[,c(3,1,2,4)]
+
+depression_e <- as.data.frame(table(mh$Q87))
+depression_e$condition <- "Depression"
+depression_f <-  as.data.frame(round(prop.table(table(mh$Q87)),3)*100)
+colnames(depression_f)<- c("Var1", "%")
+depression_time <- right_join(depression_e, depression_f)
+depression_time <- depression_time[,c(3,1,2,4)]
+
+depression_g <- as.data.frame(table(mh$Q88))
+depression_g$condition <- "Depression"
+depression_h <-  as.data.frame(round(prop.table(table(mh$Q88)),3)*100)
+colnames(depression_h)<- c("Var1", "%")
+depression_prognosis <- right_join(depression_g, depression_h)
+depression_prognosis <- depression_prognosis[,c(3,1,2,4)]
+
+
+
+#Mania
+mh$Q89 <- ifelse(mh$Q89 >=21, "21+", mh$Q89)
+mh$Q89 <- ifelse(mh$Q89 <=15, "Below 15", mh$Q89)
+mania_c <- as.data.frame(table(mh$Q89))
+mania_c$condition <- "Mania"
+mania_d <-  as.data.frame(round(prop.table(table(mh$Q89)),3)*100)
+colnames(mania_d)<- c("Var1", "%")
+mania_age <- right_join(mania_c, mania_d)
+mania_age <- mania_age[,c(3,1,2,4)]
+
+mania_e <- as.data.frame(table(mh$Q90))
+mania_e$condition <- "Mania"
+mania_f <-  as.data.frame(round(prop.table(table(mh$Q90)),3)*100)
+colnames(mania_f)<- c("Var1", "%")
+mania_time <- right_join(mania_e, mania_f)
+mania_time <- mania_time[,c(3,1,2,4)]
+
+mania_g <- as.data.frame(table(mh$Q91))
+mania_g$condition <- "Mania"
+mania_h <-  as.data.frame(round(prop.table(table(mh$Q91)),3)*100)
+colnames(mania_h)<- c("Var1", "%")
+mania_prognosis <- right_join(mania_g, mania_h)
+mania_prognosis <- mania_prognosis[,c(3,1,2,4)]
+
+
+#Anxiety
+mh$Q92 <- ifelse(mh$Q92 >=21, "21+", mh$Q92)
+mh$Q92 <- ifelse(mh$Q92 <=15, "Below 15", mh$Q92)
+anxiety_c <- as.data.frame(table(mh$Q92))
+anxiety_c$condition <- "Anxiety"
+anxiety_d <-  as.data.frame(round(prop.table(table(mh$Q92)),3)*100)
+colnames(anxiety_d)<- c("Var1", "%")
+anxiety_age <- right_join(anxiety_c, anxiety_d)
+anxiety_age <- anxiety_age[,c(3,1,2,4)]
+
+anxiety_e <- as.data.frame(table(mh$Q93))
+anxiety_e$condition <- "Anxiety"
+anxiety_f <-  as.data.frame(round(prop.table(table(mh$Q93)),3)*100)
+colnames(anxiety_f)<- c("Var1", "%")
+anxiety_time <- right_join(anxiety_e, anxiety_f)
+anxiety_time <- anxiety_time[,c(3,1,2,4)]
+
+anxiety_g <- as.data.frame(table(mh$Q94))
+anxiety_g$condition <- "Anxiety"
+anxiety_h <-  as.data.frame(round(prop.table(table(mh$Q94)),3)*100)
+colnames(anxiety_h)<- c("Var1", "%")
+anxiety_prognosis <- right_join(anxiety_g, anxiety_h)
+anxiety_prognosis <- anxiety_prognosis[,c(3,1,2,4)]
+
+#Social Anxiety
+
+mh$Q95 <- ifelse(mh$Q95 >=21, "21+", mh$Q95)
+mh$Q95 <- ifelse(mh$Q95 <=15, "Below 15", mh$Q95)
+socialanxiety_c <- as.data.frame(table(mh$Q95))
+socialanxiety_c$condition <- "Social Anxiety"
+socialanxiety_d <-  as.data.frame(round(prop.table(table(mh$Q95)),3)*100)
+colnames(socialanxiety_d)<- c("Var1", "%")
+socialanxiety_age <- right_join(socialanxiety_c, socialanxiety_d)
+socialanxiety_age <- socialanxiety_age[,c(3,1,2,4)]
+
+socialanxiety_e <- as.data.frame(table(mh$Q96))
+socialanxiety_e$condition <- "Social Anxiety"
+socialanxiety_f <-  as.data.frame(round(prop.table(table(mh$Q96)),3)*100)
+colnames(socialanxiety_f)<- c("Var1", "%")
+socialanxiety_time <- right_join(socialanxiety_e, socialanxiety_f)
+socialanxiety_time <- socialanxiety_time[,c(3,1,2,4)]
+
+socialanxiety_g <- as.data.frame(table(mh$Q97))
+socialanxiety_g$condition <- "Social Anxiety"
+socialanxiety_h <-  as.data.frame(round(prop.table(table(mh$Q97)),3)*100)
+colnames(socialanxiety_h)<- c("Var1", "%")
+socialanxiety_prognosis <- right_join(socialanxiety_g, socialanxiety_h)
+socialanxiety_prognosis <- socialanxiety_prognosis[,c(3,1,2,4)]
+
+
+#Agoraphobia (no reports)
+#mh$Q98 <- ifelse(mh$Q98 >=21, "21+", mh$Q98)
+#mh$Q98 <- ifelse(mh$Q98 <=15, "Below 15", mh$Q98)
+#agoraphobia_c <- as.data.frame(table(mh$Q98))
+#agoraphobia_c$condition <- "Agoraphobia"
+#agoraphobia_d <-  as.data.frame(round(prop.table(table(mh$Q98)),3)*100)
+#colnames(agoraphobia_d)<- c("Var1", "%")
+#agoraphobia_age <- right_join(agoraphobia_c, agoraphobia_d)
+#agoraphobia_age <- agoraphobia_age[,c(3,1,2,4)]
+
+#agoraphobia_e <- as.data.frame(table(mh$Q99))
+#agoraphobia_e$condition <- "Agoraphobia"
+#agoraphobia_f <-  as.data.frame(round(prop.table(table(mh$Q99)),3)*100)
+#colnames(agoraphobia_f)<- c("Var1", "%")
+#agoraphobia_time <- right_join(agoraphobia_e, agoraphobia_f)
+#agoraphobia_time <- agoraphobia_time[,c(3,1,2,4)]
+
+#agoraphobia_g <- as.data.frame(table(mh$Q100))
+#agoraphobia_g$condition <- "Agoraphobia"
+#agoraphobia_h <-  as.data.frame(round(prop.table(table(mh$Q100)),3)*100)
+#colnames(agoraphobia_h)<- c("Var1", "%")
+#agoraphobia_prognosis <- right_join(agoraphobia_g, agoraphobia_h)
+#agoraphobia_prognosis <- agoraphobia_prognosis[,c(3,1,2,4)]
+
+
+#Panic Attack
+mh$Q101 <- ifelse(mh$Q101 >=21, "21+", mh$Q101)
+mh$Q101 <- ifelse(mh$Q101 <=15, "Below 15", mh$Q101)
+panicattacks_c <- as.data.frame(table(mh$Q101))
+panicattacks_c$condition <- "Panic Attack Disorder"
+panicattacks_d <-  as.data.frame(round(prop.table(table(mh$Q101)),3)*100)
+colnames(panicattacks_d)<- c("Var1", "%")
+panicattacks_age <- right_join(panicattacks_c, panicattacks_d)
+panicattacks_age <- panicattacks_age[,c(3,1,2,4)]
+
+panicattacks_e <- as.data.frame(table(mh$Q102))
+panicattacks_e$condition <- "Panic Attack Disorder"
+panicattacks_f <-  as.data.frame(round(prop.table(table(mh$Q102)),3)*100)
+colnames(panicattacks_f)<- c("Var1", "%")
+panicattacks_time <- right_join(panicattacks_e, panicattacks_f)
+panicattacks_time <- panicattacks_time[,c(3,1,2,4)]
+
+panicattacks_g <- as.data.frame(table(mh$Q103))
+panicattacks_g$condition <- "Panic Attack Disorder"
+panicattacks_h <-  as.data.frame(round(prop.table(table(mh$Q103)),3)*100)
+colnames(panicattacks_h)<- c("Var1", "%")
+panicattacks_prognosis <- right_join(panicattacks_g, panicattacks_h)
+panicattacks_prognosis <- panicattacks_prognosis[,c(3,1,2,4)]
+
+
+#OCD
+mh$Q104 <- ifelse(mh$Q104 >=21, "21+", mh$Q104)
+mh$Q104 <- ifelse(mh$Q104 <=15, "Below 15", mh$Q104)
+OCD_c <- as.data.frame(table(mh$Q104))
+OCD_c$condition <- "OCD"
+OCD_d <-  as.data.frame(round(prop.table(table(mh$Q104)),3)*100)
+colnames(OCD_d)<- c("Var1", "%")
+OCD_age <- right_join(OCD_c, OCD_d)
+OCD_age <- OCD_age[,c(3,1,2,4)]
+
+OCD_e <- as.data.frame(table(mh$Q105))
+OCD_e$condition <- "OCD"
+OCD_f <-  as.data.frame(round(prop.table(table(mh$Q105)),3)*100)
+colnames(OCD_f)<- c("Var1", "%")
+OCD_time <- right_join(OCD_e, OCD_f)
+OCD_time <- OCD_time[,c(3,1,2,4)]
+
+OCD_g <- as.data.frame(table(mh$Q106))
+OCD_g$condition <- "OCD"
+OCD_h <-  as.data.frame(round(prop.table(table(mh$Q106)),3)*100)
+colnames(OCD_h)<- c("Var1", "%")
+OCD_prognosis <- right_join(OCD_g, OCD_h)
+OCD_prognosis <- OCD_prognosis[,c(3,1,2,4)]
+
+
+#Anorexia
+mh$Q107 <- ifelse(mh$Q107 >=21, "21+", mh$Q107)
+mh$Q107 <- ifelse(mh$Q107 <=15, "Below 15", mh$Q107)
+anorexia_c <- as.data.frame(table(mh$Q107))
+anorexia_c$condition <- "Anorexia"
+anorexia_d <-  as.data.frame(round(prop.table(table(mh$Q107)),3)*100)
+colnames(anorexia_d)<- c("Var1", "%")
+anorexia_age <- right_join(anorexia_c, anorexia_d)
+anorexia_age <- anorexia_age[,c(3,1,2,4)]
+
+anorexia_e <- as.data.frame(table(mh$Q108))
+anorexia_e$condition <- "Anorexia"
+anorexia_f <-  as.data.frame(round(prop.table(table(mh$Q108)),3)*100)
+colnames(anorexia_f)<- c("Var1", "%")
+anorexia_time <- right_join(anorexia_e, anorexia_f)
+anorexia_time <- anorexia_time[,c(3,1,2,4)]
+
+anorexia_g <- as.data.frame(table(mh$Q109))
+anorexia_g$condition <- "Anorexia"
+anorexia_h <-  as.data.frame(round(prop.table(table(mh$Q109)),3)*100)
+colnames(anorexia_h)<- c("Var1", "%")
+anorexia_prognosis <- right_join(anorexia_g, anorexia_h)
+anorexia_prognosis <- anorexia_prognosis[,c(3,1,2,4)]
+
+
+#Bulimia
+
+mh$Q110 <- ifelse(mh$Q110 >=21, "21+", mh$Q110)
+mh$Q110 <- ifelse(mh$Q110 <=15, "Below 15", mh$Q110)
+bulimia_c <- as.data.frame(table(mh$Q110))
+bulimia_c$condition <- "Bulimia"
+bulimia_d <-  as.data.frame(round(prop.table(table(mh$Q110)),3)*100)
+colnames(bulimia_d)<- c("Var1", "%")
+bulimia_age <- right_join(bulimia_c, bulimia_d)
+bulimia_age <- bulimia_age[,c(3,1,2,4)]
+
+bulimia_e <- as.data.frame(table(mh$Q111))
+bulimia_e$condition <- "Bulimia"
+bulimia_f <-  as.data.frame(round(prop.table(table(mh$Q111)),3)*100)
+colnames(bulimia_f)<- c("Var1", "%")
+bulimia_time <- right_join(bulimia_e, bulimia_f)
+bulimia_time <- bulimia_time[,c(3,1,2,4)]
+
+bulimia_g <- as.data.frame(table(mh$Q112))
+bulimia_g$condition <- "Bulimia"
+bulimia_h <-  as.data.frame(round(prop.table(table(mh$Q112)),3)*100)
+colnames(bulimia_h)<- c("Var1", "%")
+bulimia_prognosis <- right_join(bulimia_g, bulimia_h)
+bulimia_prognosis <- bulimia_prognosis[,c(3,1,2,4)]
+
+#Binge Eating
+mh$Q113 <- ifelse(mh$Q113 >=21, "21+", mh$Q113)
+mh$Q113 <- ifelse(mh$Q113 <=15, "Below 15", mh$Q113)
+bingeeating_c <- as.data.frame(table(mh$Q113))
+bingeeating_c$condition <- "Binge Eating"
+bingeeating_d <-  as.data.frame(round(prop.table(table(mh$Q113)),3)*100)
+colnames(bingeeating_d)<- c("Var1", "%")
+bingeeating_age <- right_join(bingeeating_c, bingeeating_d)
+bingeeating_age <- bingeeating_age[,c(3,1,2,4)]
+
+bingeeating_e <- as.data.frame(table(mh$Q114))
+bingeeating_e$condition <- "Binge Eating"
+bingeeating_f <-  as.data.frame(round(prop.table(table(mh$Q114)),3)*100)
+colnames(bingeeating_f)<- c("Var1", "%")
+bingeeating_time <- right_join(bingeeating_e, bingeeating_f)
+bingeeating_time <- bingeeating_time[,c(3,1,2,4)]
+
+bingeeating_g <- as.data.frame(table(mh$Q115))
+bingeeating_g$condition <- "Binge Eating"
+bingeeating_h <-  as.data.frame(round(prop.table(table(mh$Q115)),3)*100)
+colnames(bingeeating_h)<- c("Var1", "%")
+bingeeating_prognosis <- right_join(bingeeating_g, bingeeating_h)
+bingeeating_prognosis <- bingeeating_prognosis[,c(3,1,2,4)]
+
+#schizophrenia
+
+table(mh$Q116)
+#< table of extent 0 >
+table(mh$Q117)
+#< table of extent 0 >
+table(mh$Q118)
+#< table of extent 0 >
+
+#psychosis
+mh$Q119 <- ifelse(mh$Q113 >=21, "21+", mh$Q119)
+mh$Q119 <- ifelse(mh$Q113 <=15, "Below 15", mh$Q119)
+psychosis_c <- as.data.frame(table(mh$Q119))
+psychosis_c$condition <- "Psychosis"
+psychosis_d <-  as.data.frame(round(prop.table(table(mh$Q119)),3)*100)
+colnames(psychosis_d)<- c("Var1", "%")
+psychosis_age <- right_join(psychosis_c, psychosis_d)
+psychosis_age <- psychosis_age[,c(3,1,2,4)]
+
+psychosis_e <- as.data.frame(table(mh$Q120))
+psychosis_e$condition <- "Psychosis"
+psychosis_f <-  as.data.frame(round(prop.table(table(mh$Q120)),3)*100)
+colnames(psychosis_f)<- c("Var1", "%")
+psychosis_time <- right_join(psychosis_e, psychosis_f)
+psychosis_time <- psychosis_time[,c(3,1,2,4)]
+
+psychosis_g <- as.data.frame(table(mh$Q121))
+psychosis_g$condition <- "Psychosis"
+psychosis_h <-  as.data.frame(round(prop.table(table(mh$Q121)),3)*100)
+colnames(psychosis_h)<- c("Var1", "%")
+psychosis_prognosis <- right_join(psychosis_g, psychosis_h)
+psychosis_prognosis <- psychosis_prognosis[,c(3,1,2,4)]
+
+#Personality Disorder
+mh$Q122 <- ifelse(mh$Q113 >=21, "21+", mh$Q122)
+mh$Q122 <- ifelse(mh$Q113 <=15, "Below 15", mh$Q122)
+personalitydisorder_c <- as.data.frame(table(mh$Q122))
+personalitydisorder_c$condition <- "Personality Disorder"
+personalitydisorder_d <-  as.data.frame(round(prop.table(table(mh$Q122)),3)*100)
+colnames(personalitydisorder_d)<- c("Var1", "%")
+personalitydisorder_age <- right_join(personalitydisorder_c, personalitydisorder_d)
+personalitydisorder_age <- personalitydisorder_age[,c(3,1,2,4)]
+
+personalitydisorder_e <- as.data.frame(table(mh$Q123))
+personalitydisorder_e$condition <- "Personality Disorder"
+personalitydisorder_f <-  as.data.frame(round(prop.table(table(mh$Q123)),3)*100)
+colnames(personalitydisorder_f)<- c("Var1", "%")
+personalitydisorder_time <- right_join(personalitydisorder_e, personalitydisorder_f)
+personalitydisorder_time <- personalitydisorder_time[,c(3,1,2,4)]
+
+personalitydisorder_g <- as.data.frame(table(mh$Q124))
+personalitydisorder_g$condition <- "Personality Disorder"
+personalitydisorder_h <-  as.data.frame(round(prop.table(table(mh$Q124)),3)*100)
+colnames(personalitydisorder_h)<- c("Var1", "%")
+personalitydisorder_prognosis <- right_join(personalitydisorder_g, personalitydisorder_h)
+personalitydisorder_prognosis <- personalitydisorder_prognosis[,c(3,1,2,4)]
+
+#ASD
+mh$Q125 <- ifelse(mh$Q125 >=21, "21+", mh$Q125)
+mh$Q125 <- ifelse(mh$Q125 <=15, "Below 15", mh$Q125)
+ASD_c <- as.data.frame(table(mh$Q125))
+ASD_c$condition <- "Autism Spectrum Disorder"
+ASD_d <-  as.data.frame(round(prop.table(table(mh$Q125)),3)*100)
+colnames(ASD_d)<- c("Var1", "%")
+ASD_age <- right_join(ASD_c, ASD_d)
+ASD_age <- ASD_age[,c(3,1,2,4)]
+
+ASD_e <- as.data.frame(table(mh$Q126))
+ASD_e$condition <- "Autism Spectrum Disorder"
+ASD_f <-  as.data.frame(round(prop.table(table(mh$Q126)),3)*100)
+colnames(ASD_f)<- c("Var1", "%")
+ASD_time <- right_join(ASD_e, ASD_f)
+ASD_time <- ASD_time[,c(3,1,2,4)]
+
+ASD_g <- as.data.frame(table(mh$Q127))
+ASD_g$condition <- "Autism Spectrum Disorder"
+ASD_h <-  as.data.frame(round(prop.table(table(mh$Q127)),3)*100)
+colnames(ASD_h)<- c("Var1", "%")
+ASD_prognosis <- right_join(ASD_g, ASD_h)
+ASD_prognosis <- ASD_prognosis[,c(3,1,2,4)]
+
+#ADHD
+mh$Q128 <- ifelse(mh$Q128 >=21, "21+", mh$Q128)
+mh$Q128 <- ifelse(mh$Q128 <=15, "Below 15", mh$Q128)
+ADHD_c <- as.data.frame(table(mh$Q128))
+ADHD_c$condition <- "Attention Deficit Hyperactivity Disorder"
+ADHD_d <-  as.data.frame(round(prop.table(table(mh$Q128)),3)*100)
+colnames(ADHD_d)<- c("Var1", "%")
+ADHD_age <- right_join(ADHD_c, ADHD_d)
+ADHD_age <- ADHD_age[,c(3,1,2,4)]
+
+ADHD_e <- as.data.frame(table(mh$Q129))
+ADHD_e$condition <- "Attention Deficit Hyperactivity Disorder"
+ADHD_f <-  as.data.frame(round(prop.table(table(mh$Q129)),3)*100)
+colnames(ADHD_f)<- c("Var1", "%")
+ADHD_time <- right_join(ADHD_e, ADHD_f)
+ADHD_time <- ADHD_time[,c(3,1,2,4)]
+
+ADHD_g <- as.data.frame(table(mh$Q130))
+ADHD_g$condition <- "Attention Deficit Hyperactivity Disorder"
+ADHD_h <-  as.data.frame(round(prop.table(table(mh$Q130)),3)*100)
+colnames(ADHD_h)<- c("Var1", "%")
+ADHD_prognosis <- right_join(ADHD_g, ADHD_h)
+ADHD_prognosis <- ADHD_prognosis[,c(3,1,2,4)]
+
+Supplementary_table_age <- rbind(depression_age, anxiety_age, socialanxiety_age, 
+                                 anorexia_age, ASD_age, bingeeating_age, bulimia_age,
+                                 mania_age, OCD_age, panicattacks_age, psychosis_age, 
+                                 personalitydisorder_age, ADHD_age)
+Supplementary_table_timeandprog <- rbind(depression_time, anxiety_time, socialanxiety_time, 
+                                         anorexia_time, ASD_time, bingeeating_time, bulimia_time,
+                                         mania_time, OCD_time, panicattacks_time,psychosis_time, 
+                                         personalitydisorder_time, ADHD_time,depression_prognosis,
+                                         anxiety_prognosis,  socialanxiety_prognosis,anorexia_prognosis, 
+                                         ASD_prognosis, bingeeating_prognosis, bulimia_prognosis,
+                                         mania_prognosis,OCD_prognosis, panicattacks_prognosis, 
+                                         psychosis_prognosis, personalitydisorder_prognosis,
+                                         ADHD_prognosis)
+#Supplementary table DRUGS####
+
+# cocaine
+cocaine1 <- as.data.frame(table(pass$Q157_1))
+cocaine1$drug<-"Cocaine"
+cocaine2 <- as.data.frame(round(prop.table(table(pass$Q157_1)),3)*100)
+colnames(cocaine2)<-c("Var1", "%")
+cocaine <- right_join(cocaine1, cocaine2)
+cocaine <- cocaine[,c(3,1,2,4)]
+
+#crack
+crack1 <- data.frame(table(pass$Q157_2))
+crack1$drug<-"Crack"
+crack2 <- as.data.frame(round(prop.table(table(pass$Q157_2)),3)*100)
+colnames(crack2)<-c("Var1", "%")
+crack <- right_join(crack1, crack2)
+crack <- crack[,c(3,1,2,4)]
+
+#MDMA
+mdma1 <- as.data.frame(table(pass$Q157_3))
+mdma1$drug<-"MDMA"
+mdma2 <- as.data.frame(round(prop.table(table(pass$Q157_3)),3)*100)
+colnames(mdma2)<-c("Var1", "%")
+mdma <- right_join(mdma1, mdma2)
+mdma <- mdma[,c(3,1,2,4)]
+
+#inhalants
+inhalants1 <- as.data.frame(table(pass$Q157_4) )
+inhalants1$drug<-"Inhalants"
+inhalants2 <- as.data.frame(round(prop.table(table(pass$Q157_4)),3)*100)
+colnames(inhalants2)<-c("Var1", "%")
+inhalants <- right_join(inhalants1, inhalants2)
+inhalants <-inhalants[,c(3,1,2,4)]
+
+#sedatives
+sedatives1 <- as.data.frame(table(pass$Q157_5))
+sedatives1$drug<-"Sedatives"
+sedatives2 <- as.data.frame(round(prop.table(table(pass$Q157_5)),3)*100)
+colnames(sedatives2)<-c("Var1", "%")
+sedatives <- right_join(sedatives1, sedatives2)
+sedatives <-sedatives[,c(3,1,2,4)]
+
+
+# hallucinogens   
+hallucinogens1 <- as.data.frame(table(pass$Q157_6))
+hallucinogens1$drug<-"Hallucinogens"
+hallucinogens2 <- as.data.frame(round(prop.table(table(pass$Q157_6)),3)*100)
+colnames(hallucinogens2)<-c("Var1", "%")
+hallucinogens <- right_join(hallucinogens1, hallucinogens2)
+hallucinogens <-hallucinogens[,c(3,1,2,4)]
+
+#oppioids
+oppioids1<- as.data.frame(table(pass$Q157_7))
+oppioids1$drug<-"Oppioids"
+oppioids2 <- as.data.frame(round(prop.table(table(pass$Q157_7)),3)*100)
+colnames(oppioids2)<-c("Var1", "%")
+oppioids <- right_join(oppioids1, oppioids2)
+oppioids <-oppioids[,c(3,1,2,4)]
+
+Supplementary_table3 <- rbind(cocaine,crack, mdma, inhalants, sedatives, hallucinogens, oppioids)
+table(pass$Q156)
+#Supplementary table number of drugs used and number of times####
+
+
+drugs <- filter(pass, pass$Q156 == 'yes')
+dim(drugs)
+
+drugs <- drugs[,c(212:218)]
+dim(drugs)
+#[1] 49  7
+
+# creating binary yes or no variables and full scale variables for drug use
+drugs$Cocaine <- "NA"
+drugs$Cocaine <- ifelse(drugs$Q157_1=="no", 0, 1)
+head(drugs$Cocaine)
+drugs$Cocaine <- as.numeric(drugs$Cocaine)
+cocaine_a <- as.data.frame(table(drugs$Cocaine))
+cocaine_b <- as.data.frame(round(prop.table(table(drugs$Cocaine)),3)*100)
+colnames(cocaine_b)<-c("Var1", "%")
+cocaine_N <- right_join(cocaine_a, cocaine_b)
+cocaine_N$drug <- "Cocaine"
+cocaine_N <-cocaine_N[,c(4,1,2,3)]
+
+
+drugs$crack<- "NA"
+drugs$crack <- ifelse(drugs$Q157_2=="no", 0, 1)
+head(drugs$crack)
+drugs$crack<- as.numeric(drugs$crack)
+crack_a <- as.data.frame(table(drugs$crack))
+crack_b <- as.data.frame(round(prop.table(table(drugs$crack)),3)*100)
+colnames(crack_b)<-c("Var1", "%")
+crack_N <- right_join(crack_a, crack_b)
+crack_N$drug <- "Crack"
+crack_N <-crack_N[,c(4,1,2,3)]
+
+
+drugs$mdma<- "NA"
+drugs$mdma<- ifelse(drugs$Q157_3=="no", 0, 1)
+head(drugs$mdma)
+drugs$mdma<- as.numeric(drugs$mdma)
+mdma_a <- as.data.frame(table(drugs$mdma))
+mdma_b <- as.data.frame(round(prop.table(table(drugs$mdma)),3)*100)
+colnames(mdma_b)<-c("Var1", "%")
+mdma_N <- right_join(mdma_a, mdma_b)
+mdma_N$drug <- "MDMA"
+mdma_N <-mdma_N[,c(4,1,2,3)]
+
+drugs$inhalants<- "NA"
+drugs$inhalants<- ifelse(drugs$Q157_4=="no", 0, 1)
+head(drugs$inhalants)
+drugs$inhalants<- as.numeric(drugs$inhalants)
+inhalants_a <- as.data.frame(table(drugs$inhalants))
+inhalants_b <- as.data.frame(round(prop.table(table(drugs$inhalants)),3)*100)
+colnames(inhalants_b)<-c("Var1", "%")
+inhalants_N <- right_join(inhalants_a, inhalants_b)
+inhalants_N$drug <- "Inhalants"
+inhalants_N <-inhalants_N[,c(4,1,2,3)]
+
+drugs$sedatives<- "NA"
+drugs$sedatives<- ifelse(drugs$Q157_5=="no", 0, 1)
+head(drugs$sedatives)
+drugs$sedatives<- as.numeric(drugs$sedatives)
+sedatives_a <- as.data.frame(table(drugs$sedatives))
+sedatives_b <- as.data.frame(round(prop.table(table(drugs$sedatives)),3)*100)
+colnames(sedatives_b)<-c("Var1", "%")
+sedatives_N <- right_join(sedatives_a, sedatives_b)
+sedatives_N$drug <- "Sedatives"
+sedatives_N <-sedatives_N[,c(4,1,2,3)]
+
+drugs$hallucinogens<- "NA"
+drugs$hallucinogens<- ifelse(drugs$Q157_6=="no", 0, 1)
+head(drugs$hallucinogens)
+drugs$hallucinogens<- as.numeric(drugs$hallucinogens)
+hallucinogens_a <- as.data.frame(table(drugs$hallucinogens))
+hallucinogens_b <- as.data.frame(round(prop.table(table(drugs$hallucinogens)),3)*100)
+colnames(hallucinogens_b)<-c("Var1", "%")
+hallucinogens_N <- right_join(hallucinogens_a, hallucinogens_b)
+hallucinogens_N$drug <- "Hallucinogens"
+hallucinogens_N <-hallucinogens_N[,c(4,1,2,3)]
+
+drugs$oppioids<- "NA"
+drugs$oppioids<- ifelse(drugs$Q157_7=="no", 0, 1)
+head(drugs$oppioids)
+drugs$oppioids<- as.numeric(drugs$oppioids)
+oppioids_a <- as.data.frame(table(drugs$oppioids))
+oppioids_b <- as.data.frame(round(prop.table(table(drugs$oppioids)),3)*100)
+colnames(oppioids_b)<-c("Var1", "%")
+oppioids_N <- right_join(oppioids_a, oppioids_b)
+oppioids_N$drug <- "Oppioids"
+oppioids_N <-oppioids_N[,c(4,1,2,3)]
+
+drugs$total_drugs_used = rowSums(drugs[,c(8:14)], na.rm=TRUE)*NA^!rowSums(!is.na(drugs[,c(8:14)]))
+total_a <- as.data.frame(table(drugs$total_drugs_used))
+total_b <- as.data.frame(round(prop.table(table(drugs$total_drugs_used)),3)*100)
+colnames(total_b)<-c("Var1", "%")
+total_N <- right_join(total_a, total_b)
+total_N$drug <- "Total"
+total_N <-total_N[,c(4,1,2,3)]
+
+Supplementary_table8 <-total_N[,c(4,1,2,3)]
+
+
+Supplementary_table4 <- rbind(cocaine_N,crack_N, mdma_N, inhalants_N, sedatives_N, hallucinogens_N, oppioids_N)
+
+
+
+# Linear Regressions ####
+
+pass$n_ethnicity<-pass$nethnicity
+pass$n_ethnicity<-ifelse(pass$n_ethnicity=="Unknown", NA, pass$n_ethnicity)
+pass$n_orientation<-pass$orientation
+pass$n_orientation<-ifelse(pass$n_orientation=="Unknown", NA, pass$n_orientation)
+pass$n_disability<-pass$disability
+pass$n_disability<-ifelse(pass$n_disability=="Unknown", NA, pass$n_disability)
+
+pass$UGPG<-as.factor(pass$UGPG)
+pass$n_ethnicity<-as.factor(pass$n_ethnicity)
+pass$n_gender<-as.factor(pass$gender)
+pass$n_orientation<-as.factor(pass$n_orientation)
+pass$student.status <-as.factor(pass$student.status)
+pass$n_year<-as.factor(pass$year)
+pass$n_disability <- as.factor(pass$n_disability)
+pass$age <- as.numeric(pass$age)
+
+contrasts(pass$n_disability) <- c(1,0)
+contrasts(pass$UGPG) <- c(1,0)
+contrasts(pass$n_ethnicity) <- c(1,0)
+contrasts(pass$n_gender) <- cbind(c(1,0,0),
+                                c(0,0,1))
+contrasts(pass$n_year)
+contrasts(pass$n_orientation)
+contrasts(pass$student.status)<- cbind(c(1,0,0),
+                                       c(0,0,1))
+
+#Standardised scores
+pass$unil_z <- z.score(pass$uni.loneliness)
+pass$prel_z <- z.score(pass$pre.loneliness)
+pass$PHQz <- z.score(pass$PHQ)
+pass$GADz <- z.score(pass$GAD)
+pass$SAz <- z.score(pass$social.anxiety)
+pass$SCz <- z.score(pass$self.control)
+pass$AUDITz <- z.score(pass$AUDIT)
+pass$CUDITz <- z.score(pass$CUDIT)
+pass$PSz <- z.score(pass$perceived.stress)
+pass$wellbeingz <- z.score(pass$wellbeing)
+pass$SCInz <- z.score(pass$SCIn)
+pass$perfectionismz <- z.score(pass$perfectionism)
+pass$SE_aca_z <- z.score(pass$SE.academic)
+pass$SE_acc_z <- z.score(pass$SE.academic)
+pass$SE_fr_z <- z.score(pass$SE.friends)
+pass$SE_co_z <- z.score(pass$SE.community)
+
+#Recoding finance
+pass$Q80 <- dplyr::recode(pass$Q80, `5` = "1", `1` = "5", `2` ="4", `3` ="3", `4` ="2")
+pass$Q80 <- as.numeric(pass$Q80)
+pass$Q81 <- dplyr::recode(pass$Q81, `5` = "1", `1` = "5", `2` ="4", `3` ="3", `4` ="2")
+pass$Q81 <- as.numeric(pass$Q81)
+pass$Q82 <- dplyr::recode(pass$Q82, `5` = "1", `1` = "5", `2` ="4", `3` ="3", `4` ="2")
+pass$Q82 <- as.numeric(pass$Q82)
+pass$SE.finances_n<- rowSums(pass[,c(109, 110, 112)], na.rm = TRUE)*NA^!rowSums(!is.na(pass[,c(109, 110, 112)]))
+str(pass$SE.finances_n)
+head(pass$SE.finances_n)
+
+pass$SE_fi_z <- z.score(pass$SE.finances_n)
+
+#GAD demo####
+GAD_UGPG <- lm(GADz~ UGPG, pass)
+GAD_n_ethnicity <- lm(GADz~ n_ethnicity, pass)
+GAD_n_gender <- lm(GADz~ n_gender, pass)
+GAD_n_orientation <- lm(GADz~ n_orientation, pass)
+GAD_student.status<- lm(GADz~ student.status, pass)
+GAD_n_year <- lm(GADz~ n_year, pass)
+GAD_n_disability <- lm(GADz~ n_disability, pass)
+GAD_Multiple <- lm(GADz~ n_disability+student.status+n_orientation+ 
+                     n_ethnicity+n_gender+UGPG+n_year+age, pass)
+
+
+summary(GAD_UGPG)
+summary(GAD_n_disability)
+summary(GAD_n_ethnicity)
+summary(GAD_n_gender)
+summary(GAD_n_orientation)
+summary(GAD_n_year)
+summary(GAD_student.status)
+summary(GAD_Multiple)
+
+PHQ_UGPG <- lm(PHQz~ UGPG, pass)
+PHQ_n_ethnicity <- lm(PHQz~ n_ethnicity, pass)
+PHQ_n_gender <- lm(PHQz~ n_gender, pass)
+PHQ_n_orientation <- lm(PHQz~ n_orientation, pass)
+PHQ_student.status<- lm(PHQz~ student.status, pass)
+PHQ_n_year <- lm(PHQz~ n_year, pass)
+PHQ_n_disability <- lm(PHQz~ n_disability, pass)
+PHQ_Multiple <- lm(PHQz~ n_disability+student.status+
+                     n_orientation+n_ethnicity+n_gender+
+                     UGPG+n_year+age, pass)
+
+summary(PHQ_UGPG)
+summary(PHQ_n_disability)
+summary(PHQ_n_ethnicity)
+summary(PHQ_n_gender)
+summary(PHQ_n_orientation)
+summary(PHQ_n_year)
+summary(PHQ_student.status)
+summary(PHQ_Multiple)
+car::Anova(PHQ_Multiple, type ="III")
+
+
+### Assumption Check for demo #####
+
+car::leveneTest(lm(GADz~ UGPG, pass)) #good
+car::leveneTest(lm(GADz~ n_ethnicity, pass))#good
+car::leveneTest(lm(GADz~ n_gender, pass))#good
+car::leveneTest(lm(GADz~ n_orientation, pass))#good
+car::leveneTest(lm(GADz~ student.status, pass))#good
+car::leveneTest(lm(GADz~ n_year, pass))#good
+car::leveneTest(lm(GADz~ n_disability, pass))#good
+
+car::leveneTest(lm(PHQz~ UGPG, pass)) #good
+car::leveneTest(lm(PHQz~ n_ethnicity, pass))#good
+car::leveneTest(lm(PHQz~ n_gender, pass))#good
+car::leveneTest(lm(PHQz~ n_orientation, pass))#good
+car::leveneTest(lm(PHQz~ student.status, pass))#good
+car::leveneTest(lm(PHQz~ n_year, pass))#good
+car::leveneTest(lm(PHQz~ n_disability, pass))#good
+
+DVIF <- car::vif(GAD_Multiple)
+1/DVIF #GOOD
+DVIF2 <- car::vif(PHQ_Multiple)
+1/DVIF2 #GOOD
+
+psych::describe(stats::resid(PHQ_UGPG))
+psych::describe(stats::resid(PHQ_n_disability))
+psych::describe(stats::resid(PHQ_n_ethnicity))
+psych::describe(stats::resid(PHQ_n_orientation))
+psych::describe(stats::resid(PHQ_n_gender))
+psych::describe(stats::resid(PHQ_n_year))
+## ALL SKEWED +
+psych::describe(stats::resid(GAD_UGPG))
+psych::describe(stats::resid(GAD_n_disability))
+psych::describe(stats::resid(GAD_n_ethnicity))
+psych::describe(stats::resid(GAD_n_orientation))
+psych::describe(stats::resid(GAD_n_gender))
+psych::describe(stats::resid(GAD_n_year))
+## ALL SKEWED +
+
+summary(stats::cooks.distance(GAD_UGPG))
+summary(stats::cooks.distance(GAD_n_disability))
+summary(stats::cooks.distance(GAD_n_ethnicity))
+summary(stats::cooks.distance(GAD_n_orientation))
+summary(stats::cooks.distance(GAD_n_gender))
+summary(stats::cooks.distance(GAD_n_year))
+#NO OUTLIER
+
+summary(stats::cooks.distance(PHQ_UGPG))
+summary(stats::cooks.distance(PHQ_n_disability))
+summary(stats::cooks.distance(PHQ_n_ethnicity))
+summary(stats::cooks.distance(PHQ_n_orientation))
+summary(stats::cooks.distance(PHQ_n_gender))
+summary(stats::cooks.distance(PHQ_n_year))
+#NO OUTLIER
+
+plot(PHQ_UGPG)
+plot(PHQ_n_disability)
+plot(PHQ_n_ethnicity)
+plot(PHQ_n_orientation)
+plot(PHQ_n_gender)
+plot(PHQ_n_year)
+
+### PHQ table demo ####
+PHQ_UGPGt <- export_summs(PHQ_UGPG, scale = TRUE)
+PHQ_n_ethnicityt <- export_summs(PHQ_n_ethnicity,scale = TRUE)
+PHQ_n_gendert <-export_summs(PHQ_n_gender,scale = TRUE)
+PHQ_n_disabilityt <- export_summs(PHQ_n_disability,scale = TRUE)
+PHQ_n_orientationt <- export_summs(PHQ_n_orientation,scale = TRUE)
+PHQ_n_yeart <- export_summs(PHQ_n_year,scale = TRUE)
+PHQ_student.statust <- export_summs(PHQ_student.status,scale = TRUE)
+PHQ_Multiplet <- export_summs(PHQ_Multiple,scale = TRUE)
+
+PHQ_UGPGr <- filter(PHQ_UGPGt, names == "R2")
+PHQ_n_ethnicityr <- filter(PHQ_n_ethnicityt, names == "R2")
+PHQ_n_genderr <- filter(PHQ_n_gendert, names == "R2")
+PHQ_n_disabilityr <- filter(PHQ_n_disabilityt, names == "R2")
+PHQ_n_orientationr <- filter(PHQ_n_orientationt, names == "R2")
+PHQ_n_yearr <- filter(PHQ_n_yeart, names == "R2")
+PHQ_student.statusr <- filter(PHQ_student.statust, names == "R2")
+PHQ_Multipler <- filter(PHQ_Multiplet, names == "R2")
+
+PHQ_UGPGr <- PHQ_UGPGr[,2]
+PHQ_n_ethnicityr <- PHQ_n_ethnicityr[,2]
+PHQ_n_genderr <-PHQ_n_genderr[,2]
+PHQ_n_disabilityr <- PHQ_n_disabilityr[,2]
+PHQ_n_orientationr <- PHQ_n_orientationr[,2]
+PHQ_n_yearr <- PHQ_n_yearr[,2]
+PHQ_student.statusr <- PHQ_student.statusr[,2]
+PHQ_Multipler <- PHQ_Multipler[,2]
+
+PHQ_UGPGr$model <- "UGPG"
+PHQ_n_ethnicityr$model <- "ethnicity"
+PHQ_n_genderr$model <- "gender"
+PHQ_n_disabilityr$model  <- "disability"
+PHQ_n_orientationr$model <- "orientation"
+PHQ_n_yearr$model <- "year"
+PHQ_student.statusr$model  <- "student.status"
+PHQ_Multipler$model <- "Multiple"
+
+rsquared_demo <- rbind(PHQ_UGPGr, PHQ_student.statusr,
+                       PHQ_n_ethnicityr, PHQ_n_disabilityr, PHQ_n_orientationr,
+                       PHQ_n_genderr,PHQ_n_yearr)
+colnames(rsquared_demo)<- c("rsquared", "model")
+
+PHQ_UGPGn <- filter(PHQ_UGPGt, names == "N")
+PHQ_n_ethnicityn <- filter(PHQ_n_ethnicityt, names == "N")
+PHQ_n_gendern <- filter(PHQ_n_gendert, names == "N")
+PHQ_n_disabilityn <- filter(PHQ_n_disabilityt, names == "N")
+PHQ_n_orientationn <- filter(PHQ_n_orientationt, names == "N")
+PHQ_n_yearn <- filter(PHQ_n_yeart, names == "N")
+PHQ_student.statusn <- filter(PHQ_student.statust, names == "N")
+PHQ_Multiplen <- filter(PHQ_Multiplet, names == "N")
+
+PHQ_UGPGn <- PHQ_UGPGn[,2]
+PHQ_n_ethnicityn <- PHQ_n_ethnicityn[,2]
+PHQ_n_gendern <-PHQ_n_gendern[,2]
+PHQ_n_disabilityn <- PHQ_n_disabilityn[,2]
+PHQ_n_orientationn <- PHQ_n_orientationn[,2]
+PHQ_n_yearn <- PHQ_n_yearn[,2]
+PHQ_student.statusn <- PHQ_student.statusn[,2]
+PHQ_Multiplen <- PHQ_Multiplen[,2]
+
+PHQ_UGPGn$model <- "UGPG"
+PHQ_n_ethnicityn$model <- "ethnicity"
+PHQ_n_gendern$model <- "gender"
+PHQ_n_disabilityn$model  <- "disability"
+PHQ_n_orientationn$model <- "orientation"
+PHQ_n_yearn$model <- "year"
+PHQ_student.statusn$model  <- "student.status"
+PHQ_Multiplen$model <- "Multiple"
+
+
+
+n_demo <- rbind(PHQ_UGPGn, PHQ_student.statusn, 
+                PHQ_n_ethnicityn, PHQ_n_disabilityn, PHQ_n_orientationn,
+                PHQ_n_gendern,PHQ_n_yearn)
+
+colnames(n_demo)<- c("n", "model")
+
+PHQ_UGPGcol <-tidy(PHQ_UGPG) %>%mutate(model = "UGPG")
+PHQ_n_ethnicitycol <-tidy(PHQ_n_ethnicity) %>% mutate(model = "ethnicity")
+PHQ_n_gendercol <-tidy(PHQ_n_gender) %>% mutate(model = "gender")
+PHQ_n_disabilitycol <-tidy(PHQ_n_disability) %>% mutate(model = "disability")
+PHQ_n_orientationcol <-tidy(PHQ_n_orientation) %>% mutate(model = "orientation")
+PHQ_n_yearcol <-tidy(PHQ_n_year) %>% mutate(model = "year")
+PHQ_student.statuscol <-tidy(PHQ_student.status) %>% 
+  mutate(model = "student.status")
+
+PHQ_UGPGcol[PHQ_UGPGcol == "(Intercept)"] <- "UGPG"
+PHQ_n_ethnicitycol[PHQ_n_ethnicitycol == "(Intercept)"] <- "n_ethnicity"
+PHQ_n_gendercol[PHQ_n_gendercol == "(Intercept)"] <- "n_gender"
+PHQ_n_disabilitycol[PHQ_n_disabilitycol== "(Intercept)"] <- "n_disability"
+PHQ_n_orientationcol[PHQ_n_orientationcol == "(Intercept)"] <- "n_orientation"
+PHQ_n_yearcol[PHQ_n_yearcol == "(Intercept)"] <- "n_year"
+PHQ_student.statuscol[PHQ_student.statuscol== "(Intercept)"] <- "student.status"
+
+
+
+all_models_demo<- rbind(PHQ_UGPGcol,
+                        PHQ_n_ethnicitycol,
+                        PHQ_n_gendercol,
+                        PHQ_n_disabilitycol,
+                        PHQ_n_orientationcol,
+                        PHQ_n_yearcol,
+                        PHQ_student.statuscol)
+
+
+PHQ_Multiple_col <-  tidy(PHQ_Multiple) %>% mutate(model = "Multiple")
+
+finaltable1_PHQ_demo <- right_join( all_models_demo, rsquared_demo)
+finaltable1_PHQ_demo <- right_join( n_demo, finaltable1_PHQ_demo )
+finaltable1_PHQ_demo <- as.data.frame(finaltable1_PHQ_demo)
+colnames(finaltable1_PHQ_demo)<- c("N","Model", "term", "beta", "SE", "t", "p", 
+                                   "rsquared" )
+finaltable1_PHQ_demo$beta <- round(finaltable1_PHQ_demo$beta, digits = 2)
+finaltable1_PHQ_demo$rsquared <- as.numeric(finaltable1_PHQ_demo$rsquared)
+finaltable1_PHQ_demo$rsquared <- round(finaltable1_PHQ_demo$rsquared, digits = 2)
+finaltable1_PHQ_demo$p <- round(finaltable1_PHQ_demo$p, digits = 3)
+finaltable1_PHQ_demo <- finaltable1_PHQ_demo[,c(3,1,4,8,7)]
+finaltable1_PHQ_demo$criterion <- "PHQ"
+
+
+#### GAD tables demo####
+GAD_UGPGt <- export_summs(GAD_UGPG, scale = TRUE)
+GAD_n_ethnicityt <- export_summs(GAD_n_ethnicity,scale = TRUE)
+GAD_n_gendert <-export_summs(GAD_n_gender,scale = TRUE)
+GAD_n_disabilityt <- export_summs(GAD_n_disability,scale = TRUE)
+GAD_n_orientationt <- export_summs(GAD_n_orientation,scale = TRUE)
+GAD_n_yeart <- export_summs(GAD_n_year,scale = TRUE)
+GAD_student.statust <- export_summs(GAD_student.status,scale = TRUE)
+GAD_Multiplet <- export_summs(GAD_Multiple,scale = TRUE)
+
+
+GAD_UGPGr <- filter(GAD_UGPGt, names == "R2")
+GAD_n_ethnicityr <- filter(GAD_n_ethnicityt, names == "R2")
+GAD_n_genderr <- filter(GAD_n_gendert, names == "R2")
+GAD_n_disabilityr <- filter(GAD_n_disabilityt, names == "R2")
+GAD_n_orientationr <- filter(GAD_n_orientationt, names == "R2")
+GAD_n_yearr <- filter(GAD_n_yeart, names == "R2")
+GAD_student.statusr <- filter(GAD_student.statust, names == "R2")
+GAD_Multipler <- filter(GAD_Multiplet, names == "R2")
+
+GAD_UGPGr <- GAD_UGPGr[,2]
+GAD_n_ethnicityr <- GAD_n_ethnicityr[,2]
+GAD_n_genderr <-GAD_n_genderr[,2]
+GAD_n_disabilityr <- GAD_n_disabilityr[,2]
+GAD_n_orientationr <- GAD_n_orientationr[,2]
+GAD_n_yearr <- GAD_n_yearr[,2]
+GAD_student.statusr <- GAD_student.statusr[,2]
+GAD_Multipler <- GAD_Multipler[,2]
+
+GAD_UGPGr$model <- "UGPG"
+GAD_n_ethnicityr$model <- "ethnicity"
+GAD_n_genderr$model <- "gender"
+GAD_n_disabilityr$model  <- "disability"
+GAD_n_orientationr$model <- "orientation"
+GAD_n_yearr$model <- "year"
+GAD_student.statusr$model  <- "student.status"
+GAD_Multipler$model <- "Multiple"
+
+
+rsquared_demo_GAD <- rbind(GAD_UGPGr, GAD_student.statusr, 
+                           GAD_n_ethnicityr, GAD_n_disabilityr, GAD_n_orientationr,
+                           GAD_n_genderr,GAD_n_yearr)
+
+colnames(rsquared_demo_GAD)<- c("rsquared", "model")
+
+GAD_UGPGn <- filter(GAD_UGPGt, names == "N")
+GAD_n_ethnicityn <- filter(GAD_n_ethnicityt, names == "N")
+GAD_n_gendern <- filter(GAD_n_gendert, names == "N")
+GAD_n_disabilityn <- filter(GAD_n_disabilityt, names == "N")
+GAD_n_orientationn <- filter(GAD_n_orientationt, names == "N")
+GAD_n_yearn <- filter(GAD_n_yeart, names == "N")
+GAD_student.statusn <- filter(GAD_student.statust, names == "N")
+GAD_Multiplen <- filter(GAD_Multiplet, names == "N")
+
+GAD_UGPGn <- GAD_UGPGn[,2]
+GAD_n_ethnicityn <- GAD_n_ethnicityn[,2]
+GAD_n_gendern <-GAD_n_gendern[,2]
+GAD_n_disabilityn <- GAD_n_disabilityn[,2]
+GAD_n_orientationn <- GAD_n_orientationn[,2]
+GAD_n_yearn <- GAD_n_yearn[,2]
+GAD_student.statusn <- GAD_student.statusn[,2]
+GAD_Multiplen <- GAD_Multiplen[,2]
+
+GAD_UGPGn$model <- "UGPG"
+GAD_n_ethnicityn$model <- "ethnicity"
+GAD_n_gendern$model <- "gender"
+GAD_n_disabilityn$model  <- "disability"
+GAD_n_orientationn$model <- "orientation"
+GAD_n_yearn$model <- "year"
+GAD_student.statusn$model  <- "student.status"
+GAD_Multiplen$model <- "Multiple"
+
+
+n_demo_GAD <- rbind(GAD_UGPGn, GAD_student.statusn, GAD_n_disabilityn, 
+                    GAD_n_ethnicityn, GAD_n_orientationn,
+                    GAD_n_gendern,GAD_n_yearn)
+
+colnames(n_demo_GAD)<- c("n", "model")
+
+
+GAD_UGPGcol <-tidy(GAD_UGPG) %>% mutate(model = "UGPG")
+GAD_n_ethnicitycol <-tidy(GAD_n_ethnicity) %>% mutate(model = "ethnicity")
+GAD_n_gendercol <-tidy(GAD_n_gender) %>% mutate(model = "gender")
+GAD_n_disabilitycol <-tidy(GAD_n_disability) %>% mutate(model = "disability")
+GAD_n_orientationcol <-tidy(GAD_n_orientation) %>% mutate(model = "orientation")
+GAD_n_yearcol <-tidy(GAD_n_year) %>% mutate(model = "year")
+GAD_student.statuscol <-tidy(GAD_student.status) %>% mutate(model = "student.status")
+
+GAD_UGPGcol[GAD_UGPGcol == "(Intercept)"] <- "UGPG"
+GAD_n_ethnicitycol[GAD_n_ethnicitycol == "(Intercept)"] <- "n_ethnicity"
+GAD_n_gendercol[GAD_n_gendercol == "(Intercept)"] <- "n_gender"
+GAD_n_disabilitycol[GAD_n_disabilitycol== "(Intercept)"] <- "n_disability"
+GAD_n_orientationcol[GAD_n_orientationcol == "(Intercept)"] <- "n_orientation"
+GAD_n_yearcol[GAD_n_yearcol == "(Intercept)"] <- "n_year"
+GAD_student.statuscol[GAD_student.statuscol== "(Intercept)"] <- "student.status"
+
+
+
+all_models_demo_GAD <- rbind(GAD_UGPGcol,
+                             GAD_n_ethnicitycol,
+                             GAD_n_gendercol,
+                             GAD_n_disabilitycol,
+                             GAD_n_orientationcol,
+                             GAD_n_yearcol,
+                             GAD_student.statuscol)
+
+GAD_Multiple_col <-  tidy(GAD_Multiple) %>% mutate(model = "Multiple")
+
+
+finaltable1_GAD_demo <- right_join(all_models_demo_GAD, rsquared_demo_GAD)
+finaltable1_GAD_demo <- right_join(n_demo_GAD, finaltable1_GAD_demo)
+finaltable1_GAD_demo <- as.data.frame(finaltable1_GAD_demo)
+colnames(finaltable1_GAD_demo)<- c("N1","Model", "term", "beta1", "SE1", "t1", "p1", 
+                                   "rsquared1")
+finaltable1_GAD_demo$beta1 <- round(finaltable1_GAD_demo$beta1, digits = 2)
+finaltable1_GAD_demo$rsquared1 <- as.numeric(finaltable1_GAD_demo$rsquared1)
+finaltable1_GAD_demo$rsquared1 <- round(finaltable1_GAD_demo$rsquared1, 
+                                        digits = 2)
+finaltable1_GAD_demo$p1 <- as.numeric(finaltable1_GAD_demo$p1)
+finaltable1_GAD_demo$p1 <- round(finaltable1_GAD_demo$p1, digits = 3)
+finaltable1_GAD_demo <- finaltable1_GAD_demo[,c(3,1,4,8,7)]
+finaltable1_GAD_demo$criterion1 <- "GAD"
+
+final_table1_demo <- right_join(finaltable1_GAD_demo,finaltable1_PHQ_demo)
+#when there is a variable without a number it is the intercept
+write.csv(final_table1_demo, file = "final_table1_demo.csv")
+
+colnames(GAD_Multipler)<- c("rsquared", "model")
+colnames(GAD_Multiplen)<- c("n", "model")
+
+finaltable1_GAD_Multiple <- right_join(GAD_Multiple_col, GAD_Multipler)
+finaltable1_GAD_Multiple <- right_join(GAD_Multiplen, finaltable1_GAD_Multiple)
+finaltable1_GAD_Multiple <- as.data.frame(finaltable1_GAD_Multiple)
+colnames(finaltable1_GAD_Multiple)<- c("N1","Model", "term", "beta1", "SE1", "t1", "p1", 
+                                       "rsquared1")
+finaltable1_GAD_Multiple$beta1 <- round(finaltable1_GAD_Multiple$beta1, digits = 2)
+finaltable1_GAD_Multiple$rsquared1 <- as.numeric(finaltable1_GAD_Multiple$rsquared1)
+finaltable1_GAD_Multiple$rsquared1 <- round(finaltable1_GAD_Multiple$rsquared1, digits = 2)
+finaltable1_GAD_Multiple$p1 <- round(finaltable1_GAD_Multiple$p1, digits = 3)
+finaltable1_GAD_Multiple <- finaltable1_GAD_Multiple[,c(3,1,4,7,8)]
+finaltable1_GAD_Multiple$criterion1 <- "GAD"
+
+colnames(PHQ_Multipler)<- c("rsquared", "model")
+colnames(PHQ_Multiplen)<- c("n", "model")
+
+finaltable1_PHQ_Multiple <- right_join(PHQ_Multiple_col, PHQ_Multipler)
+finaltable1_PHQ_Multiple <- right_join(PHQ_Multiplen, finaltable1_PHQ_Multiple)
+finaltable1_PHQ_Multiple <- as.data.frame(finaltable1_PHQ_Multiple)
+colnames(finaltable1_PHQ_Multiple)<- c("N","Model", "term", "beta", "SE", "t", "p", 
+                                       "rsquared")
+finaltable1_PHQ_Multiple$beta <- round(finaltable1_PHQ_Multiple$beta, digits = 2)
+finaltable1_PHQ_Multiple$rsquared <- as.numeric(finaltable1_PHQ_Multiple$rsquared)
+finaltable1_PHQ_Multiple$rsquared <- round(finaltable1_PHQ_Multiple$rsquared, digits = 2)
+finaltable1_PHQ_Multiple$p <- round(finaltable1_PHQ_Multiple$p, digits = 3)
+finaltable1_PHQ_Multiple <- finaltable1_PHQ_Multiple[,c(3,1,4,7,8)]
+finaltable1_PHQ_Multiple$criterion <- "PHQ"
+
+final_table1_demo_multiple <- right_join(finaltable1_GAD_Multiple,
+                                         finaltable1_PHQ_Multiple)
+write.csv(final_table1_demo_multiple, file = "final_table1_demo_multiple.csv")
+
+###GAD lm####
+
+GAD_PHQ <- lm(GADz~ PHQz, pass)
+GAD_CUDIT <- lm(GADz~ CUDITz, pass)
+GAD_AUDIT <- lm(GADz~ AUDITz, pass)
+GAD_unil <- lm(GADz~ unil_z, pass)
+GAD_prel <- lm(GADz~ prel_z, pass)
+GAD_SA <- lm(GADz~ SAz, pass)
+GAD_SCI <- lm(GADz~ SCInz, pass)
+GAD_PS <- lm(GADz~ PSz, pass)
+GAD_wellbeing <- lm(GADz~ wellbeingz, pass)
+GAD_SC <- lm(GADz~ SCz, pass)
+GAD_perfectionism <- lm(GADz~ perfectionismz, pass)
+GAD_aca<- lm(GADz~SE_aca_z, pass)
+GAD_fi<- lm(GADz~SE_fi_z, pass)
+GAD_acc<- lm(GADz~SE_acc_z, pass)
+GAD_fr<- lm(GADz~SE_fr_z, pass)
+GAD_co<- lm(GADz~SE_co_z, pass)
+
+GAD_PHQ1<- lm(GADz~ PHQz+n_disability+student.status+
+                n_orientation+n_ethnicity+n_gender+
+                UGPG+n_year+age, pass)
+GAD_CUDIT1 <- lm(GADz~ CUDITz+n_disability+student.status+
+                   n_orientation+n_ethnicity+n_gender+
+                   UGPG+n_year+age, pass)
+GAD_AUDIT1 <- lm(GADz~ AUDITz+n_disability+student.status+
+                   n_orientation+n_ethnicity+n_gender+
+                   UGPG+n_year+age, pass)
+GAD_unil1 <- lm(GADz~ unil_z+n_disability+student.status+
+                  n_orientation+n_ethnicity+n_gender+
+                  UGPG+n_year+age, pass)
+GAD_prel1 <- lm(GADz~ prel_z+n_disability+student.status+
+                  n_orientation+n_ethnicity+n_gender+
+                  UGPG+n_year+age, pass)
+GAD_SA1 <- lm(GADz~ SAz+n_disability+student.status+
+                n_orientation+n_ethnicity+n_gender+
+                UGPG+n_year+age, pass)
+GAD_SCI1 <- lm(GADz~ SCInz+n_disability+student.status+
+                 n_orientation+n_ethnicity+n_gender+
+                 UGPG+n_year+age, pass)
+GAD_PS1 <- lm(GADz~ PSz+n_disability+student.status+
+                n_orientation+n_ethnicity+n_gender+
+                UGPG+n_year+age, pass)
+GAD_wellbeing1 <- lm(GADz~ wellbeingz+n_disability+student.status+
+                       n_orientation+n_ethnicity+n_gender+
+                       UGPG+n_year+age, pass)
+GAD_SC1 <- lm(GADz~ SCz+n_disability+student.status+
+                n_orientation+n_ethnicity+n_gender+
+                UGPG+n_year+age, pass)
+GAD_perfectionism1 <- lm(GADz~ perfectionismz+n_disability+student.status+
+                           n_orientation+n_ethnicity+n_gender+
+                           UGPG+n_year+age, pass)
+GAD_aca1<- lm(GADz~SE_aca_z+n_disability+student.status+
+                n_orientation+n_ethnicity+n_gender+
+                UGPG+n_year+age, pass)
+GAD_fi1<- lm(GADz~SE_fi_z+n_disability+student.status+
+               n_orientation+n_ethnicity+n_gender+
+               UGPG+n_year+age, pass)
+GAD_acc1<- lm(GADz~SE_acc_z+n_disability+student.status+
+                n_orientation+n_ethnicity+n_gender+
+                UGPG+n_year+age, pass)
+GAD_fr1<- lm(GADz~SE_fr_z+n_disability+student.status+
+               n_orientation+n_ethnicity+n_gender+
+               UGPG+n_year+age, pass)
+GAD_co1<- lm(GADz~SE_co_z+n_disability+student.status+
+               n_orientation+n_ethnicity+n_gender+
+               UGPG+n_year+age, pass)
+
+
+GAD_PHQ2<- lm(GADz~ PHQz+n_disability+student.status+
+                n_orientation+n_ethnicity+n_gender+
+                UGPG+n_year+age+SE_fi_z, pass)
+GAD_CUDIT2 <- lm(GADz~ CUDITz+n_disability+student.status+
+                   n_orientation+n_ethnicity+n_gender+
+                   UGPG+n_year+age+SE_fi_z, pass)
+GAD_AUDIT2 <- lm(GADz~ AUDITz+n_disability+student.status+
+                   n_orientation+n_ethnicity+n_gender+
+                   UGPG+n_year+age+SE_fi_z, pass)
+GAD_unil2 <- lm(GADz~ unil_z+n_disability+student.status+
+                  n_orientation+n_ethnicity+n_gender+
+                  UGPG+n_year+age+SE_fi_z, pass)
+GAD_prel2 <- lm(GADz~ prel_z+n_disability+student.status+
+                  n_orientation+n_ethnicity+n_gender+
+                  UGPG+n_year+age+SE_fi_z, pass)
+GAD_SA2 <- lm(GADz~ SAz+n_disability+student.status+
+                n_orientation+n_ethnicity+n_gender+
+                UGPG+n_year+age+SE_fi_z, pass)
+GAD_SCI2 <- lm(GADz~ SCInz+n_disability+student.status+
+                 n_orientation+n_ethnicity+n_gender+
+                 UGPG+n_year+age+SE_fi_z, pass)
+GAD_PS2 <- lm(GADz~ PSz+n_disability+student.status+
+                n_orientation+n_ethnicity+n_gender+
+                UGPG+n_year+age+SE_fi_z, pass)
+GAD_wellbeing2 <- lm(GADz~ wellbeingz+n_disability+student.status+
+                       n_orientation+n_ethnicity+n_gender+
+                       UGPG+n_year+age+SE_fi_z, pass)
+GAD_SC2 <- lm(GADz~ SCz+n_disability+student.status+
+                n_orientation+n_ethnicity+n_gender+
+                UGPG+n_year+age+SE_fi_z, pass)
+GAD_perfectionism2 <- lm(GADz~ perfectionismz+n_disability+student.status+
+                           n_orientation+n_ethnicity+n_gender+
+                           UGPG+n_year+age+SE_fi_z, pass)
+GAD_aca2<- lm(GADz~SE_aca_z+n_disability+student.status+
+                n_orientation+n_ethnicity+n_gender+
+                UGPG+n_year+age+SE_fi_z, pass)
+GAD_acc2<- lm(GADz~SE_acc_z+n_disability+student.status+
+                n_orientation+n_ethnicity+n_gender+
+                UGPG+n_year+age+SE_fi_z, pass)
+GAD_fr2<- lm(GADz~SE_fr_z+n_disability+student.status+
+               n_orientation+n_ethnicity+n_gender+
+               UGPG+n_year+age+SE_fi_z, pass)
+GAD_co2<- lm(GADz~SE_co_z+n_disability+student.status+
+               n_orientation+n_ethnicity+n_gender+
+               UGPG+n_year+age+SE_fi_z, pass)
+
+####PHQ lm####
+PHQ_GAD <- lm(PHQz~ GADz, pass)
+PHQ_CUDIT <- lm(PHQz~ CUDITz, pass)
+PHQ_AUDIT <- lm(PHQz~ AUDITz, pass)
+PHQ_unil <- lm(PHQz~ unil_z, pass)
+PHQ_prel <- lm(PHQz~ prel_z, pass)
+PHQ_SA <- lm(PHQz~ SAz, pass)
+PHQ_SCI <- lm(PHQz~ SCInz, pass)
+PHQ_PS <- lm(PHQz~ PSz, pass)
+PHQ_wellbeing <- lm(PHQz~ wellbeingz, pass)
+PHQ_SC <- lm(PHQz~ SCz, pass)
+PHQ_perfectionism <- lm(PHQz~ perfectionismz, pass)
+PHQ_aca<- lm(PHQz~SE_aca_z, pass)
+PHQ_fi<- lm(PHQz~SE_fi_z, pass)
+PHQ_acc<- lm(PHQz~SE_acc_z, pass)
+PHQ_fr<- lm(PHQz~SE_fr_z, pass)
+PHQ_co<- lm(PHQz~SE_co_z, pass)
+
+PHQ_GAD1 <- lm(PHQz~ GADz+n_disability+student.status+
+                 n_orientation+n_ethnicity+n_gender+
+                 UGPG+n_year+age, pass)
+PHQ_CUDIT1 <- lm(PHQz~ CUDITz+n_disability+student.status+
+                   n_orientation+n_ethnicity+n_gender+
+                   UGPG+n_year+age, pass)
+PHQ_AUDIT1 <- lm(PHQz~ AUDITz+n_disability+student.status+
+                   n_orientation+n_ethnicity+n_gender+
+                   UGPG+n_year+age, pass)
+PHQ_unil1 <- lm(PHQz~ unil_z+n_disability+student.status+
+                  n_orientation+n_ethnicity+n_gender+
+                  UGPG+n_year+age, pass)
+PHQ_prel1 <- lm(PHQz~ prel_z+n_disability+student.status+
+                  n_orientation+n_ethnicity+n_gender+
+                  UGPG+n_year+age, pass)
+PHQ_SA1 <- lm(PHQz~ SAz+n_disability+student.status+
+                n_orientation+n_ethnicity+n_gender+
+                UGPG+n_year+age, pass)
+PHQ_SCI1 <- lm(PHQz~ SCInz+n_disability+student.status+
+                 n_orientation+n_ethnicity+n_gender+
+                 UGPG+n_year+age, pass)
+PHQ_PS1 <- lm(PHQz~ PSz+n_disability+student.status+
+                n_orientation+n_ethnicity+n_gender+
+                UGPG+n_year+age, pass)
+PHQ_wellbeing1 <- lm(PHQz~ wellbeingz+n_disability+student.status+
+                       n_orientation+n_ethnicity+n_gender+
+                       UGPG+n_year+age, pass)
+PHQ_SC1 <- lm(PHQz~ SCz+n_disability+student.status+
+                n_orientation+n_ethnicity+n_gender+
+                UGPG+n_year+age, pass)
+PHQ_perfectionism1 <- lm(PHQz~ perfectionismz+n_disability+student.status+
+                           n_orientation+n_ethnicity+n_gender+
+                           UGPG+n_year+age, pass)
+PHQ_aca1<- lm(PHQz~SE_aca_z+n_disability+student.status+
+                n_orientation+n_ethnicity+n_gender+
+                UGPG+n_year+age, pass)
+PHQ_fi1<- lm(PHQz~SE_fi_z+n_disability+student.status+
+               n_orientation+n_ethnicity+n_gender+
+               UGPG+n_year+age, pass)
+PHQ_acc1<- lm(PHQz~SE_acc_z+n_disability+student.status+
+                n_orientation+n_ethnicity+n_gender+
+                UGPG+n_year+age, pass)
+PHQ_fr1<- lm(PHQz~SE_fr_z+n_disability+student.status+
+               n_orientation+n_ethnicity+n_gender+
+               UGPG+n_year+age, pass)
+PHQ_co1<- lm(PHQz~SE_co_z+n_disability+student.status+
+               n_orientation+n_ethnicity+n_gender+
+               UGPG+n_year+age, pass)
+
+
+PHQ_GAD2 <- lm(PHQz~ GADz+n_disability+student.status+
+                 n_orientation+n_ethnicity+n_gender+
+                 UGPG+n_year+age+SE_fi_z, pass)
+PHQ_CUDIT2 <- lm(PHQz~ CUDITz+n_disability+student.status+
+                   n_orientation+n_ethnicity+n_gender+
+                   UGPG+n_year+age+SE_fi_z, pass)
+PHQ_AUDIT2 <- lm(PHQz~ AUDITz+n_disability+student.status+
+                   n_orientation+n_ethnicity+n_gender+
+                   UGPG+n_year+age+SE_fi_z, pass)
+PHQ_unil2 <- lm(PHQz~ unil_z+n_disability+student.status+
+                  n_orientation+n_ethnicity+n_gender+
+                  UGPG+n_year+age+SE_fi_z, pass)
+PHQ_prel2 <- lm(PHQz~ prel_z+n_disability+student.status+
+                  n_orientation+n_ethnicity+n_gender+
+                  UGPG+n_year+age+SE_fi_z, pass)
+PHQ_SA2 <- lm(PHQz~ SAz+n_disability+student.status+
+                n_orientation+n_ethnicity+n_gender+
+                UGPG+n_year+age+SE_fi_z, pass)
+PHQ_SCI2 <- lm(PHQz~ SCInz+n_disability+student.status+
+                 n_orientation+n_ethnicity+n_gender+
+                 UGPG+n_year+age+SE_fi_z, pass)
+PHQ_PS2 <- lm(PHQz~ PSz+n_disability+student.status+
+                n_orientation+n_ethnicity+n_gender+
+                UGPG+n_year+age+SE_fi_z, pass)
+PHQ_wellbeing2 <- lm(PHQz~ wellbeingz+n_disability+student.status+
+                       n_orientation+n_ethnicity+n_gender+
+                       UGPG+n_year+age+SE_fi_z, pass)
+PHQ_SC2 <- lm(PHQz~ SCz+n_disability+student.status+
+                n_orientation+n_ethnicity+n_gender+
+                UGPG+n_year+age+SE_fi_z, pass)
+PHQ_perfectionism2 <- lm(PHQz~ perfectionismz+n_disability+student.status+
+                           n_orientation+n_ethnicity+n_gender+
+                           UGPG+n_year+age+SE_fi_z, pass)
+PHQ_aca2<- lm(PHQz~SE_aca_z+n_disability+student.status+
+                n_orientation+n_ethnicity+n_gender+
+                UGPG+n_year+age+SE_fi_z, pass)
+PHQ_fi2<- lm(PHQz~SE_fi_z+n_disability+student.status+
+               n_orientation+n_ethnicity+n_gender+
+               UGPG+n_year+age+SE_fi_z, pass)
+PHQ_acc2<- lm(PHQz~SE_acc_z+n_disability+student.status+
+                n_orientation+n_ethnicity+n_gender+
+                UGPG+n_year+age+SE_fi_z, pass)
+PHQ_fr2<- lm(PHQz~SE_fr_z+n_disability+student.status+
+               n_orientation+n_ethnicity+n_gender+
+               UGPG+n_year+age+SE_fi_z, pass)
+PHQ_co2<- lm(PHQz~SE_co_z+n_disability+student.status+
+               n_orientation+n_ethnicity+n_gender+
+               UGPG+n_year+age+SE_fi_z, pass)
+
+#### summaries GAD####
+summary(GAD_PHQ)
+summary(GAD_CUDIT)
+summary(GAD_AUDIT)
+summary(GAD_unil)
+summary(GAD_prel)
+summary(GAD_SA)
+summary(GAD_SCI)
+summary(GAD_PS)
+summary(GAD_wellbeing)
+summary(GAD_SC)
+summary(GAD_perfectionism)
+summary(GAD_aca)
+summary(GAD_fi)
+summary(GAD_acc)
+summary(GAD_fr)
+summary(GAD_co)
+
+
+summary(GAD_PHQ1)
+summary(GAD_CUDIT1)
+summary(GAD_AUDIT1)
+summary(GAD_unil1)
+summary(GAD_prel1)
+summary(GAD_SA1)
+summary(GAD_SCI1)
+summary(GAD_PS1)
+summary(GAD_wellbeing1)
+summary(GAD_SC1)
+summary(GAD_perfectionism1)
+summary(GAD_aca1)
+summary(GAD_fi1)
+summary(GAD_acc1)
+summary(GAD_fr1)
+summary(GAD_co1)
+
+
+summary(GAD_PHQ2)
+summary(GAD_CUDIT2)
+summary(GAD_AUDIT2)
+summary(GAD_unil2)
+summary(GAD_prel2)
+summary(GAD_SA2)
+summary(GAD_SCI2)
+summary(GAD_PS2)
+summary(GAD_wellbeing2)
+summary(GAD_SC2)
+summary(GAD_perfectionism2)
+summary(GAD_aca2)
+summary(GAD_acc2)
+summary(GAD_fr2)
+summary(GAD_co2)
+
+library(car)
+
+#### assumption checks GAD####
+anova(GAD_aca1, GAD_aca2)
+anova(GAD_acc1, GAD_acc2)
+anova(GAD_co1, GAD_co2)
+anova(GAD_fr1, GAD_fr2)
+anova(GAD_PHQ1, GAD_PHQ2)
+anova(GAD_CUDIT1, GAD_CUDIT2)
+anova(GAD_AUDIT1, GAD_AUDIT2)
+anova(GAD_unil1, GAD_unil2)
+anova(GAD_prel1, GAD_prel2)
+anova(GAD_SA1, GAD_SA2)
+anova(GAD_SCI1, GAD_SCI2)
+anova(GAD_PS1, GAD_PS2)
+anova(GAD_wellbeing1, GAD_wellbeing2)
+anova(GAD_SC1, GAD_SC2)
+anova(GAD_perfectionism1, GAD_perfectionism2)
+
+car::Anova(GAD_aca2, type=3)
+car::Anova(GAD_acc2, type=3)
+car::Anova(GAD_co2, type=3)
+car::Anova(GAD_fr2, type=3)
+car::Anova(GAD_PHQ2, type=3)
+car::Anova(GAD_CUDIT2, type=3)
+car::Anova(GAD_AUDIT2, type=3)
+car::Anova(GAD_unil2, type=3)
+car::Anova(GAD_prel2, type=3)
+car::Anova(GAD_SA2, type=3)
+car::Anova(GAD_SCI2, type=3)
+car::Anova(GAD_PS2, type=3)
+car::Anova(GAD_wellbeing2, type=3)
+car::Anova(GAD_SC2, type=3)
+car::Anova(GAD_perfectionism2, type=3)
+
+hist(resid(GAD_PHQ2))
+hist(resid(GAD_CUDIT2))
+hist(resid(GAD_AUDIT2))
+hist(resid(GAD_unil2))
+hist(resid(GAD_prel2))
+hist(resid(GAD_SA2))
+hist(resid(GAD_SCI2))
+hist(resid(GAD_PS2))
+hist(resid(GAD_wellbeing2))
+hist(resid(GAD_SC2))
+hist(resid(GAD_perfectionism2))
+hist(resid(GAD_aca2))
+hist(resid(GAD_acc2))
+hist(resid(GAD_fr2))
+hist(resid(GAD_co2))
+
+skewness(resid(GAD_PHQ2))
+skewness(resid(GAD_CUDIT2))
+skewness(resid(GAD_AUDIT2))
+skewness(resid(GAD_unil2))
+skewness(resid(GAD_prel2))
+skewness(resid(GAD_SA2))
+skewness(resid(GAD_SCI2))
+skewness(resid(GAD_PS2))
+skewness(resid(GAD_wellbeing2))
+skewness(resid(GAD_SC2))
+skewness(resid(GAD_perfectionism2))
+skewness(resid(GAD_aca2))
+skewness(resid(GAD_acc2))
+skewness(resid(GAD_fr2))
+skewness(resid(GAD_co2))
+
+qqPlot(GAD_PHQ2)
+qqPlot(GAD_AUDIT2)
+qqPlot(GAD_unil2)
+qqPlot(GAD_prel2)
+qqPlot(GAD_SA2)
+qqPlot(GAD_SCI2)
+qqPlot(GAD_PS2)
+qqPlot(GAD_wellbeing2)
+qqPlot(GAD_SC2)
+qqPlot(GAD_perfectionism2)
+qqPlot(GAD_aca2)
+qqPlot(GAD_acc2)
+qqPlot(GAD_fr2)
+qqPlot(GAD_co2)
+
+a1 <- vif(GAD_PHQ2)
+b2 <- vif(GAD_CUDIT2)
+c3 <- vif(GAD_AUDIT2)
+d4 <- vif(GAD_unil2)
+e5 <- vif(GAD_prel2)
+f6 <- vif(GAD_SA2)
+g7 <- vif(GAD_SCI2)
+h8 <- vif(GAD_PS2)
+i9 <- vif(GAD_wellbeing2)
+j10 <- vif(GAD_SC2)
+k11 <- vif(GAD_perfectionism2)
+l12 <- vif(GAD_aca2)
+m13 <- vif(GAD_acc2)
+n14 <- vif(GAD_fr2)
+o15 <- vif(GAD_co2)
+
+a1
+b2
+c3
+d4
+e5
+f6
+g7
+h8
+i9
+j10
+k11
+l12
+m13
+n14
+o15
+
+ta1 <- 1/a1
+tb2 <- 1/b2
+tc3 <- 1/c3
+td4 <- 1/d4
+te5 <- 1/e5
+tf6 <- 1/f6
+tg7 <- 1/g7
+th8 <- 1/h8
+ti9 <- 1/i9
+tj10 <- 1/j10
+tk11 <- 1/k11
+tl12 <- 1/l12
+tm13 <- 1/m13
+tn14 <- 1/n14
+to15 <- 1/o15
+
+ta1
+tb2
+tc3
+td4
+te5
+tf6
+tg7
+th8
+ti9
+tj10
+tk11
+tl12
+tm13
+tn14
+to15
+
+
+#### summary PHQ####
+
+summary(PHQ_GAD)
+summary(PHQ_CUDIT)
+summary(PHQ_AUDIT)
+summary(PHQ_unil)
+summary(PHQ_prel)
+summary(PHQ_SA)
+summary(PHQ_SCI)
+summary(PHQ_PS)
+summary(PHQ_wellbeing)
+summary(PHQ_SC)
+summary(PHQ_perfectionism)
+summary(PHQ_aca)
+summary(PHQ_fi)
+summary(PHQ_acc)
+summary(PHQ_fr)
+summary(PHQ_co)
+
+
+summary(PHQ_GAD1)
+summary(PHQ_CUDIT1)
+summary(PHQ_AUDIT1)
+summary(PHQ_unil1)
+summary(PHQ_prel1)
+summary(PHQ_SA1)
+summary(PHQ_SCI1)
+summary(PHQ_PS1)
+summary(PHQ_wellbeing1)
+summary(PHQ_SC1)
+summary(PHQ_perfectionism1)
+summary(PHQ_aca1)
+summary(PHQ_fi1)
+summary(PHQ_acc1)
+summary(PHQ_fr1)
+summary(PHQ_co1)
+
+summary(PHQ_GAD2)
+summary(PHQ_CUDIT2)
+summary(PHQ_AUDIT2)
+summary(PHQ_unil2)
+summary(PHQ_prel2)
+summary(PHQ_SA2)
+summary(PHQ_SCI2)
+summary(PHQ_PS2)
+summary(PHQ_wellbeing2)
+summary(PHQ_SC2)
+summary(PHQ_perfectionism2)
+summary(PHQ_aca2)
+summary(PHQ_acc2)
+summary(PHQ_fr2)
+summary(PHQ_co2)
+
+anova(PHQ_aca1, PHQ_aca2)
+anova(PHQ_acc1, PHQ_acc2)
+anova(PHQ_co1, PHQ_co2)
+anova(PHQ_fr1, PHQ_fr2)
+anova(PHQ_GAD1, PHQ_GAD2)
+anova(PHQ_CUDIT1, PHQ_CUDIT2)
+anova(PHQ_AUDIT1, PHQ_AUDIT2)
+anova(PHQ_unil1, PHQ_unil2)
+anova(PHQ_prel1, PHQ_prel2)
+anova(PHQ_SA1, PHQ_SA2)
+anova(PHQ_SCI1, PHQ_SCI2)
+anova(PHQ_PS1, PHQ_PS2)
+anova(PHQ_wellbeing1, PHQ_wellbeing2)
+anova(PHQ_SC1, PHQ_SC2)
+anova(PHQ_perfectionism1, PHQ_perfectionism2)
+
+#### assumption check PHQ####
+car::Anova( PHQ_aca2, type=3)
+car::Anova(PHQ_acc2, type=3)
+car::Anova(PHQ_co2, type=3)
+car::Anova(PHQ_fr2, type=3)
+car::Anova(PHQ_GAD2, type=3)
+car::Anova(PHQ_CUDIT2, type=3)
+car::Anova(PHQ_AUDIT2, type=3)
+car::Anova(PHQ_unil2, type=3)
+car::Anova(PHQ_prel2, type=3)
+car::Anova(PHQ_SA2, type=3)
+car::Anova(PHQ_SCI2, type=3)
+car::Anova(PHQ_PS2, type=3)
+car::Anova(PHQ_wellbeing2, type=3)
+car::Anova(PHQ_SC2, type=3)
+car::Anova(PHQ_perfectionism2, type=3)
+
+hist(resid(PHQ_GAD2))
+hist(resid(PHQ_CUDIT2))
+hist(resid(PHQ_AUDIT2))
+hist(resid(PHQ_unil2))
+hist(resid(PHQ_prel2))
+hist(resid(PHQ_SA2))
+hist(resid(PHQ_SCI2))
+hist(resid(PHQ_PS2))
+hist(resid(PHQ_wellbeing2))
+hist(resid(PHQ_SC2))
+hist(resid(PHQ_perfectionism2))
+hist(resid(PHQ_aca2))
+hist(resid(PHQ_acc2))
+hist(resid(PHQ_fr2))
+hist(resid(PHQ_co2))
+
+
+
+skewness(resid(PHQ_GAD2))
+skewness(resid(PHQ_CUDIT2))
+skewness(resid(PHQ_AUDIT2))
+skewness(resid(PHQ_unil2))
+skewness(resid(PHQ_prel2))
+skewness(resid(PHQ_SA2))
+skewness(resid(PHQ_SCI2))
+skewness(resid(PHQ_PS2))
+skewness(resid(PHQ_wellbeing2))
+skewness(resid(PHQ_SC2))
+skewness(resid(PHQ_perfectionism2))
+skewness(resid(PHQ_aca2))
+skewness(resid(PHQ_acc2))
+skewness(resid(PHQ_fr2))
+skewness(resid(PHQ_co2))
+
+qqPlot(PHQ_GAD2)
+qqPlot(PHQ_AUDIT2)
+qqPlot(PHQ_unil2)
+qqPlot(PHQ_prel2)
+qqPlot(PHQ_SA2)
+qqPlot(PHQ_SCI2)
+qqPlot(PHQ_PS2)
+qqPlot(PHQ_wellbeing2)
+qqPlot(PHQ_SC2)
+qqPlot(PHQ_perfectionism2)
+qqPlot(PHQ_aca2)
+qqPlot(PHQ_acc2)
+qqPlot(PHQ_fr2)
+qqPlot(PHQ_co2)
+
+a <- vif(PHQ_GAD2)
+b <- vif(PHQ_CUDIT2)
+c <- vif(PHQ_AUDIT2)
+d <- vif(PHQ_unil2)
+e <- vif(PHQ_prel2)
+f <- vif(PHQ_SA2)
+g <- vif(PHQ_SCI2)
+h <- vif(PHQ_PS2)
+i <- vif(PHQ_wellbeing2)
+j <- vif(PHQ_SC2)
+k <- vif(PHQ_perfectionism2)
+l <- vif(PHQ_aca2)
+m <- vif(PHQ_acc2)
+n <- vif(PHQ_fr2)
+o <- vif(PHQ_co2)
+
+a
+b
+c
+d
+e
+f
+g
+h
+i
+j
+k
+l
+m
+n
+o
+
+ta <- 1/a
+tb <- 1/b
+tc <- 1/c
+td <- 1/d
+te <- 1/e
+tf <- 1/f
+tg <- 1/g
+th <- 1/h
+ti <- 1/i
+tj <- 1/j
+tk <- 1/k
+tl <- 1/l
+tm <- 1/m
+tn <- 1/n
+to <- 1/o
+
+ta
+tb
+tc
+td
+te
+tf
+tg
+th
+ti
+tj
+tk
+tl
+tm
+tn
+to
+
+### PHQ with just covariates ####
+PHQ_GADt2 <- export_summs(PHQ_GAD1, scale = TRUE)
+PHQ_CUDITt2 <- export_summs(PHQ_CUDIT1,scale = TRUE)
+PHQ_AUDITt2 <-export_summs(PHQ_AUDIT1,scale = TRUE)
+PHQ_unilt2 <- export_summs(PHQ_unil1,scale = TRUE)
+PHQ_prelt2 <- export_summs(PHQ_prel1,scale = TRUE)
+PHQ_SAt2 <- export_summs(PHQ_SA1,scale = TRUE)
+PHQ_SCIt2 <- export_summs(PHQ_SCI1,scale = TRUE)
+PHQ_PSt2 <- export_summs(PHQ_PS1,scale = TRUE)
+PHQ_SCt2 <- export_summs(PHQ_SC1,scale = TRUE)
+PHQ_wellbeingt2 <-export_summs(PHQ_wellbeing1,scale = TRUE)
+PHQ_perfectionismt2 <-export_summs(PHQ_perfectionism1,scale = TRUE)
+PHQ_acat2 <- export_summs(PHQ_aca1,scale = TRUE)
+PHQ_acct2 <- export_summs(PHQ_acc1,scale = TRUE)
+PHQ_frt2 <- export_summs(PHQ_fr1,scale = TRUE)
+PHQ_cot2 <- export_summs(PHQ_co1,scale = TRUE)
+
+PHQ_GADr2 <- PHQ_GADt2[31,2]
+PHQ_CUDITr2 <- PHQ_CUDITt2[31,2]
+PHQ_AUDITr2 <-PHQ_AUDITt2[31,2]
+PHQ_unilr2 <- PHQ_unilt2[31,2]
+PHQ_prelr2 <- PHQ_prelt2[31,2]
+PHQ_SAr2 <- PHQ_SAt2[31,2]
+PHQ_SCIr2 <- PHQ_SCIt2[31,2]
+PHQ_PSr2 <- PHQ_PSt2[31,2]
+PHQ_SCr2 <- PHQ_SCt2[31,2]
+PHQ_wellbeingz2 <-PHQ_wellbeingt2[31,2]
+PHQ_perfectionismz2 <-PHQ_perfectionismt2[31,2]
+PHQ_acaz2 <- PHQ_acat2[31,2]
+PHQ_accz2 <- PHQ_acct2[31,2]
+PHQ_frz2 <- PHQ_frt2[31,2]
+PHQ_coz2 <- PHQ_cot2[31,2]
+
+PHQ_GADr2$model <- "GAD"
+PHQ_CUDITr2$model <- "CUDIT"
+PHQ_AUDITr2$model <- "AUDIT"
+PHQ_unilr2$model <- "Unil"
+PHQ_prelr2$model <- "Prel"
+PHQ_SAr2$model <- "SA"
+PHQ_SCIr2$model <- "SCI"
+PHQ_PSr2$model <- "PS"
+PHQ_SCr2$model <- "SC"
+PHQ_wellbeingz2$model <- "wellbeing"
+PHQ_perfectionismz2$model <-"perfectionism"
+PHQ_acaz2$model <- "academic"
+PHQ_accz2$model <- "accomodation"
+PHQ_frz2$model <- "friendship"
+PHQ_coz2$model <- "community"
+
+rsquared_simp2 <- rbind(PHQ_GADr2,
+                        PHQ_CUDITr2,PHQ_AUDITr2,PHQ_unilr2,
+                        PHQ_prelr2,PHQ_SAr2,PHQ_SCIr2,
+                        PHQ_PSr2,PHQ_SCr2,PHQ_wellbeingz2,PHQ_perfectionismz2,
+                        PHQ_acaz2,PHQ_accz2,PHQ_frz2,PHQ_coz2)
+
+
+PHQ_GADn2 <- PHQ_GADt2[30,2]
+PHQ_CUDITn2 <- PHQ_CUDITt2[30,2]
+PHQ_AUDITn2 <-PHQ_AUDITt2[30,2]
+PHQ_uniln2 <- PHQ_unilt2[30,2]
+PHQ_preln2 <- PHQ_prelt2[30,2]
+PHQ_SAn2 <- PHQ_SAt2[30,2]
+PHQ_SCIn2 <- PHQ_SCIt2[30,2]
+PHQ_PSn2 <- PHQ_PSt2[30,2]
+PHQ_SCn2 <- PHQ_SCt2[30,2]
+PHQ_wellbeingn2 <-PHQ_wellbeingt2[30,2]
+PHQ_perfectionismn2 <-PHQ_perfectionismt2[30,2]
+PHQ_acan2 <- PHQ_acat2[30,2]
+PHQ_accn2 <- PHQ_acct2[30,2]
+PHQ_frn2 <- PHQ_frt2[30,2]
+PHQ_con2 <- PHQ_cot2[30,2]
+
+PHQ_GADn2$model <- "GAD"
+PHQ_CUDITn2$model <- "CUDIT"
+PHQ_AUDITn2$model <- "AUDIT"
+PHQ_uniln2$model <- "Unil"
+PHQ_preln2$model <- "Prel"
+PHQ_SAn2$model <- "SA"
+PHQ_SCIn2$model <- "SCI"
+PHQ_PSn2$model <- "PS"
+PHQ_SCn2$model <- "SC"
+PHQ_wellbeingn2$model <- "wellbeing"
+PHQ_perfectionismn2$model <-"perfectionism"
+PHQ_acan2$model <- "academic"
+PHQ_accn2$model <- "accomodation"
+PHQ_frn2$model <- "friendship"
+PHQ_con2$model <- "community"
+
+n_simp2 <- rbind(PHQ_GADn2,
+                 PHQ_CUDITn2,PHQ_AUDITn2,PHQ_uniln2,
+                 PHQ_preln2,PHQ_SAn2,PHQ_SCIn2,
+                 PHQ_PSn2,PHQ_SCn2,PHQ_wellbeingn2,PHQ_perfectionismn2,
+                 PHQ_acan2,PHQ_accn2,PHQ_frn2,PHQ_con2)
+
+colnames(rsquared_simp2)<- c("rsquared", "model")
+colnames(n_simp2)<- c("n", "model")
+
+all_models_simp2 <- rbind(
+  tidy(PHQ_GAD1) %>% mutate(model = "GAD"),
+  tidy(PHQ_CUDIT1) %>% mutate(model = "CUDIT"),
+  tidy(PHQ_AUDIT1) %>% mutate(model = "AUDIT"),
+  tidy(PHQ_unil1) %>% mutate(model = "Unil"),
+  tidy(PHQ_prel1) %>% mutate(model = "Prel"),
+  tidy(PHQ_SA1) %>% mutate(model = "SA"),
+  tidy(PHQ_SCI1) %>% mutate(model = "SCI"),
+  tidy(PHQ_PS1) %>% mutate(model = "PS"),
+  tidy(PHQ_wellbeing1) %>% mutate(model = "wellbeing"),
+  tidy(PHQ_SC1) %>% mutate(model = "SC"),
+  tidy(PHQ_perfectionism1) %>% mutate(model = "perfectionism"),
+  tidy(PHQ_aca1) %>% mutate(model = "academic"),
+  tidy(PHQ_co1) %>% mutate(model = "community"),
+  tidy(PHQ_fr1) %>% mutate(model = "friendship"),
+  tidy(PHQ_acc1) %>% mutate(model = "accomodation")
+)
+
+
+finaltable_PHQ <- right_join( all_models_simp2, rsquared_simp2)
+finaltable_PHQ <- right_join(n_simp2, finaltable_PHQ)
+finaltable_PHQ <- as.data.frame(finaltable_PHQ)
+finaltable_PHQ <- finaltable_PHQ[c(2,16,30,44,58,72,86,100,114,128,142,156,170,184,198),]
+colnames(finaltable_PHQ)<- c("N", "model","term", "beta", "SE", "t", 
+                             "p", "rsquared" )
+finaltable_PHQ$beta <- round(finaltable_PHQ$beta, digits = 2)
+finaltable_PHQ$rsquared <- as.numeric(finaltable_PHQ$rsquared)
+finaltable_PHQ$rsquared <- round(finaltable_PHQ$rsquared, digits = 2)
+finaltable_PHQ$p <- round(finaltable_PHQ$p, digits = 3)
+finaltable_PHQ <- finaltable_PHQ[,c(3,1,4,8,7)]
+
+### GAD with just covariates####
+GAD_PHQt2 <- export_summs(GAD_PHQ1, scale = TRUE)
+GAD_CUDITt2 <- export_summs(GAD_CUDIT1,scale = TRUE)
+GAD_AUDITt2 <-export_summs(GAD_AUDIT1,scale = TRUE)
+GAD_unilt2 <- export_summs(GAD_unil1,scale = TRUE)
+GAD_prelt2 <- export_summs(GAD_prel1,scale = TRUE)
+GAD_SAt2 <- export_summs(GAD_SA1,scale = TRUE)
+GAD_SCIt2 <- export_summs(GAD_SCI1,scale = TRUE)
+GAD_PSt2 <- export_summs(GAD_PS1,scale = TRUE)
+GAD_SCt2 <- export_summs(GAD_SC1,scale = TRUE)
+GAD_wellbeingt2 <-export_summs(GAD_wellbeing1,scale = TRUE)
+GAD_perfectionismt2 <-export_summs(GAD_perfectionism1,scale = TRUE)
+GAD_acat2 <- export_summs(GAD_aca1,scale = TRUE)
+GAD_acct2 <- export_summs(GAD_acc1,scale = TRUE)
+GAD_frt2 <- export_summs(GAD_fr1,scale = TRUE)
+GAD_cot2 <- export_summs(GAD_co1,scale = TRUE)
+
+GAD_PHQr2 <- GAD_PHQt2[31,2]
+GAD_CUDITr2 <- GAD_CUDITt2[31,2]
+GAD_AUDITr2 <-GAD_AUDITt2[31,2]
+GAD_unilr2 <- GAD_unilt2[31,2]
+GAD_prelr2 <- GAD_prelt2[31,2]
+GAD_SAr2 <- GAD_SAt2[31,2]
+GAD_SCIr2 <- GAD_SCIt2[31,2]
+GAD_PSr2 <- GAD_PSt2[31,2]
+GAD_SCr2 <- GAD_SCt2[31,2]
+GAD_wellbeingz2 <-GAD_wellbeingt2[31,2]
+GAD_perfectionismz2 <-GAD_perfectionismt2[31,2]
+GAD_acaz2 <- GAD_acat2[31,2]
+GAD_accz2 <- GAD_acct2[31,2]
+GAD_frz2 <- GAD_frt2[31,2]
+GAD_coz2 <- GAD_cot2[31,2]
+
+GAD_PHQr2$model <- "PHQ"
+GAD_CUDITr2$model <- "CUDIT"
+GAD_AUDITr2$model <- "AUDIT"
+GAD_unilr2$model <- "Unil"
+GAD_prelr2$model <- "Prel"
+GAD_SAr2$model <- "SA"
+GAD_SCIr2$model <- "SCI"
+GAD_PSr2$model <- "PS"
+GAD_SCr2$model <- "SC"
+GAD_wellbeingz2$model <- "wellbeing"
+GAD_perfectionismz2$model <-"perfectionism"
+GAD_acaz2$model <- "academic"
+GAD_accz2$model <- "accomodation"
+GAD_frz2$model <- "friendship"
+GAD_coz2$model <- "community"
+
+rsquared_simp2 <- rbind(GAD_PHQr2,
+                        GAD_CUDITr2,GAD_AUDITr2,GAD_unilr2,
+                        GAD_prelr2,GAD_SAr2,GAD_SCIr2,
+                        GAD_PSr2,GAD_SCr2,GAD_wellbeingz2,GAD_perfectionismz2,
+                        GAD_acaz2,GAD_accz2,GAD_frz2,GAD_coz2)
+
+
+GAD_PHQn2 <- GAD_PHQt2[30,2]
+GAD_CUDITn2 <- GAD_CUDITt2[30,2]
+GAD_AUDITn2 <-GAD_AUDITt2[30,2]
+GAD_uniln2 <- GAD_unilt2[30,2]
+GAD_preln2 <- GAD_prelt2[30,2]
+GAD_SAn2 <- GAD_SAt2[30,2]
+GAD_SCIn2 <- GAD_SCIt2[30,2]
+GAD_PSn2 <- GAD_PSt2[30,2]
+GAD_SCn2 <- GAD_SCt2[30,2]
+GAD_wellbeingn2 <-GAD_wellbeingt2[30,2]
+GAD_perfectionismn2 <-GAD_perfectionismt2[30,2]
+GAD_acan2 <- GAD_acat2[30,2]
+GAD_accn2 <- GAD_acct2[30,2]
+GAD_frn2 <- GAD_frt2[30,2]
+GAD_con2 <- GAD_cot2[30,2]
+
+GAD_PHQn2$model <- "PHQ"
+GAD_CUDITn2$model <- "CUDIT"
+GAD_AUDITn2$model <- "AUDIT"
+GAD_uniln2$model <- "Unil"
+GAD_preln2$model <- "Prel"
+GAD_SAn2$model <- "SA"
+GAD_SCIn2$model <- "SCI"
+GAD_PSn2$model <- "PS"
+GAD_SCn2$model <- "SC"
+GAD_wellbeingn2$model <- "wellbeing"
+GAD_perfectionismn2$model <-"perfectionism"
+GAD_acan2$model <- "academic"
+GAD_accn2$model <- "accomodation"
+GAD_frn2$model <- "friendship"
+GAD_con2$model <- "community"
+
+n_simp2 <- rbind(GAD_PHQn2,
+                 GAD_CUDITn2,GAD_AUDITn2,GAD_uniln2,
+                 GAD_preln2,GAD_SAn2,GAD_SCIn2,
+                 GAD_PSn2,GAD_SCn2,GAD_wellbeingn2,GAD_perfectionismn2,
+                 GAD_acan2,GAD_accn2,GAD_frn2,GAD_con2)
+
+colnames(rsquared_simp2)<- c("rsquared", "model")
+colnames(n_simp2)<- c("n", "model")
+
+all_models_simp2 <- rbind(
+  tidy(GAD_PHQ1) %>% mutate(model = "PHQ"),
+  tidy(GAD_CUDIT1) %>% mutate(model = "CUDIT"),
+  tidy(GAD_AUDIT1) %>% mutate(model = "AUDIT"),
+  tidy(GAD_unil1) %>% mutate(model = "Unil"),
+  tidy(GAD_prel1) %>% mutate(model = "Prel"),
+  tidy(GAD_SA1) %>% mutate(model = "SA"),
+  tidy(GAD_SCI1) %>% mutate(model = "SCI"),
+  tidy(GAD_PS1) %>% mutate(model = "PS"),
+  tidy(GAD_wellbeing1) %>% mutate(model = "wellbeing"),
+  tidy(GAD_SC1) %>% mutate(model = "SC"),
+  tidy(GAD_perfectionism1) %>% mutate(model = "perfectionism"),
+  tidy(GAD_aca1) %>% mutate(model = "academic"),
+  tidy(GAD_co1) %>% mutate(model = "community"),
+  tidy(GAD_fr1) %>% mutate(model = "friendship"),
+  tidy(GAD_acc1) %>% mutate(model = "accomodation")
+)
+
+
+finaltable_GAD <- right_join( all_models_simp2, rsquared_simp2)
+finaltable_GAD <- right_join(n_simp2, finaltable_GAD)
+finaltable_GAD <- as.data.frame(finaltable_GAD)
+finaltable_GAD<- finaltable_GAD[c(2,16,30,44,58,72,86,100,114,128,142,156,170,184,198),]
+colnames(finaltable_GAD)<- c("N1","Model", "term", "beta1", "SE1", "t1", "p1", 
+                             "rsquared1" )
+finaltable_GAD$beta1 <- round(finaltable_GAD$beta1, digits = 2)
+finaltable_GAD$rsquared1 <- as.numeric(finaltable_GAD$rsquared1)
+finaltable_GAD$rsquared1 <- round(finaltable_GAD$rsquared1, digits = 2)
+finaltable_GAD$p1 <- round(finaltable_GAD$p1, digits = 3)
+finaltable_GAD <- finaltable_GAD[,c(3,1,4,8,7)]
+
+# final table (mulitple no finance)####
+PHQ <- as.data.frame(rbind(c("term","N", "beta",  "rsquared", "p"),
+                           c("PHQz", "-","-", "-", "-"))
+)
+names(PHQ) <- PHQ[1,]
+PHQ <- PHQ[- c(1),]
+
+GAD <- as.data.frame(rbind(c("term","N1", "beta1",  "rsquared1", "p1"),
+                           c("GADz", "-", "-","-", "-"))
+)
+names(GAD) <- GAD[1,]
+GAD <- GAD[- c(1),]
+
+finaltable_GAD <- rbind( GAD, finaltable_GAD)
+finaltable_PHQ <- rbind(PHQ, finaltable_PHQ)
+final_table <- right_join(finaltable_GAD,finaltable_PHQ)
+write.csv(final_table, file = "final_table final.csv")
+
+# table PHQ####
+PHQ_GADt <- export_summs(PHQ_GAD2, scale = TRUE)
+PHQ_CUDITt <- export_summs(PHQ_CUDIT2,scale = TRUE)
+PHQ_AUDITt <-export_summs(PHQ_AUDIT2,scale = TRUE)
+PHQ_unilt <- export_summs(PHQ_unil2,scale = TRUE)
+PHQ_prelt <- export_summs(PHQ_prel2,scale = TRUE)
+PHQ_SAt <- export_summs(PHQ_SA2,scale = TRUE)
+PHQ_SCIt <- export_summs(PHQ_SCI2,scale = TRUE)
+PHQ_PSt <- export_summs(PHQ_PS2,scale = TRUE)
+PHQ_SCt <- export_summs(PHQ_SC2,scale = TRUE)
+PHQ_wellbeingt <-export_summs(PHQ_wellbeing2,scale = TRUE)
+PHQ_perfectionismt <-export_summs(PHQ_perfectionism2,scale = TRUE)
+PHQ_acat <- export_summs(PHQ_aca2,scale = TRUE)
+PHQ_acct <- export_summs(PHQ_acc2,scale = TRUE)
+PHQ_frt <- export_summs(PHQ_fr2,scale = TRUE)
+PHQ_cot <- export_summs(PHQ_co2,scale = TRUE)
+
+PHQ_GADn <- PHQ_GADt[32,2]
+PHQ_CUDITn <- PHQ_CUDITt[32,2]
+PHQ_AUDITn <-PHQ_AUDITt[32,2]
+PHQ_uniln <- PHQ_unilt[32,2]
+PHQ_preln <- PHQ_prelt[32,2]
+PHQ_SAn <- PHQ_SAt[32,2]
+PHQ_SCIn <- PHQ_SCIt[32,2]
+PHQ_PSn <- PHQ_PSt[32,2]
+PHQ_SCn <- PHQ_SCt[32,2]
+PHQ_wellbeingn <-PHQ_wellbeingt[32,2]
+PHQ_perfectionismn <-PHQ_perfectionismt[32,2]
+PHQ_acan <- PHQ_acat[32,2]
+PHQ_accn <- PHQ_acct[32,2]
+PHQ_frn <- PHQ_frt[32,2]
+PHQ_con <- PHQ_cot[32,2]
+
+PHQ_GADn$model <- "GAD"
+PHQ_CUDITn$model <- "CUDIT"
+PHQ_AUDITn$model <- "AUDIT"
+PHQ_uniln$model <- "Unil"
+PHQ_preln$model <- "Prel"
+PHQ_SAn$model <- "SA"
+PHQ_SCIn$model <- "SCI"
+PHQ_PSn$model <- "PS"
+PHQ_SCn$model <- "SC"
+PHQ_wellbeingn$model <- "wellbeing"
+PHQ_perfectionismn$model <-"perfectionism"
+PHQ_acan$model <- "academic"
+PHQ_accn$model <- "accomodation"
+PHQ_frn$model <- "friendship"
+PHQ_con$model <- "community"
+
+PHQ_GADr <- PHQ_GADt[33,2]
+PHQ_CUDITr <- PHQ_CUDITt[33,2]
+PHQ_AUDITr <-PHQ_AUDITt[33,2]
+PHQ_unilr <- PHQ_unilt[33,2]
+PHQ_prelr <- PHQ_prelt[33,2]
+PHQ_SAr <- PHQ_SAt[33,2]
+PHQ_SCIr <- PHQ_SCIt[33,2]
+PHQ_PSr <- PHQ_PSt[33,2]
+PHQ_SCr <- PHQ_SCt[33,2]
+PHQ_wellbeingz <-PHQ_wellbeingt[33,2]
+PHQ_perfectionismz <-PHQ_perfectionismt[33,2]
+PHQ_acaz <- PHQ_acat[33,2]
+PHQ_accz <- PHQ_acct[33,2]
+PHQ_frz <- PHQ_frt[33,2]
+PHQ_coz <- PHQ_cot[33,2]
+
+
+PHQ_GADr$model <- "GAD"
+PHQ_CUDITr$model <- "CUDIT"
+PHQ_AUDITr$model <- "AUDIT"
+PHQ_unilr$model <- "Unil"
+PHQ_prelr$model <- "Prel"
+PHQ_SAr$model <- "SA"
+PHQ_SCIr$model <- "SCI"
+PHQ_PSr$model <- "PS"
+PHQ_SCr$model <- "SC"
+PHQ_wellbeingz$model <- "wellbeing"
+PHQ_perfectionismz$model <-"perfectionism"
+PHQ_acaz$model <- "academic"
+PHQ_accz$model <- "accomodation"
+PHQ_frz$model <- "friendship"
+PHQ_coz$model <- "community"
+
+n <- rbind(PHQ_GADn,
+           PHQ_CUDITn,PHQ_AUDITn,PHQ_uniln,
+           PHQ_preln,PHQ_SAn,PHQ_SCIn,
+           PHQ_PSn,PHQ_SCn,PHQ_wellbeingn,PHQ_perfectionismn,
+           PHQ_acan,PHQ_accn,PHQ_frn,PHQ_con)
+
+rsquared <- rbind(PHQ_GADr,
+                  PHQ_CUDITr,PHQ_AUDITr,PHQ_unilr,
+                  PHQ_prelr,PHQ_SAr,PHQ_SCIr,
+                  PHQ_PSr,PHQ_SCr,PHQ_wellbeingz,PHQ_perfectionismz,
+                  PHQ_acaz,PHQ_accz,PHQ_frz,PHQ_coz)
+
+colnames(rsquared)<- c("rsquared", "model")
+colnames(n)<- c("n", "model")
+
+all_models <- rbind(
+  tidy(PHQ_GAD2) %>% mutate(model = "GAD"),
+  tidy(PHQ_CUDIT2) %>% mutate(model = "CUDIT"),
+  tidy(PHQ_AUDIT2) %>% mutate(model = "AUDIT"),
+  tidy(PHQ_unil2) %>% mutate(model = "Unil"),
+  tidy(PHQ_prel2) %>% mutate(model = "Prel"),
+  tidy(PHQ_SA2) %>% mutate(model = "SA"),
+  tidy(PHQ_SCI2) %>% mutate(model = "SCI"),
+  tidy(PHQ_PS2) %>% mutate(model = "PS"),
+  tidy(PHQ_SC2) %>% mutate(model = "SC"),
+  tidy(PHQ_wellbeing2) %>% mutate(model = "wellbeing"),
+  tidy(PHQ_perfectionism2) %>% mutate(model = "perfectionism"),
+  tidy(PHQ_aca2) %>% mutate(model = "academic"),
+  tidy(PHQ_co2) %>% mutate(model = "community"),
+  tidy(PHQ_fr2) %>% mutate(model = "friendship"),
+  tidy(PHQ_acc2) %>% mutate(model = "accomodation")
+)
+
+
+finaltable2_PHQ <- right_join( all_models, rsquared)
+finaltable2_PHQ <- right_join(n, finaltable2_PHQ)
+finaltable2_PHQ <- as.data.frame(finaltable2_PHQ)
+finaltable2_PHQ <- finaltable2_PHQ[c(2,17,32,47,62,77,92,107,122,137,152,167,182,197,212),]
+colnames(finaltable2_PHQ)<- c("N", "model", "term", "beta", "SE", "t", "p", "rsquared" )
+finaltable2_PHQ$beta <- round(finaltable2_PHQ$beta, digits = 2)
+finaltable2_PHQ$rsquared <- as.numeric(finaltable2_PHQ$rsquared)
+finaltable2_PHQ$rsquared <- round(finaltable2_PHQ$rsquared, digits = 2)
+finaltable2_PHQ$p <- round(finaltable2_PHQ$p, digits = 3)
+finaltable2_PHQ <- finaltable2_PHQ[,c(3,1,4,8,7)]
+
+# GAD tables####
+GAD_PHQt <- export_summs(GAD_PHQ2, scale = TRUE)
+GAD_CUDITt <- export_summs(GAD_CUDIT2,scale = TRUE)
+GAD_AUDITt <-export_summs(GAD_AUDIT2,scale = TRUE)
+GAD_unilt <- export_summs(GAD_unil2,scale = TRUE)
+GAD_prelt <- export_summs(GAD_prel2,scale = TRUE)
+GAD_SAt <- export_summs(GAD_SA2,scale = TRUE)
+GAD_SCIt <- export_summs(GAD_SCI2,scale = TRUE)
+GAD_PSt <- export_summs(GAD_PS2,scale = TRUE)
+GAD_SCt <- export_summs(GAD_SC2,scale = TRUE)
+GAD_wellbeingt <-export_summs(GAD_wellbeing2,scale = TRUE)
+GAD_perfectionismt <-export_summs(GAD_perfectionism2,scale = TRUE)
+GAD_acat <- export_summs(GAD_aca2,scale = TRUE)
+GAD_acct <- export_summs(GAD_acc2,scale = TRUE)
+GAD_frt <- export_summs(GAD_fr2,scale = TRUE)
+GAD_cot <- export_summs(GAD_co2,scale = TRUE)
+
+GAD_PHQr <- GAD_PHQt[33,2]
+GAD_CUDITr <- GAD_CUDITt[33,2]
+GAD_AUDITr <-GAD_AUDITt[33,2]
+GAD_unilr <- GAD_unilt[33,2]
+GAD_prelr <- GAD_prelt[33,2]
+GAD_SAr <- GAD_SAt[33,2]
+GAD_SCIr <- GAD_SCIt[33,2]
+GAD_PSr <- GAD_PSt[33,2]
+GAD_SCr <- GAD_SCt[33,2]
+GAD_wellbeingz <-GAD_wellbeingt[33,2]
+GAD_perfectionismz <-GAD_perfectionismt[33,2]
+GAD_acaz <- GAD_acat[33,2]
+GAD_accz <- GAD_acct[33,2]
+GAD_frz <- GAD_frt[33,2]
+GAD_coz <- GAD_cot[33,2]
+
+GAD_PHQr$model <- "PHQ"
+GAD_CUDITr$model <- "CUDIT"
+GAD_AUDITr$model <- "AUDIT"
+GAD_unilr$model <- "Unil"
+GAD_prelr$model <- "Prel"
+GAD_SAr$model <- "SA"
+GAD_SCIr$model <- "SCI"
+GAD_PSr$model <- "PS"
+GAD_SCr$model <- "SC"
+GAD_wellbeingz$model <- "wellbeing"
+GAD_perfectionismz$model <-"perfectionism"
+GAD_acaz$model <- "academic"
+GAD_accz$model <- "accomodation"
+GAD_frz$model <- "friendship"
+GAD_coz$model <- "community"
+
+rsquared2 <- rbind(GAD_PHQr,
+                   GAD_CUDITr,GAD_AUDITr,GAD_unilr,
+                   GAD_prelr,GAD_SAr,GAD_SCIr,
+                   GAD_PSr,GAD_SCr,GAD_wellbeingz,GAD_perfectionismz,
+                   GAD_acaz,GAD_accz,GAD_frz,GAD_coz)
+
+GAD_PHQn <- GAD_PHQt[32,2]
+GAD_CUDITn <- GAD_CUDITt[32,2]
+GAD_AUDITn <-GAD_AUDITt[32,2]
+GAD_uniln <- GAD_unilt[32,2]
+GAD_preln <- GAD_prelt[32,2]
+GAD_SAn <- GAD_SAt[32,2]
+GAD_SCIn <- GAD_SCIt[32,2]
+GAD_PSn <- GAD_PSt[32,2]
+GAD_SCn <- GAD_SCt[32,2]
+GAD_wellbeingn <-GAD_wellbeingt[32,2]
+GAD_perfectionismn <-GAD_perfectionismt[32,2]
+GAD_acan <- GAD_acat[32,2]
+GAD_accn <- GAD_acct[32,2]
+GAD_frn <- GAD_frt[32,2]
+GAD_con <- GAD_cot[32,2]
+
+GAD_PHQn$model <- "PHQ"
+GAD_CUDITn$model <- "CUDIT"
+GAD_AUDITn$model <- "AUDIT"
+GAD_uniln$model <- "Unil"
+GAD_preln$model <- "Prel"
+GAD_SAn$model <- "SA"
+GAD_SCIn$model <- "SCI"
+GAD_PSn$model <- "PS"
+GAD_SCn$model <- "SC"
+GAD_wellbeingn$model <- "wellbeing"
+GAD_perfectionismn$model <-"perfectionism"
+GAD_acan$model <- "academic"
+GAD_accn$model <- "accomodation"
+GAD_frn$model <- "friendship"
+GAD_con$model <- "community"
+
+n2 <- rbind(GAD_PHQn,
+            GAD_CUDITn,GAD_AUDITn,GAD_uniln,
+            GAD_preln,GAD_SAn,GAD_SCIn,
+            GAD_PSn,GAD_SCn,GAD_wellbeingn,GAD_perfectionismn,
+            GAD_acan,GAD_accn,GAD_frn,GAD_con)
+
+colnames(rsquared2)<- c("rsquared", "model")
+colnames(n2)<- c("n", "model")
+
+all_models2 <- rbind(
+  tidy(GAD_PHQ2) %>% mutate(model = "PHQ"),
+  tidy(GAD_CUDIT2) %>% mutate(model = "CUDIT"),
+  tidy(GAD_AUDIT2) %>% mutate(model = "AUDIT"),
+  tidy(GAD_unil2) %>% mutate(model = "Unil"),
+  tidy(GAD_prel2) %>% mutate(model = "Prel"),
+  tidy(GAD_SA2) %>% mutate(model = "SA"),
+  tidy(GAD_SCI2) %>% mutate(model = "SCI"),
+  tidy(GAD_PS2) %>% mutate(model = "PS"),
+  tidy(GAD_SC2) %>% mutate(model = "SC"),
+  tidy(GAD_wellbeing2) %>% mutate(model = "wellbeing"),
+  tidy(GAD_perfectionism2) %>% mutate(model = "perfectionism"),
+  tidy(GAD_aca2) %>% mutate(model = "academic"),
+  tidy(GAD_co2) %>% mutate(model = "community"),
+  tidy(GAD_fr2) %>% mutate(model = "friendship"),
+  tidy(GAD_acc2) %>% mutate(model = "accomodation")
+)
+
+
+finaltable2_GAD <- right_join( all_models2, rsquared2)
+finaltable2_GAD <- right_join( n2, finaltable2_GAD)
+finaltable2_GAD <- as.data.frame(finaltable2_GAD)
+finaltable2_GAD <- finaltable2_GAD[c(2,17,32,47,62,77,92,107,122,137,152,167,182,197,212),]
+colnames(finaltable2_GAD)<- c("N1", "model", "term", "beta1", "SE", "t", "p1", "rsquared1" )
+finaltable2_GAD$beta1 <- round(finaltable2_GAD$beta1, digits = 2)
+finaltable2_GAD$rsquared1 <- as.numeric(finaltable2_GAD$rsquared1)
+finaltable2_GAD$rsquared1 <- round(finaltable2_GAD$rsquared1, digits = 2)
+finaltable2_GAD$p1 <- round(finaltable2_GAD$p1, digits = 3)
+finaltable2_GAD <- finaltable2_GAD[,c(3,1,4,8,7)]
+
+# final table 2 (mulitple finance)####
+
+
+
+finaltable2_GAD <- rbind( GAD, finaltable2_GAD)
+finaltable2_PHQ <- rbind(PHQ, finaltable2_PHQ)
+final_table2 <- right_join(finaltable2_GAD,finaltable2_PHQ)
+write.csv(final_table2, file = "final_table2 final.csv")
+
+#### PHQ tables without finance and covariates####
+
+PHQ_GADt1 <- export_summs(PHQ_GAD, scale = TRUE)
+PHQ_CUDITt1 <- export_summs(PHQ_CUDIT,scale = TRUE)
+PHQ_AUDITt1 <-export_summs(PHQ_AUDIT,scale = TRUE)
+PHQ_unilt1 <- export_summs(PHQ_unil,scale = TRUE)
+PHQ_prelt1 <- export_summs(PHQ_prel,scale = TRUE)
+PHQ_SAt1 <- export_summs(PHQ_SA,scale = TRUE)
+PHQ_SCIt1 <- export_summs(PHQ_SCI,scale = TRUE)
+PHQ_PSt1 <- export_summs(PHQ_PS,scale = TRUE)
+PHQ_SCt1 <- export_summs(PHQ_SC,scale = TRUE)
+PHQ_wellbeingt1 <-export_summs(PHQ_wellbeing,scale = TRUE)
+PHQ_perfectionismt1 <-export_summs(PHQ_perfectionism,scale = TRUE)
+PHQ_acat1 <- export_summs(PHQ_aca,scale = TRUE)
+PHQ_acct1 <- export_summs(PHQ_acc,scale = TRUE)
+PHQ_frt1 <- export_summs(PHQ_fr,scale = TRUE)
+PHQ_cot1 <- export_summs(PHQ_co,scale = TRUE)
+
+PHQ_GADr1 <- PHQ_GADt1[7,2]
+PHQ_CUDITr1 <- PHQ_CUDITt1[7,2]
+PHQ_AUDITr1 <-PHQ_AUDITt1[7,2]
+PHQ_unilr1 <- PHQ_unilt1[7,2]
+PHQ_prelr1 <- PHQ_prelt1[7,2]
+PHQ_SAr1 <- PHQ_SAt1[7,2]
+PHQ_SCIr1 <- PHQ_SCIt1[7,2]
+PHQ_PSr1 <- PHQ_PSt1[7,2]
+PHQ_SCr1 <- PHQ_SCt1[7,2]
+PHQ_wellbeingz1 <-PHQ_wellbeingt1[7,2]
+PHQ_perfectionismz1 <-PHQ_perfectionismt1[7,2]
+PHQ_acaz1 <- PHQ_acat1[7,2]
+PHQ_accz1 <- PHQ_acct1[7,2]
+PHQ_frz1 <- PHQ_frt1[7,2]
+PHQ_coz1 <- PHQ_cot1[7,2]
+
+PHQ_GADr1$model <- "GAD"
+PHQ_CUDITr1$model <- "CUDIT"
+PHQ_AUDITr1$model <- "AUDIT"
+PHQ_unilr1$model <- "Unil"
+PHQ_prelr1$model <- "Prel"
+PHQ_SAr1$model <- "SA"
+PHQ_SCIr1$model <- "SCI"
+PHQ_PSr1$model <- "PS"
+PHQ_SCr1$model <- "SC"
+PHQ_wellbeingz1$model <- "wellbeing"
+PHQ_perfectionismz1$model <-"perfectionism"
+PHQ_acaz1$model <- "academic"
+PHQ_accz1$model <- "accomodation"
+PHQ_frz1$model <- "friendship"
+PHQ_coz1$model <- "community"
+
+rsquared_simp <- rbind(PHQ_GADr1,
+                       PHQ_CUDITr1,PHQ_AUDITr1,PHQ_unilr1,
+                       PHQ_prelr1,PHQ_SAr1,PHQ_SCIr1,
+                       PHQ_PSr1,PHQ_SCr1,PHQ_wellbeingz1,PHQ_perfectionismz1,
+                       PHQ_acaz1,PHQ_accz1,PHQ_frz1,PHQ_coz1)
+
+
+PHQ_GADn1 <- PHQ_GADt1[6,2]
+PHQ_CUDITn1 <- PHQ_CUDITt1[6,2]
+PHQ_AUDITn1 <-PHQ_AUDITt1[6,2]
+PHQ_uniln1 <- PHQ_unilt1[6,2]
+PHQ_preln1 <- PHQ_prelt1[6,2]
+PHQ_SAn1 <- PHQ_SAt1[6,2]
+PHQ_SCIn1 <- PHQ_SCIt1[6,2]
+PHQ_PSn1 <- PHQ_PSt1[6,2]
+PHQ_SCn1 <- PHQ_SCt1[6,2]
+PHQ_wellbeingn1 <-PHQ_wellbeingt1[6,2]
+PHQ_perfectionismn1 <-PHQ_perfectionismt1[6,2]
+PHQ_acan1 <- PHQ_acat1[6,2]
+PHQ_accn1 <- PHQ_acct1[6,2]
+PHQ_frn1 <- PHQ_frt1[6,2]
+PHQ_con1 <- PHQ_cot1[6,2]
+
+PHQ_GADn1$model <- "GAD"
+PHQ_CUDITn1$model <- "CUDIT"
+PHQ_AUDITn1$model <- "AUDIT"
+PHQ_uniln1$model <- "Unil"
+PHQ_preln1$model <- "Prel"
+PHQ_SAn1$model <- "SA"
+PHQ_SCIn1$model <- "SCI"
+PHQ_PSn1$model <- "PS"
+PHQ_SCn1$model <- "SC"
+PHQ_wellbeingn1$model <- "wellbeing"
+PHQ_perfectionismn1$model <-"perfectionism"
+PHQ_acan1$model <- "academic"
+PHQ_accn1$model <- "accomodation"
+PHQ_frn1$model <- "friendship"
+PHQ_con1$model <- "community"
+
+n_simp <- rbind(PHQ_GADn1,
+                PHQ_CUDITn1,PHQ_AUDITn1,PHQ_uniln1,
+                PHQ_preln1,PHQ_SAn1,PHQ_SCIn1,
+                PHQ_PSn1,PHQ_SCn1,PHQ_wellbeingn1,PHQ_perfectionismn1,
+                PHQ_acan1,PHQ_accn1,PHQ_frn1,PHQ_con1)
+
+colnames(rsquared_simp)<- c("rsquared", "model")
+colnames(n_simp)<- c("n", "model")
+
+all_models_simp <- rbind(
+  tidy(PHQ_GAD) %>% mutate(model = "GAD"),
+  tidy(PHQ_CUDIT) %>% mutate(model = "CUDIT"),
+  tidy(PHQ_AUDIT) %>% mutate(model = "AUDIT"),
+  tidy(PHQ_unil) %>% mutate(model = "Unil"),
+  tidy(PHQ_prel) %>% mutate(model = "Prel"),
+  tidy(PHQ_SA) %>% mutate(model = "SA"),
+  tidy(PHQ_SCI) %>% mutate(model = "SCI"),
+  tidy(PHQ_PS) %>% mutate(model = "PS"),
+  tidy(PHQ_wellbeing) %>% mutate(model = "wellbeing"),
+  tidy(PHQ_SC) %>% mutate(model = "SC"),
+  tidy(PHQ_perfectionism) %>% mutate(model = "perfectionism"),
+  tidy(PHQ_aca) %>% mutate(model = "academic"),
+  tidy(PHQ_co) %>% mutate(model = "community"),
+  tidy(PHQ_fr) %>% mutate(model = "friendship"),
+  tidy(PHQ_acc) %>% mutate(model = "accomodation")
+)
+
+
+finaltable1_PHQ <- right_join( all_models_simp, rsquared_simp)
+finaltable1_PHQ <- right_join( n_simp, finaltable1_PHQ)
+finaltable1_PHQ <- as.data.frame(finaltable1_PHQ)
+finaltable1_PHQ <- finaltable1_PHQ[c(2,4,6,8,10,12,14,16,18,20,22,24,26,28,30),]
+colnames(finaltable1_PHQ)<- c("N", "model","term", "beta", "SE", "t", "p", "rsquared" )
+finaltable1_PHQ$beta <- round(finaltable1_PHQ$beta, digits = 2)
+finaltable1_PHQ$rsquared <- as.numeric(finaltable1_PHQ$rsquared)
+finaltable1_PHQ$rsquared <- round(finaltable1_PHQ$rsquared, digits = 2)
+finaltable1_PHQ$p <- round(finaltable1_PHQ$p, digits = 3)
+finaltable1_PHQ <- finaltable1_PHQ[,c(3,1,4,8,7)]
+
+#### GAD tables without finance and covariates####
+GAD_PHQt1 <- export_summs(GAD_PHQ, scale = TRUE)
+GAD_CUDITt1 <- export_summs(GAD_CUDIT,scale = TRUE)
+GAD_AUDITt1 <-export_summs(GAD_AUDIT,scale = TRUE)
+GAD_unilt1 <- export_summs(GAD_unil,scale = TRUE)
+GAD_prelt1 <- export_summs(GAD_prel,scale = TRUE)
+GAD_SAt1 <- export_summs(GAD_SA,scale = TRUE)
+GAD_SCIt1 <- export_summs(GAD_SCI,scale = TRUE)
+GAD_PSt1 <- export_summs(GAD_PS,scale = TRUE)
+GAD_SCt1 <- export_summs(GAD_SC,scale = TRUE)
+GAD_wellbeingt1 <-export_summs(GAD_wellbeing,scale = TRUE)
+GAD_perfectionismt1 <-export_summs(GAD_perfectionism,scale = TRUE)
+GAD_acat1 <- export_summs(GAD_aca,scale = TRUE)
+GAD_acct1 <- export_summs(GAD_acc,scale = TRUE)
+GAD_frt1 <- export_summs(GAD_fr,scale = TRUE)
+GAD_cot1 <- export_summs(GAD_co,scale = TRUE)
+
+GAD_PHQr1 <- GAD_PHQt1[7,2]
+GAD_CUDITr1 <- GAD_CUDITt1[7,2]
+GAD_AUDITr1 <-GAD_AUDITt1[7,2]
+GAD_unilr1 <- GAD_unilt1[7,2]
+GAD_prelr1 <- GAD_prelt1[7,2]
+GAD_SAr1 <- GAD_SAt1[7,2]
+GAD_SCIr1 <- GAD_SCIt1[7,2]
+GAD_PSr1 <- GAD_PSt1[7,2]
+GAD_SCr1 <- GAD_SCt1[7,2]
+GAD_wellbeingz1 <-GAD_wellbeingt1[7,2]
+GAD_perfectionismz1 <-GAD_perfectionismt1[7,2]
+GAD_acaz1 <- GAD_acat1[7,2]
+GAD_accz1 <- GAD_acct1[7,2]
+GAD_frz1 <- GAD_frt1[7,2]
+GAD_coz1 <- GAD_cot1[7,2]
+
+GAD_PHQr1$model <- "PHQ"
+GAD_CUDITr1$model <- "CUDIT"
+GAD_AUDITr1$model <- "AUDIT"
+GAD_unilr1$model <- "Unil"
+GAD_prelr1$model <- "Prel"
+GAD_SAr1$model <- "SA"
+GAD_SCIr1$model <- "SCI"
+GAD_PSr1$model <- "PS"
+GAD_SCr1$model <- "SC"
+GAD_wellbeingz1$model <- "wellbeing"
+GAD_perfectionismz1$model <-"perfectionism"
+GAD_acaz1$model <- "academic"
+GAD_accz1$model <- "accomodation"
+GAD_frz1$model <- "friendship"
+GAD_coz1$model <- "community"
+
+rsquared_simp1 <- rbind(GAD_PHQr1,
+                        GAD_CUDITr1,GAD_AUDITr1,GAD_unilr1,
+                        GAD_prelr1,GAD_SAr1,GAD_SCIr1,
+                        GAD_PSr1,GAD_SCr1,GAD_wellbeingz1,GAD_perfectionismz1,
+                        GAD_acaz1,GAD_accz1,GAD_frz1,GAD_coz1)
+
+GAD_PHQn1 <- GAD_PHQt1[6,2]
+GAD_CUDITn1 <- GAD_CUDITt1[6,2]
+GAD_AUDITn1 <-GAD_AUDITt1[6,2]
+GAD_uniln1<- GAD_unilt1[6,2]
+GAD_preln1 <- GAD_prelt1[6,2]
+GAD_SAn1 <- GAD_SAt1[6,2]
+GAD_SCIn1 <- GAD_SCIt1[6,2]
+GAD_PSn1 <- GAD_PSt1[6,2]
+GAD_SCn1 <- GAD_SCt1[6,2]
+GAD_wellbeingn1 <-GAD_wellbeingt1[6,2]
+GAD_perfectionismn1 <-GAD_perfectionismt1[6,2]
+GAD_acan1 <- GAD_acat1[6,2]
+GAD_accn1 <- GAD_acct1[6,2]
+GAD_frn1 <- GAD_frt1[6,2]
+GAD_con1 <- GAD_cot1[6,2]
+
+GAD_PHQn1$model <- "PHQ"
+GAD_CUDITn1$model <- "CUDIT"
+GAD_AUDITn1$model <- "AUDIT"
+GAD_uniln1$model <- "Unil"
+GAD_preln1$model <- "Prel"
+GAD_SAn1$model <- "SA"
+GAD_SCIn1$model <- "SCI"
+GAD_PSn1$model <- "PS"
+GAD_SCn1$model <- "SC"
+GAD_wellbeingn1$model <- "wellbeing"
+GAD_perfectionismn1$model <-"perfectionism"
+GAD_acan1$model <- "academic"
+GAD_accn1$model <- "accomodation"
+GAD_frn1$model <- "friendship"
+GAD_con1$model <- "community"
+
+n21 <- rbind(GAD_PHQn1,
+             GAD_CUDITn1,GAD_AUDITn1,GAD_uniln1,
+             GAD_preln1,GAD_SAn1,GAD_SCIn1,
+             GAD_PSn1,GAD_SCn1,GAD_wellbeingn1,GAD_perfectionismn1,
+             GAD_acan1,GAD_accn1,GAD_frn1,GAD_con1)
+
+colnames(rsquared_simp1)<- c("rsquared", "model")
+colnames(n21)<- c("n", "model")
+
+all_models_simp1 <- rbind(
+  tidy(GAD_PHQ) %>% mutate(model = "PHQ"),
+  tidy(GAD_CUDIT) %>% mutate(model = "CUDIT"),
+  tidy(GAD_AUDIT) %>% mutate(model = "AUDIT"),
+  tidy(GAD_unil) %>% mutate(model = "Unil"),
+  tidy(GAD_prel) %>% mutate(model = "Prel"),
+  tidy(GAD_SA) %>% mutate(model = "SA"),
+  tidy(GAD_SCI) %>% mutate(model = "SCI"),
+  tidy(GAD_PS) %>% mutate(model = "PS"),
+  tidy(GAD_wellbeing) %>% mutate(model = "wellbeing"),
+  tidy(GAD_SC) %>% mutate(model = "SC"),
+  tidy(GAD_perfectionism) %>% mutate(model = "perfectionism"),
+  tidy(GAD_aca) %>% mutate(model = "academic"),
+  tidy(GAD_co) %>% mutate(model = "community"),
+  tidy(GAD_fr) %>% mutate(model = "friendship"),
+  tidy(GAD_acc) %>% mutate(model = "accomodation")
+)
+
+
+finaltable1_GAD <- right_join( all_models_simp1, rsquared_simp1)
+finaltable1_GAD <- right_join( n21, finaltable1_GAD)
+finaltable1_GAD <- as.data.frame(finaltable1_GAD)
+finaltable1_GAD <- finaltable1_GAD[c(2,4,6,8,10,12,14,16,18,20,22,24,26,28,30),]
+colnames(finaltable1_GAD)<- c("N1", "model", "term", "beta1", "SE", "t", "p1", "rsquared1" )
+finaltable1_GAD$beta1 <- round(finaltable1_GAD$beta1, digits = 2)
+finaltable1_GAD$rsquared1 <- as.numeric(finaltable1_GAD$rsquared1)
+finaltable1_GAD$rsquared1 <- round(finaltable1_GAD$rsquared1, digits = 2)
+finaltable1_GAD$p1 <- round(finaltable1_GAD$p1, digits = 3)
+finaltable1_GAD <- finaltable1_GAD[,c(3,1,4,8,7)]
+
+PHQ <- as.data.frame(rbind(c("term","N", "beta",  "rsquared", "p"),
+                           c("PHQz", "-","-","-", "-" ))
+)
+names(PHQ) <- PHQ[1,]
+PHQ <- PHQ[- c(1),]
+
+GAD <- as.data.frame(rbind(c("term", "N1","beta1",  "rsquared1", "p1"),
+                           c("GADz","-", "-", "-", "-"))
+)
+names(GAD) <- GAD[1,]
+GAD <- GAD[- c(1),]
+# final table 1 (simple) ####
+finaltable1_GAD <- rbind( GAD, finaltable1_GAD)
+finaltable1_PHQ <- rbind(PHQ, finaltable1_PHQ)
+final_table1 <- right_join(finaltable1_GAD,finaltable1_PHQ)
+write.csv(final_table1, file = "final_table1.csv")
+
+#saving pass####
+write.csv(pass, "pass.csv")
+#DNA & Medical Consent####
+wave1$Q207 <- dplyr::recode(wave1$Q207, "1" = "Yes", "2" = "No")
+wave1$DNA <- "Not Answered"
+wave1$DNA[wave1$Q207 == "Yes"] <- "Yes"
+wave1$DNA[wave1$Q207 == "No"] <- "No"
+table(wave1$DNA)
+#          No Not Answered          Yes 
+#         50          260           134
+prop.table(table(wave1$DNA))
+
+
+pass$Q207 <- dplyr::recode(pass$Q207, "1" = "Yes", "2" = "No")
+pass$DNA <- "Not Answered"
+pass$DNA[pass$Q207 == "Yes"] <- "Yes"
+pass$DNA[pass$Q207 == "No"] <- "No"
+table(pass$DNA)
+# No      Not Answered      Yes 
+# 49          60           133 
+prop.table(table(pass$DNA))
+
+# No      Not Answered     Yes 
+# 0.20        0.25        0.55
+
+wave1$Q209 <- dplyr::recode(wave1$Q209, "1" = "Yes", "2" = "No")
+wave1$medicine <- "Not Answered"
+wave1$medicine[wave1$Q209 == "Yes"] <- "Yes"
+wave1$medicine[wave1$Q209 == "No"] <- "No"
+table(wave1$medicine)
+#          No     Not Answered      Yes 
+#.         73          260          111 
+prop.table(table(wave1$medicine))
+#    No     Not Answered        Yes 
+#  0.16       0.59             0.25
+
+pass$Q209 <- dplyr::recode(pass$Q209, "1" = "Yes", "2" = "No")
+pass$medicine <- "Not Answered"
+pass$medicine[pass$Q209 == "Yes"] <- "Yes"
+pass$medicine[pass$Q209 == "No"] <- "No"
+table(pass$medicine)
+# No      Not Answered          Yes 
+# 71           60               111 
+prop.table(table(pass$medicine))
+
+# No      Not Answered         Yes 
+# 0.30    0.25                 0.45
+
+
